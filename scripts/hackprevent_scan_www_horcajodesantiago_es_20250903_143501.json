@@ -1,0 +1,170 @@
+{
+  "target": "https://www.horcajodesantiago.es/reserva-pistas/",
+  "scan_date": "2025-09-03T14:34:54.989330",
+  "scanner_os": "macOS 15.6.1",
+  "scanner_version": "HackPrevent v1.0 macOS",
+  "ssl_analysis": {},
+  "security_headers": {
+    "Strict-Transport-Security": "MISSING",
+    "Content-Security-Policy": "MISSING",
+    "X-Frame-Options": "MISSING",
+    "X-Content-Type-Options": "MISSING",
+    "Referrer-Policy": "MISSING",
+    "Permissions-Policy": "MISSING"
+  },
+  "directory_scan": [
+    {
+      "path": "/wp-admin",
+      "status_code": 301,
+      "content_length": 249,
+      "content_type": "text/html; charset=iso-8859-1"
+    },
+    {
+      "path": "/login",
+      "status_code": 302,
+      "content_length": 0,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    {
+      "path": "/dashboard",
+      "status_code": 302,
+      "content_length": 0,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    {
+      "path": "/admin",
+      "status_code": 302,
+      "content_length": 0,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    {
+      "path": "/.env",
+      "status_code": 403,
+      "content_length": 199,
+      "content_type": "text/html; charset=iso-8859-1"
+    },
+    {
+      "path": "/robots.txt",
+      "status_code": 200,
+      "content_length": 274,
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "path": "/sitemap.xml",
+      "status_code": 301,
+      "content_length": 0,
+      "content_type": "text/html; charset=UTF-8"
+    }
+  ],
+  "form_analysis": [
+    {
+      "form_id": 1,
+      "action": "",
+      "method": "get",
+      "input_count": 2,
+      "inputs": [
+        {
+          "name": "orderby",
+          "type": "text",
+          "required": false,
+          "validation": "none"
+        },
+        {
+          "name": "paged",
+          "type": "hidden",
+          "required": false,
+          "validation": "none"
+        }
+      ],
+      "security_issues": []
+    }
+  ],
+  "technology_stack": [
+    {
+      "name": "Wordpress",
+      "type": "Framework/CMS",
+      "detected": true
+    },
+    {
+      "name": "Vue",
+      "type": "Framework/CMS",
+      "detected": true
+    },
+    {
+      "name": "Jquery",
+      "type": "Framework/CMS",
+      "detected": true
+    }
+  ],
+  "vulnerability_summary": {
+    "CRITICAL": 0,
+    "HIGH": 2,
+    "MEDIUM": 3,
+    "LOW": 2,
+    "INFO": 0
+  },
+  "risk_assessment": {
+    "risk_score": 37,
+    "risk_level": "MEDIUM",
+    "compliance_score": 74.1,
+    "total_vulnerabilities": 7
+  },
+  "vulnerabilities": [
+    {
+      "type": "Missing Security Header",
+      "severity": "HIGH",
+      "description": "Missing Strict-Transport-Security header",
+      "evidence": "Header: Strict-Transport-Security",
+      "recommendation": "Implement HSTS to prevent protocol downgrade attacks",
+      "timestamp": "2025-09-03T14:34:57.300693"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "HIGH",
+      "description": "Missing Content-Security-Policy header",
+      "evidence": "Header: Content-Security-Policy",
+      "recommendation": "Implement CSP to prevent XSS and injection attacks",
+      "timestamp": "2025-09-03T14:34:57.300787"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "description": "Missing X-Frame-Options header",
+      "evidence": "Header: X-Frame-Options",
+      "recommendation": "Set X-Frame-Options to DENY or SAMEORIGIN",
+      "timestamp": "2025-09-03T14:34:57.300806"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "description": "Missing X-Content-Type-Options header",
+      "evidence": "Header: X-Content-Type-Options",
+      "recommendation": "Set X-Content-Type-Options to nosniff",
+      "timestamp": "2025-09-03T14:34:57.300824"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "LOW",
+      "description": "Missing Referrer-Policy header",
+      "evidence": "Header: Referrer-Policy",
+      "recommendation": "Implement appropriate referrer policy",
+      "timestamp": "2025-09-03T14:34:57.300837"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "LOW",
+      "description": "Missing Permissions-Policy header",
+      "evidence": "Header: Permissions-Policy",
+      "recommendation": "Implement permissions policy for enhanced security",
+      "timestamp": "2025-09-03T14:34:57.300854"
+    },
+    {
+      "type": "Sensitive Directory",
+      "severity": "MEDIUM",
+      "description": "Sensitive content found at /robots.txt",
+      "evidence": "Status: 200, Length: 274",
+      "recommendation": "Review and restrict access to sensitive directories",
+      "timestamp": "2025-09-03T14:34:58.904839"
+    }
+  ]
+}

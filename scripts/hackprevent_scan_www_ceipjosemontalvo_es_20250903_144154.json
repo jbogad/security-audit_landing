@@ -1,0 +1,117 @@
+{
+  "target": "https://www.ceipjosemontalvo.es/index.php/es/",
+  "scan_date": "2025-09-03T14:41:51.109876",
+  "scanner_os": "macOS 15.6.1",
+  "scanner_version": "HackPrevent v1.0 macOS",
+  "ssl_analysis": {},
+  "security_headers": {
+    "Strict-Transport-Security": "MISSING",
+    "Content-Security-Policy": "MISSING",
+    "X-Frame-Options": "MISSING",
+    "X-Content-Type-Options": "MISSING",
+    "Referrer-Policy": "MISSING",
+    "Permissions-Policy": "MISSING"
+  },
+  "directory_scan": [
+    {
+      "path": "/administrator",
+      "status_code": 301,
+      "content_length": 254,
+      "content_type": "text/html; charset=iso-8859-1"
+    },
+    {
+      "path": "/robots.txt",
+      "status_code": 200,
+      "content_length": 352,
+      "content_type": "text/plain"
+    },
+    {
+      "path": "/.env",
+      "status_code": 403,
+      "content_length": 102,
+      "content_type": "text/html"
+    },
+    {
+      "path": "/images",
+      "status_code": 301,
+      "content_length": 247,
+      "content_type": "text/html; charset=iso-8859-1"
+    }
+  ],
+  "form_analysis": [],
+  "technology_stack": [
+    {
+      "name": "Nginx",
+      "type": "Web Server",
+      "version": "nginx"
+    },
+    {
+      "name": "PHP",
+      "type": "Language",
+      "version": "PHP/7.4.33, PleskLin"
+    }
+  ],
+  "vulnerability_summary": {
+    "CRITICAL": 0,
+    "HIGH": 2,
+    "MEDIUM": 2,
+    "LOW": 2,
+    "INFO": 0
+  },
+  "risk_assessment": {
+    "risk_score": 32,
+    "risk_level": "MEDIUM",
+    "compliance_score": 76.9,
+    "total_vulnerabilities": 6
+  },
+  "vulnerabilities": [
+    {
+      "type": "Missing Security Header",
+      "severity": "HIGH",
+      "description": "Missing Strict-Transport-Security header",
+      "evidence": "Header: Strict-Transport-Security",
+      "recommendation": "Implement HSTS to prevent protocol downgrade attacks",
+      "timestamp": "2025-09-03T14:41:52.628274"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "HIGH",
+      "description": "Missing Content-Security-Policy header",
+      "evidence": "Header: Content-Security-Policy",
+      "recommendation": "Implement CSP to prevent XSS and injection attacks",
+      "timestamp": "2025-09-03T14:41:52.628425"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "description": "Missing X-Frame-Options header",
+      "evidence": "Header: X-Frame-Options",
+      "recommendation": "Set X-Frame-Options to DENY or SAMEORIGIN",
+      "timestamp": "2025-09-03T14:41:52.628460"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "description": "Missing X-Content-Type-Options header",
+      "evidence": "Header: X-Content-Type-Options",
+      "recommendation": "Set X-Content-Type-Options to nosniff",
+      "timestamp": "2025-09-03T14:41:52.628489"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "LOW",
+      "description": "Missing Referrer-Policy header",
+      "evidence": "Header: Referrer-Policy",
+      "recommendation": "Implement appropriate referrer policy",
+      "timestamp": "2025-09-03T14:41:52.628511"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "LOW",
+      "description": "Missing Permissions-Policy header",
+      "evidence": "Header: Permissions-Policy",
+      "recommendation": "Implement permissions policy for enhanced security",
+      "timestamp": "2025-09-03T14:41:52.628537"
+    }
+  ]
+}

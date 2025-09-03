@@ -1,0 +1,137 @@
+{
+  "target": "https://hackprevent.es/",
+  "scan_date": "2025-09-03T14:40:45.751498",
+  "scanner_os": "macOS 15.6.1",
+  "scanner_version": "HackPrevent v1.0 macOS",
+  "ssl_analysis": {},
+  "security_headers": {
+    "Strict-Transport-Security": "MISSING",
+    "Content-Security-Policy": "MISSING",
+    "X-Frame-Options": "MISSING",
+    "X-Content-Type-Options": "MISSING",
+    "Referrer-Policy": "MISSING",
+    "Permissions-Policy": "MISSING"
+  },
+  "directory_scan": [],
+  "form_analysis": [
+    {
+      "form_id": 1,
+      "action": "https://formspree.io/f/meolrbgp",
+      "method": "post",
+      "input_count": 6,
+      "inputs": [
+        {
+          "name": "nombre",
+          "type": "text",
+          "required": true,
+          "validation": "none"
+        },
+        {
+          "name": "email",
+          "type": "email",
+          "required": true,
+          "validation": "none"
+        },
+        {
+          "name": "empresa",
+          "type": "text",
+          "required": true,
+          "validation": "none"
+        },
+        {
+          "name": "web",
+          "type": "url",
+          "required": true,
+          "validation": "none"
+        },
+        {
+          "name": "telefono",
+          "type": "tel",
+          "required": true,
+          "validation": "none"
+        },
+        {
+          "name": "empleados",
+          "type": "text",
+          "required": false,
+          "validation": "none"
+        }
+      ],
+      "security_issues": [
+        "Missing CSRF protection"
+      ]
+    }
+  ],
+  "technology_stack": [],
+  "vulnerability_summary": {
+    "CRITICAL": 0,
+    "HIGH": 2,
+    "MEDIUM": 3,
+    "LOW": 2,
+    "INFO": 0
+  },
+  "risk_assessment": {
+    "risk_score": 37,
+    "risk_level": "MEDIUM",
+    "compliance_score": 74.1,
+    "total_vulnerabilities": 7
+  },
+  "vulnerabilities": [
+    {
+      "type": "Missing Security Header",
+      "severity": "HIGH",
+      "description": "Missing Strict-Transport-Security header",
+      "evidence": "Header: Strict-Transport-Security",
+      "recommendation": "Implement HSTS to prevent protocol downgrade attacks",
+      "timestamp": "2025-09-03T14:40:46.355923"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "HIGH",
+      "description": "Missing Content-Security-Policy header",
+      "evidence": "Header: Content-Security-Policy",
+      "recommendation": "Implement CSP to prevent XSS and injection attacks",
+      "timestamp": "2025-09-03T14:40:46.356028"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "description": "Missing X-Frame-Options header",
+      "evidence": "Header: X-Frame-Options",
+      "recommendation": "Set X-Frame-Options to DENY or SAMEORIGIN",
+      "timestamp": "2025-09-03T14:40:46.356063"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "description": "Missing X-Content-Type-Options header",
+      "evidence": "Header: X-Content-Type-Options",
+      "recommendation": "Set X-Content-Type-Options to nosniff",
+      "timestamp": "2025-09-03T14:40:46.356091"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "LOW",
+      "description": "Missing Referrer-Policy header",
+      "evidence": "Header: Referrer-Policy",
+      "recommendation": "Implement appropriate referrer policy",
+      "timestamp": "2025-09-03T14:40:46.356116"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "LOW",
+      "description": "Missing Permissions-Policy header",
+      "evidence": "Header: Permissions-Policy",
+      "recommendation": "Implement permissions policy for enhanced security",
+      "timestamp": "2025-09-03T14:40:46.356141"
+    },
+    {
+      "type": "Missing CSRF Protection",
+      "severity": "MEDIUM",
+      "description": "Form 1 lacks CSRF protection",
+      "evidence": "Action: https://formspree.io/f/meolrbgp, Method: post",
+      "recommendation": "Implement CSRF tokens for state-changing operations",
+      "timestamp": "2025-09-03T14:40:47.624635"
+    }
+  ]
+}
