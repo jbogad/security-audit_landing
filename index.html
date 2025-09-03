@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Su empresa sobreviviría a un ciberataque? | HackPrevent</title>
+    <meta name="description" content="Auditoría de seguridad GRATUITA para PYMES. El 60% de las empresas cierran tras ser hackeadas. ¿Está protegida la suya?">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* HEADER IMPACTANTE */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23ff4444" width="1200" height="600"/></svg>');
+            color: white;
+            text-align: center;
+            padding: 100px 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero h2 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: #ff6b6b;
+            font-weight: normal;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* BOTÓN LETAL */
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        
+        /* PROBLEMAS QUE DUELEN */
+        .problems {
+            background: white;
+            padding: 80px 0;
+        }
+        
+        .problems h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: #333;
+        }
+        
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .problem-card {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 15px;
+            border-left: 5px solid #ff6b6b;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .problem-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ff6b6b;
+        }
+        
+        .problem-card p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        /* ESTADÍSTICAS BRUTALES */
+        .stats {
+            background: #2c3e50;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .stat-item h3 {
+            font-size: 3rem;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+        
+        .stat-item p {
+            font-size: 1.2rem;
+        }
+        
+        /* SOLUCIÓN */
+        .solution {
+            background: #ecf0f1;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .solution h2 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+        
+        .benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .benefit {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .benefit h3 {
+            color: #27ae60;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        /* FORMULARIO KILLER */
+        .form-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 0;
+            color: white;
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.9);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        /* GARANTÍA */
+        .guarantee {
+            background: #2c3e50;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .guarantee h2 {
+            color: #f39c12;
+            margin-bottom: 20px;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero h2 { font-size: 1.5rem; }
+            .cta-button { padding: 15px 30px; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div>
+                <h1>¿Su empresa sobreviviría a un ciberataque?</h1>
+                <h2>El 60% de las PYMES cierran en 6 meses tras ser hackeadas</h2>
+                <p>Un solo ataque puede costarle €50.000+ en daños, multas y pérdida de clientes. ¿Está seguro de que su empresa está protegida?</p>
+                <a href="#auditoria-gratuita" class="cta-button">
+                    🛡️ QUIERO MI AUDITORÍA GRATUITA
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEMAS -->
+    <section class="problems">
+        <div class="container">
+            <h2>Los 3 errores que ponen en peligro su negocio</h2>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <h3>❌ "Mi empresa es pequeña, nadie nos atacará"</h3>
+                    <p>ERROR: El 43% de los ciberataques se dirigen específicamente a pequeñas empresas. Los hackers las ven como objetivos fáciles con poca protección.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>❌ "Tenemos antivirus, estamos protegidos"</h3>
+                    <p>ERROR: El antivirus solo protege contra el 45% de las amenazas. Vulnerabilidades web, configuraciones incorrectas y ingeniería social siguen siendo puertas abiertas.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>❌ "Si nos hackean, restauramos backup"</h3>
+                    <p>ERROR: Además de los datos, pierde clientes, reputación y puede enfrentar multas GDPR de hasta €20 millones. El daño va mucho más allá de los archivos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ESTADÍSTICAS -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>€52.000</h3>
+                    <p>Coste promedio de un ciberataque para una PYME española</p>
+                </div>
+                <div class="stat-item">
+                    <h3>60%</h3>
+                    <p>De las pequeñas empresas cierran en 6 meses tras un ataque</p>
+                </div>
+                <div class="stat-item">
+                    <h3>14 días</h3>
+                    <p>Tiempo promedio para detectar una brecha de seguridad</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOLUCIÓN -->
+    <section class="solution">
+        <div class="container">
+            <h2>La solución: Auditoría de Seguridad Profesional</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 40px;">En menos de 24 horas, descubra EXACTAMENTE qué vulnerabilidades tiene su empresa y cómo solucionarlas.</p>
+            
+            <div class="benefits">
+                <div class="benefit">
+                    <h3>✅ Análisis completo en 24h</h3>
+                    <p>Escaneamos su web, sistemas y configuraciones para encontrar todas las vulnerabilidades críticas.</p>
+                </div>
+                <div class="benefit">
+                    <h3>✅ Informe detallado</h3>
+                    <p>Recibe un documento PDF profesional con cada problema encontrado y su nivel de riesgo.</p>
+                </div>
+                <div class="benefit">
+                    <h3>✅ Plan de acción específico</h3>
+                    <p>No solo problemas: soluciones paso a paso para proteger su empresa inmediatamente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORMULARIO -->
+    <section id="auditoria-gratuita" class="form-section">
+        <div class="container">
+            <div class="form-container">
+                <h2>🛡️ Consiga su Auditoría GRATUITA</h2>
+                <p style="text-align: center; margin-bottom: 30px;">Valor: €299 - Hoy GRATIS (Solo primeras 10 empresas)</p>
+                
+                <form action="https://formspree.io/f/tu-formulario-id" method="POST">
+                    <div class="form-group">
+                        <label for="nombre">Nombre completo *</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email empresarial *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="empresa">Nombre de la empresa *</label>
+                        <input type="text" id="empresa" name="empresa" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="web">Sitio web de la empresa *</label>
+                        <input type="url" id="web" name="web" placeholder="https://www.suempresa.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Teléfono *</label>
+                        <input type="tel" id="telefono" name="telefono" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="empleados">Número de empleados</label>
+                        <select id="empleados" name="empleados">
+                            <option value="1-5">1-5 empleados</option>
+                            <option value="6-20">6-20 empleados</option>
+                            <option value="21-50">21-50 empleados</option>
+                            <option value="50+">Más de 50 empleados</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        🚀 QUIERO MI AUDITORÍA GRATUITA AHORA
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- GARANTÍA -->
+    <section class="guarantee">
+        <div class="container">
+            <h2>🏆 Garantía de Satisfacción Total</h2>
+            <p>Si no encuentra al menos 3 vulnerabilidades críticas en su empresa, le devolvemos el 100% de su dinero. Sin preguntas.</p>
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Form tracking
+        document.querySelector('form').addEventListener('submit', function(e) {
+            // Aquí puedes añadir Google Analytics o tracking
+            console.log('Formulario enviado - ¡CLIENTE POTENCIAL!');
+        });
+    </script>
+</body>
+</html>
