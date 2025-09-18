@@ -1,0 +1,59 @@
+{
+  "target": "https://hackprevent.es",
+  "scan_date": "2025-09-04T22:33:22.983818",
+  "scanner_version": "HackPrevent Fixed v1.1",
+  "vulnerabilities": [
+    {
+      "type": "Missing Security Header",
+      "severity": "HIGH",
+      "description": "Missing strict-transport-security header",
+      "evidence": "Header: strict-transport-security",
+      "recommendation": "Implement HSTS",
+      "timestamp": "2025-09-04T22:33:23.916160"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "HIGH",
+      "description": "Missing content-security-policy header",
+      "evidence": "Header: content-security-policy",
+      "recommendation": "Implement CSP",
+      "timestamp": "2025-09-04T22:33:23.916303"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "description": "Missing x-frame-options header",
+      "evidence": "Header: x-frame-options",
+      "recommendation": "Set X-Frame-Options",
+      "timestamp": "2025-09-04T22:33:23.916349"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "description": "Missing x-content-type-options header",
+      "evidence": "Header: x-content-type-options",
+      "recommendation": "Set to nosniff",
+      "timestamp": "2025-09-04T22:33:23.916384"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "description": "Missing x-xss-protection header",
+      "evidence": "Header: x-xss-protection",
+      "recommendation": "Enable XSS protection",
+      "timestamp": "2025-09-04T22:33:23.916416"
+    }
+  ],
+  "summary": {
+    "total_vulnerabilities": 5,
+    "risk_score": 35,
+    "risk_level": "MEDIUM",
+    "severity_breakdown": {
+      "CRITICAL": 0,
+      "HIGH": 2,
+      "MEDIUM": 3,
+      "LOW": 0,
+      "INFO": 0
+    }
+  }
+}
