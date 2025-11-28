@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¿Su empresa sobreviviría a un ciberataque? | HackPrevent</title>
-    <meta name="description" content="Auditoría de seguridad GRATUITA para PYMES. El 60% de las empresas cierran tras ser hackeadas. ¿Está protegida la suya?">
+    <title>HackPrevent.es | Ethical Hacking & Cyber Defense</title>
+    <meta name="description" content="Analista SOC y pentester. Laboratorios descargables, herramientas, guías técnicas y recursos para detectar, explotar y prevenir vulnerabilidades.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #e0e0e0;
+            background: #0a0e27;
+            scroll-behavior: smooth;
         }
         
         .container {
@@ -21,390 +24,559 @@
             padding: 0 20px;
         }
         
-        /* HEADER IMPACTANTE */
+        /* NAVIGATION */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 255, 157, 0.2);
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ff9d;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #00ff9d;
+        }
+        
+        /* HERO SECTION */
         .hero {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23ff4444" width="1200" height="600"/></svg>');
-            color: white;
-            text-align: center;
-            padding: 100px 0;
             min-height: 100vh;
             display: flex;
             align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            padding: 120px 20px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 255, 157, 0.1) 0%, transparent 70%);
+            top: -250px;
+            right: -250px;
+        }
+        
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 1;
         }
         
         .hero h1 {
             font-size: 3.5rem;
             font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 1rem;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
         }
         
-        .hero h2 {
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            color: #e74c3c;
-            font-weight: normal;
-        }
-        
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 40px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        /* BOTÓN LETAL */
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-            color: white;
-            padding: 20px 40px;
+        .hero .subtitle {
             font-size: 1.5rem;
-            text-decoration: none;
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #00ff9d;
+            margin-bottom: 1rem;
         }
         
-        .cta-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-        }
-        
-        /* PROBLEMAS QUE DUELEN */
-        .problems {
-            background: white;
-            padding: 80px 0;
-        }
-        
-        .problems h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-            color: #333;
-        }
-        
-        .problem-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-        
-        .problem-card {
-            background: #f8f9fa;
-            padding: 40px;
-            border-radius: 15px;
-            border-left: 5px solid #e74c3c;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .problem-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #e74c3c;
-        }
-        
-        .problem-card p {
-            font-size: 1.1rem;
-            color: #666;
-        }
-        
-        /* ESTADÍSTICAS BRUTALES */
-        .stats {
-            background: #2c3e50;
-            color: white;
-            padding: 80px 0;
-            text-align: center;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-        }
-        
-        .stat-item h3 {
-            font-size: 3rem;
-            color: #e74c3c;
-            margin-bottom: 10px;
-        }
-        
-        .stat-item p {
+        .hero .description {
             font-size: 1.2rem;
+            color: #b0b0b0;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
         }
         
-        /* SOLUCIÓN */
-        .solution {
-            background: #f8f9fa;
-            padding: 80px 0;
-            text-align: center;
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         
-        .solution h2 {
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            color: #2c3e50;
-        }
-        
-        .benefits {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 60px 0;
-        }
-        
-        .benefit {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .benefit h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-        
-        /* FORMULARIO KILLER */
-        .form-section {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            padding: 80px 0;
-            color: white;
-        }
-        
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: rgba(255,255,255,0.1);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .form-container h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2rem;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            background: rgba(255,255,255,0.9);
-        }
-        
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-            color: white;
-            padding: 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            cursor: pointer;
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 5px;
             transition: all 0.3s ease;
+            font-weight: 600;
+            border: 2px solid transparent;
         }
         
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff9d 0%, #00cc7a 100%);
+            color: #0a0e27;
         }
         
-        /* GARANTÍA */
-        .guarantee {
-            background: #2c3e50;
-            color: white;
-            padding: 60px 0;
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 157, 0.3);
+        }
+        
+        .btn-secondary {
+            border: 2px solid #00ff9d;
+            color: #00ff9d;
+            background: transparent;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(0, 255, 157, 0.1);
+        }
+        
+        /* SECTIONS */
+        section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
             text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #ffffff;
+            position: relative;
+            padding-bottom: 1rem;
         }
         
-        .guarantee h2 {
-            color: #e74c3c;
-            margin-bottom: 20px;
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00ff9d, transparent);
         }
         
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .hero h2 { font-size: 1.5rem; }
-            .cta-button { padding: 15px 30px; font-size: 1.2rem; }
+            nav ul { 
+                display: none; 
+            }
+            .hero h1 { 
+                font-size: 2.5rem; 
+            }
+            .hero .subtitle { 
+                font-size: 1.2rem; 
+            }
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="container">
+            <div class="logo">HackPrevent.es</div>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#laboratorios">Laboratorios</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#proyectos">Proyectos</a></li>
+                <li><a href="#sobre-mi">Sobre mí</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <!-- HERO SECTION -->
-    <section class="hero">
-        <div class="container">
-            <div>
-                <h1>¿Su empresa sobreviviría a un ciberataque?</h1>
-                <h2>El 60% de las PYMES cierran en 6 meses tras ser hackeadas</h2>
-                <p>Un solo ataque puede costarle +€50.000 en daños, multas y pérdida de clientes. ¿Está seguro de que su empresa está protegida?</p>
-                <a href="#auditoria-gratuita" class="cta-button">
-                    🛡️ QUIERO MI AUDITORÍA GRATUITA
-                </a>
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <h1>HackPrevent.es</h1>
+            <p class="subtitle">Ethical Hacking & Cyber Defense</p>
+            <p class="description">
+                🔍 Soy <strong>Javier Boga</strong>, analista SOC y pentester junior.<br>
+                Comparto laboratorios descargables, herramientas, guías y buenas prácticas<br>
+                para detectar, explotar y prevenir vulnerabilidades.
+            </p>
+            <p class="description" style="font-size: 1rem; color: #808080; max-width: 700px;">
+                Especializado en análisis de vulnerabilidades, monitorización SOC N1 y automatización en C/Python/Bash.<br>
+                Ayudo a futuros analistas y pentesters a practicar y aprender con laboratorios reales.
+            </p>
+            <div class="hero-buttons">
+                <a href="#laboratorios" class="btn btn-primary"><i class="fas fa-download"></i> Ver Laboratorios</a>
+                <a href="https://github.com/jbogad" target="_blank" class="btn btn-secondary"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://linkedin.com/in/javierboga" target="_blank" class="btn btn-secondary"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="#contacto" class="btn btn-secondary"><i class="fas fa-envelope"></i> Contacto</a>
             </div>
         </div>
     </section>
 
-    <!-- PROBLEMAS -->
-    <section class="problems">
+    <!-- LABORATORIOS -->
+    <section id="laboratorios" style="background: #0f1428; padding: 80px 0;">
         <div class="container">
-            <h2>Los 3 errores que ponen en peligro su negocio</h2>
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <h3>❌ "Mi empresa es pequeña, nadie nos atacará"</h3>
-                    <p>ERROR: El 43% de los ciberataques se dirigen específicamente a pequeñas empresas. Los hackers las ven como objetivos fáciles con poca protección.</p>
-                </div>
-                <div class="problem-card">
-                    <h3>❌ "Tenemos antivirus, estamos protegidos"</h3>
-                    <p>ERROR: El antivirus solo protege contra el 45% de las amenazas. Vulnerabilidades web, configuraciones incorrectas y ingeniería social siguen siendo puertas abiertas.</p>
-                </div>
-                <div class="problem-card">
-                    <h3>❌ "Si nos hackean, restauramos backup"</h3>
-                    <p>ERROR: Además de los datos, pierde clientes, reputación y puede enfrentar multas GDPR de hasta €20 millones. El daño va mucho más allá de los archivos.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ESTADÍSTICAS -->
-    <section class="stats">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <h3>€52.000</h3>
-                    <p>Coste promedio de un ciberataque para una PYME española</p>
-                </div>
-                <div class="stat-item">
-                    <h3>60%</h3>
-                    <p>De las pequeñas empresas cierran en 6 meses tras un ataque</p>
-                </div>
-                <div class="stat-item">
-                    <h3>14 días</h3>
-                    <p>Tiempo promedio para detectar una brecha de seguridad</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SOLUCIÓN -->
-    <section class="solution">
-        <div class="container">
-            <h2>La solución: Auditoría de Seguridad Profesional</h2>
-            <p style="font-size: 1.2rem; margin-bottom: 40px;">En menos de 24 horas, descubra EXACTAMENTE qué vulnerabilidades tiene su empresa y cómo solucionarlas.</p>
+            <h2 class="section-title">🧪 Laboratorios Descargables</h2>
+            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
+                Máquinas virtuales preconfiguradas para practicar pentesting en entornos controlados
+            </p>
             
-            <div class="benefits">
-                <div class="benefit">
-                    <h3>✅ Análisis completo en 24h</h3>
-                    <p>Escaneamos su web, sistemas y configuraciones para encontrar todas las vulnerabilidades críticas.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+                
+                <!-- Lab 1: Kali Preconfigurado -->
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border: 1px solid rgba(0,255,157,0.2);">
+                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.5rem;">
+                        <i class="fas fa-laptop-code"></i> Kali Linux Listo para Usar
+                    </h3>
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
+                        Distribución Kali preconfigurada con herramientas esenciales, scripts personalizados y entorno optimizado.
+                    </p>
+                    <ul style="color: #808080; margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                        <li>Herramientas de pentesting preinstaladas</li>
+                        <li>Scripts útiles incluidos</li>
+                        <li>Configuración lista para usar</li>
+                        <li>Guía de instalación incluida</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary" style="width: 100%; text-align: center; opacity: 0.6; cursor: not-allowed;">
+                        <i class="fas fa-lock"></i> Próximamente
+                    </a>
                 </div>
-                <div class="benefit">
-                    <h3>✅ Informe detallado</h3>
-                    <p>Recibe un documento PDF profesional con cada problema encontrado y su nivel de riesgo.</p>
+
+                <!-- Lab 2: Máquina Vulnerable -->
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border: 1px solid rgba(0,255,157,0.2);">
+                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.5rem;">
+                        <i class="fas fa-server"></i> HackPrevent: SQL Injection Lab
+                    </h3>
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
+                        Laboratorio enfocado en la explotación y prevención de vulnerabilidades SQLi.
+                    </p>
+                    <ul style="color: #808080; margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                        <li>Dificultad: <strong style="color: #ffa500;">Intermedia</strong></li>
+                        <li>Múltiples niveles de explotación</li>
+                        <li>Incluye guía de hardening</li>
+                        <li>Compatible VMware/VirtualBox</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary" style="width: 100%; text-align: center; opacity: 0.6; cursor: not-allowed;">
+                        <i class="fas fa-lock"></i> Próximamente
+                    </a>
                 </div>
-                <div class="benefit">
-                    <h3>✅ Plan de acción específico</h3>
-                    <p>No solo problemas: soluciones paso a paso para proteger su empresa inmediatamente.</p>
+
+                <!-- Lab 3: Web Vulns -->
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border: 1px solid rgba(0,255,157,0.2);">
+                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.5rem;">
+                        <i class="fas fa-shield-alt"></i> Web Vulns Playground
+                    </h3>
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
+                        Entorno con las vulnerabilidades más comunes del OWASP Top 10.
+                    </p>
+                    <ul style="color: #808080; margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                        <li>Dificultad: <strong style="color: #00ff00;">Principiante</strong></li>
+                        <li>XSS, CSRF, Path Traversal, etc.</li>
+                        <li>Documentación detallada</li>
+                        <li>Ideal para empezar</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary" style="width: 100%; text-align: center; opacity: 0.6; cursor: not-allowed;">
+                        <i class="fas fa-lock"></i> Próximamente
+                    </a>
+                </div>
+
+            </div>
+
+            <div style="margin-top: 3rem; padding: 2rem; background: rgba(255,69,0,0.1); border-left: 4px solid #ff4500; border-radius: 5px;">
+                <h4 style="color: #ff4500; margin-bottom: 0.5rem;">
+                    <i class="fas fa-exclamation-triangle"></i> Aviso Legal
+                </h4>
+                <p style="color: #b0b0b0; font-size: 0.95rem;">
+                    Estos laboratorios contienen vulnerabilidades educativas. Solo deben usarse en entornos controlados para aprendizaje.
+                    El uso indebido de estas herramientas es responsabilidad exclusiva del usuario.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOG TÉCNICO -->
+    <section id="blog" style="background: #0a0e27; padding: 80px 0;">
+        <div class="container">
+            <h2 class="section-title">📝 Blog Técnico</h2>
+            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
+                Guías, tutoriales y análisis para prevenir las vulnerabilidades más comunes
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                
+                <!-- Artículo 1 -->
+                <article style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #00ff9d;">
+                    <div style="color: #808080; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                        <i class="fas fa-calendar"></i> Próximamente
+                    </div>
+                    <h3 style="color: #ffffff; margin-bottom: 1rem;">
+                        Cómo detectar un SQLi con Burp Suite
+                    </h3>
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
+                        Guía paso a paso para identificar y explotar vulnerabilidades de inyección SQL utilizando Burp Suite Professional.
+                    </p>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">SQL Injection</span>
+                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Burp Suite</span>
+                    </div>
+                </article>
+
+                <!-- Artículo 2 -->
+                <article style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #00ff9d;">
+                    <div style="color: #808080; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                        <i class="fas fa-calendar"></i> Próximamente
+                    </div>
+                    <h3 style="color: #ffffff; margin-bottom: 1rem;">
+                        Análisis de tráfico sospechoso con Wireshark
+                    </h3>
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
+                        Técnicas para identificar actividad maliciosa en capturas de red y correlacionar eventos en un SOC.
+                    </p>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">SOC</span>
+                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Wireshark</span>
+                    </div>
+                </article>
+
+                <!-- Artículo 3 -->
+                <article style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #00ff9d;">
+                    <div style="color: #808080; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                        <i class="fas fa-calendar"></i> Próximamente
+                    </div>
+                    <h3 style="color: #ffffff; margin-bottom: 1rem;">
+                        OWASP Top 10: Checklist completo
+                    </h3>
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
+                        Lista de verificación práctica para auditar aplicaciones web siguiendo las vulnerabilidades más críticas de OWASP.
+                    </p>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">OWASP</span>
+                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Web Security</span>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PROYECTOS -->
+    <section id="proyectos" style="background: #0f1428; padding: 80px 0;">
+        <div class="container">
+            <h2 class="section-title">🛠️ Proyectos & Herramientas</h2>
+            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
+                Scripts, herramientas y automatizaciones para análisis de seguridad
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                
+                <!-- Proyecto 1 -->
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border: 1px solid rgba(0,255,157,0.2);">
+                    <h3 style="color: #00ff9d; margin-bottom: 1rem;">
+                        <i class="fas fa-search"></i> Vulnerability Scanner
+                    </h3>
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
+                        Script Python para escaneo automatizado de vulnerabilidades web comunes.
+                    </p>
+                    <div style="margin-bottom: 1rem;">
+                        <span style="background: rgba(255,215,0,0.2); color: #ffd700; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Python</span>
+                    </div>
+                    <a href="https://github.com/jbogad" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center;">
+                        <i class="fab fa-github"></i> Ver en GitHub
+                    </a>
+                </div>
+
+                <!-- Proyecto 2 -->
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border: 1px solid rgba(0,255,157,0.2);">
+                    <h3 style="color: #00ff9d; margin-bottom: 1rem;">
+                        <i class="fas fa-code"></i> XSS Testing Suite
+                    </h3>
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
+                        Colección de scripts para detectar y explotar vulnerabilidades XSS con técnicas de bypass.
+                    </p>
+                    <div style="margin-bottom: 1rem;">
+                        <span style="background: rgba(255,215,0,0.2); color: #ffd700; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Python</span>
+                    </div>
+                    <a href="https://github.com/jbogad" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center;">
+                        <i class="fab fa-github"></i> Ver en GitHub
+                    </a>
+                </div>
+
+                <!-- Proyecto 3 -->
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border: 1px solid rgba(0,255,157,0.2);">
+                    <h3 style="color: #00ff9d; margin-bottom: 1rem;">
+                        <i class="fas fa-terminal"></i> SOC Automation Scripts
+                    </h3>
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
+                        Scripts Bash y Python para automatizar tareas comunes en análisis SOC N1.
+                    </p>
+                    <div style="margin-bottom: 1rem;">
+                        <span style="background: rgba(255,215,0,0.2); color: #ffd700; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Bash</span>
+                        <span style="background: rgba(255,215,0,0.2); color: #ffd700; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Python</span>
+                    </div>
+                    <a href="https://github.com/jbogad" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center;">
+                        <i class="fab fa-github"></i> Ver en GitHub
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SOBRE MÍ -->
+    <section id="sobre-mi" style="background: #0a0e27; padding: 80px 0;">
+        <div class="container">
+            <h2 class="section-title">👨‍💻 Sobre Mí</h2>
+            
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <p style="color: #b0b0b0; font-size: 1.2rem; line-height: 1.8; margin-bottom: 2rem;">
+                    Soy <strong style="color: #00ff9d;">Javier Boga</strong>, analista SOC N1 y pentester junior apasionado por la ciberseguridad ofensiva y defensiva.
+                </p>
+                
+                <div style="text-align: left; color: #b0b0b0; margin-bottom: 2rem; line-height: 1.8;">
+                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">🎯 Especialidades</h3>
+                    <ul style="padding-left: 2rem;">
+                        <li><strong style="color: #00ff9d;">Ciberseguridad Ofensiva:</strong> Pentesting web y de redes, análisis de vulnerabilidades</li>
+                        <li><strong style="color: #00ff9d;">SOC Analyst N1:</strong> Monitorización, triage de alertas, análisis de incidentes</li>
+                        <li><strong style="color: #00ff9d;">Programación:</strong> C, Python, Bash - Automatización y herramientas personalizadas</li>
+                        <li><strong style="color: #00ff9d;">Blue Team:</strong> Hardening de sistemas, detección de amenazas, respuesta a incidentes</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: left; color: #b0b0b0; margin-bottom: 2rem; line-height: 1.8;">
+                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">🎓 Formación</h3>
+                    <ul style="padding-left: 2rem;">
+                        <li>42 Madrid - Cursus de programación</li>
+                        <li>Máster en Ciberseguridad</li>
+                        <li>eJPT (Junior Penetration Tester)</li>
+                        <li>Formación continua en plataformas como HackTheBox, TryHackMe</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: left; color: #b0b0b0; line-height: 1.8;">
+                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">💡 Motivación</h3>
+                    <p>
+                        Me apasiona entender cómo funcionan los sistemas desde dentro, encontrar sus debilidades y ayudar a protegerlos.
+                        Creo firmemente en el aprendizaje práctico y en compartir conocimiento con la comunidad.
+                        Por eso creo laboratorios, escribo guías y comparto herramientas que ayuden a otros a mejorar sus habilidades.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FORMULARIO -->
-    <section id="auditoria-gratuita" class="form-section">
+    <!-- CONTACTO -->
+    <section id="contacto" style="background: #0f1428; padding: 80px 0;">
         <div class="container">
-            <div class="form-container">
-                <h2>🛡️ Consiga su Auditoría GRATUITA</h2>
-                <p style="text-align: center; margin-bottom: 30px;">Valor: €299 - Hoy GRATIS (Solo primeras 10 empresas)</p>
-                
-                    <form action="https://formspree.io/f/meolrbgp" method="POST">
-                    <div class="form-group">
-                        <label for="nombre">Nombre completo *</label>
-                        <input type="text" id="nombre" name="nombre" required>
-                    </div>
+            <h2 class="section-title">📬 Contacto</h2>
+            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
+                ¿Quieres colaborar, preguntar o proponer un laboratorio? Escríbeme y te respondo lo antes posible.
+            </p>
+
+            <div style="max-width: 600px; margin: 0 auto;">
+                <form action="https://formspree.io/f/meolrbgp" method="POST" style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px;">
                     
-                    <div class="form-group">
-                        <label for="email">Email empresarial *</label>
-                        <input type="email" id="email" name="email" required>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="nombre" style="display: block; color: #ffffff; margin-bottom: 0.5rem; font-weight: 600;">Nombre *</label>
+                        <input type="text" id="nombre" name="nombre" required 
+                               style="width: 100%; padding: 0.8rem; border: 1px solid rgba(0,255,157,0.3); border-radius: 5px; background: rgba(255,255,255,0.05); color: #ffffff; font-size: 1rem;">
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="empresa">Nombre de la empresa *</label>
-                        <input type="text" id="empresa" name="empresa" required>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="email" style="display: block; color: #ffffff; margin-bottom: 0.5rem; font-weight: 600;">Email *</label>
+                        <input type="email" id="email" name="email" required 
+                               style="width: 100%; padding: 0.8rem; border: 1px solid rgba(0,255,157,0.3); border-radius: 5px; background: rgba(255,255,255,0.05); color: #ffffff; font-size: 1rem;">
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="web">Sitio web de la empresa *</label>
-                        <input type="url" id="web" name="web" placeholder="https://www.suempresa.com" required>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="asunto" style="display: block; color: #ffffff; margin-bottom: 0.5rem; font-weight: 600;">Asunto *</label>
+                        <input type="text" id="asunto" name="asunto" required 
+                               style="width: 100%; padding: 0.8rem; border: 1px solid rgba(0,255,157,0.3); border-radius: 5px; background: rgba(255,255,255,0.05); color: #ffffff; font-size: 1rem;">
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="telefono">Teléfono *</label>
-                        <input type="tel" id="telefono" name="telefono" required>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="mensaje" style="display: block; color: #ffffff; margin-bottom: 0.5rem; font-weight: 600;">Mensaje *</label>
+                        <textarea id="mensaje" name="mensaje" rows="6" required 
+                                  style="width: 100%; padding: 0.8rem; border: 1px solid rgba(0,255,157,0.3); border-radius: 5px; background: rgba(255,255,255,0.05); color: #ffffff; font-size: 1rem; resize: vertical;"></textarea>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="empleados">Número de empleados</label>
-                        <select id="empleados" name="empleados">
-                            <option value="1-5">1-5 empleados</option>
-                            <option value="6-20">6-20 empleados</option>
-                            <option value="21-50">21-50 empleados</option>
-                            <option value="50+">Más de 50 empleados</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">
-                        🚀 QUIERO MI AUDITORÍA GRATUITA AHORA
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; text-align: center; font-size: 1.1rem;">
+                        <i class="fas fa-paper-plane"></i> Enviar Mensaje
                     </button>
                 </form>
+
+                <div style="margin-top: 3rem; text-align: center;">
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">También puedes encontrarme en:</p>
+                    <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                        <a href="mailto:contacto@hackprevent.es" style="color: #00ff9d; text-decoration: none; font-size: 1.1rem;">
+                            <i class="fas fa-envelope"></i> contacto@hackprevent.es
+                        </a>
+                        <a href="https://github.com/jbogad" target="_blank" style="color: #00ff9d; text-decoration: none; font-size: 1.1rem;">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="https://linkedin.com/in/javierboga" target="_blank" style="color: #00ff9d; text-decoration: none; font-size: 1.1rem;">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- GARANTÍA -->
-    <section class="guarantee">
+    <!-- FOOTER -->
+    <footer style="background: #0a0e27; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(0,255,157,0.2);">
         <div class="container">
-            <h2>🏆 Garantía de Satisfacción Total</h2>
-            <p>Si no encuentra al menos 3 vulnerabilidades críticas en su empresa, le devolvemos el 100% de su dinero. Sin preguntas.</p>
+            <p style="color: #808080; font-size: 0.9rem;">
+                © 2025 HackPrevent.es - Javier Boga | Ethical Hacking & Cyber Defense
+            </p>
+            <p style="color: #606060; font-size: 0.85rem; margin-top: 0.5rem;">
+                Todos los laboratorios y herramientas son para uso educativo exclusivamente.
+            </p>
         </div>
-    </section>
+    </footer>
 
     <script>
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
-        
-        // Form tracking
-        document.querySelector('form').addEventListener('submit', function(e) {
-            // Aquí puedes añadir Google Analytics o tracking
-            console.log('Formulario enviado - ¡CLIENTE POTENCIAL!');
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(10, 14, 39, 0.98)';
+            } else {
+                nav.style.background = 'rgba(10, 14, 39, 0.95)';
+            }
         });
     </script>
 </body>
