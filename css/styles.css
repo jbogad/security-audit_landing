@@ -1,0 +1,95 @@
+/* ============================================
+   ESTILOS ADICIONALES Y PÁGINAS
+   ============================================ */
+
+/* Cards */
+.lab-card,
+.resource-card {
+    background: rgba(255,255,255,0.05);
+    padding: 2rem;
+    border-radius: 10px;
+    border: 1px solid rgba(0,255,157,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.lab-card:hover,
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,255,157,0.2);
+}
+
+.resource-card {
+    border-left: 3px solid #00ff9d;
+}
+
+/* Steps */
+.step-card {
+    text-align: center;
+}
+
+.step-number {
+    width: 80px;
+    height: 80px;
+    background: rgba(0,255,157,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    border: 3px solid #00ff9d;
+    font-size: 2rem;
+    color: #00ff9d;
+    font-weight: bold;
+}
+
+/* Boxes */
+.warning-box {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: rgba(255,69,0,0.1);
+    border-left: 4px solid #ff4500;
+    border-radius: 5px;
+}
+
+.info-box {
+    margin-top: 4rem;
+    text-align: center;
+    background: rgba(0,255,157,0.1);
+    padding: 2rem;
+    border-radius: 10px;
+    border: 2px solid rgba(0,255,157,0.3);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Contact Form */
+.contact-form {
+    background: rgba(255,255,255,0.05);
+    padding: 2rem;
+    border-radius: 10px;
+}
+
+/* Disabled buttons */
+.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+    }
+    
+    .modal-tabs {
+        flex-direction: column;
+    }
+    
+    .lab-card,
+    .resource-card {
+        margin-bottom: 1rem;
+    }
+}
