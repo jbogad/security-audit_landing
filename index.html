@@ -202,9 +202,8 @@
             <ul>
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#laboratorios">Laboratorios</a></li>
-                <li><a href="#blog">Blog</a></li>
-                <li><a href="#proyectos">Proyectos</a></li>
-                <li><a href="#sobre-mi">Sobre mí</a></li>
+                <li><a href="#recursos">Recursos</a></li>
+                <li><a href="#como-funciona">Cómo Funciona</a></li>
                 <li><a href="#contacto">Contacto</a></li>
             </ul>
         </div>
@@ -214,20 +213,29 @@
     <section id="inicio" class="hero">
         <div class="hero-content">
             <h1>HackPrevent.es</h1>
-            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.9rem;">
-            <p class="subtitle">Ethical Hacking & Cyber Defense</p>
+            <p class="subtitle">Practica Hacking Ético en Entornos Seguros</p>
             <p class="description">
-                🔍 Analista SOC y pentester especializado en seguridad ofensiva y defensiva.<br>
-                Comparto laboratorios descargables, herramientas, guías y buenas prácticas<br>
-                para detectar, explotar y prevenir vulnerabilidades.
+                🎯 Plataforma gratuita de laboratorios de ciberseguridad<br>
+                Descarga máquinas vulnerables, practica pentesting y mejora tus habilidades<br>
+                en un entorno legal y controlado.
             </p>
-            <p class="description" style="font-size: 1rem; color: #808080; max-width: 700px;">
-                Especializado en análisis de vulnerabilidades, monitorización SOC y automatización con Python/Bash.<br>
-                Recursos prácticos para analistas y pentesters que buscan mejorar sus habilidades.
-            </p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 900px; margin: 2rem auto; text-align: center;">
+                <div>
+                    <h3 style="color: #00ff9d; font-size: 2.5rem; margin-bottom: 0.5rem;">15+</h3>
+                    <p style="color: #b0b0b0;">Laboratorios</p>
+                </div>
+                <div>
+                    <h3 style="color: #00ff9d; font-size: 2.5rem; margin-bottom: 0.5rem;">100%</h3>
+                    <p style="color: #b0b0b0;">Gratuito</p>
+                </div>
+                <div>
+                    <h3 style="color: #00ff9d; font-size: 2.5rem; margin-bottom: 0.5rem;">24/7</h3>
+                    <p style="color: #b0b0b0;">Disponible</p>
+                </div>
+            </div>
             <div class="hero-buttons">
-                <a href="#laboratorios" class="btn btn-primary"><i class="fas fa-download"></i> Ver Laboratorios</a>
-                <a href="#contacto" class="btn btn-secondary"><i class="fas fa-envelope"></i> Contacto</a>
+                <a href="#laboratorios" class="btn btn-primary"><i class="fas fa-flask"></i> Explorar Laboratorios</a>
+                <a href="#como-funciona" class="btn btn-secondary"><i class="fas fa-question-circle"></i> Cómo Funciona</a>
             </div>
         </div>
     </section>
@@ -313,170 +321,141 @@
         </div>
     </section>
 
-    <!-- BLOG TÉCNICO -->
-    <section id="blog" style="background: #0a0e27; padding: 80px 0;">
+    <!-- RECURSOS -->
+    <section id="recursos" style="background: #0a0e27; padding: 80px 0;">
         <div class="container">
-            <h2 class="section-title">📝 Blog Técnico</h2>
+            <h2 class="section-title">📚 Recursos y Guías</h2>
             <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
-                Guías, tutoriales y análisis para prevenir las vulnerabilidades más comunes
+                Documentación, writeups y guías para resolver los laboratorios
             </p>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
                 
-                <!-- Artículo 1 -->
-                <article style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #00ff9d;">
-                    <div style="color: #808080; font-size: 0.9rem; margin-bottom: 0.5rem;">
-                        <i class="fas fa-calendar"></i> Próximamente
-                    </div>
-                    <h3 style="color: #ffffff; margin-bottom: 1rem;">
-                        Cómo detectar un SQLi con Burp Suite
+                <!-- Recurso 1 -->
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border-left: 3px solid #00ff9d;">
+                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.4rem;">
+                        <i class="fas fa-book"></i> Guías de Inicio
                     </h3>
                     <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Guía paso a paso para identificar y explotar vulnerabilidades de inyección SQL utilizando Burp Suite Professional.
+                        Todo lo necesario para empezar: instalación de VirtualBox/VMware, configuración de red, primeros pasos en pentesting.
                     </p>
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">SQL Injection</span>
-                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Burp Suite</span>
-                    </div>
-                </article>
-
-                <!-- Artículo 2 -->
-                <article style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #00ff9d;">
-                    <div style="color: #808080; font-size: 0.9rem; margin-bottom: 0.5rem;">
-                        <i class="fas fa-calendar"></i> Próximamente
-                    </div>
-                    <h3 style="color: #ffffff; margin-bottom: 1rem;">
-                        Análisis de tráfico sospechoso con Wireshark
-                    </h3>
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Técnicas para identificar actividad maliciosa en capturas de red y correlacionar eventos en un SOC.
-                    </p>
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">SOC</span>
-                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Wireshark</span>
-                    </div>
-                </article>
-
-                <!-- Artículo 3 -->
-                <article style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #00ff9d;">
-                    <div style="color: #808080; font-size: 0.9rem; margin-bottom: 0.5rem;">
-                        <i class="fas fa-calendar"></i> Próximamente
-                    </div>
-                    <h3 style="color: #ffffff; margin-bottom: 1rem;">
-                        OWASP Top 10: Checklist completo
-                    </h3>
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Lista de verificación práctica para auditar aplicaciones web siguiendo las vulnerabilidades más críticas de OWASP.
-                    </p>
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">OWASP</span>
-                        <span style="background: rgba(0,255,157,0.2); color: #00ff9d; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Web Security</span>
-                    </div>
-                </article>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- PROYECTOS -->
-    <section id="proyectos" style="background: #0f1428; padding: 80px 0;">
-        <div class="container">
-            <h2 class="section-title">🛠️ Proyectos & Herramientas</h2>
-            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
-                Scripts, herramientas y automatizaciones para análisis de seguridad
-            </p>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-                
-                <!-- Proyecto 1 -->
-                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border: 1px solid rgba(0,255,157,0.2);">
-                    <h3 style="color: #00ff9d; margin-bottom: 1rem;">
-                        <i class="fas fa-search"></i> Vulnerability Scanner
-                    </h3>
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Script Python para escaneo automatizado de vulnerabilidades web comunes.
-                    </p>
-                    <div style="margin-bottom: 1rem;">
-                        <span style="background: rgba(255,215,0,0.2); color: #ffd700; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Python</span>
-                    </div>
-                    <a href="#" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center;">
-                        <i class="fab fa-github"></i> Ver en GitHub
-                    </a>
+                    <ul style="color: #808080; padding-left: 1.5rem;">
+                        <li>Configuración de entorno virtual</li>
+                        <li>Herramientas básicas de pentesting</li>
+                        <li>Metodología de ataque</li>
+                        <li>Buenas prácticas y ética</li>
+                    </ul>
                 </div>
 
-                <!-- Proyecto 2 -->
-                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border: 1px solid rgba(0,255,157,0.2);">
-                    <h3 style="color: #00ff9d; margin-bottom: 1rem;">
-                        <i class="fas fa-code"></i> XSS Testing Suite
+                <!-- Recurso 2 -->
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border-left: 3px solid #00ff9d;">
+                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.4rem;">
+                        <i class="fas fa-file-alt"></i> Writeups
                     </h3>
                     <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Colección de scripts para detectar y explotar vulnerabilidades XSS con técnicas de bypass.
+                        Soluciones paso a paso de cada laboratorio (disponibles después de completar cada máquina).
                     </p>
-                    <div style="margin-bottom: 1rem;">
-                        <span style="background: rgba(255,215,0,0.2); color: #ffd700; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Python</span>
-                    </div>
-                    <a href="#" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center;">
-                        <i class="fab fa-github"></i> Ver en GitHub
-                    </a>
+                    <ul style="color: #808080; padding-left: 1.5rem;">
+                        <li>Proceso completo de explotación</li>
+                        <li>Herramientas utilizadas</li>
+                        <li>Explicación de vulnerabilidades</li>
+                        <li>Tips y técnicas avanzadas</li>
+                    </ul>
                 </div>
 
-                <!-- Proyecto 3 -->
-                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border: 1px solid rgba(0,255,157,0.2);">
-                    <h3 style="color: #00ff9d; margin-bottom: 1rem;">
-                        <i class="fas fa-terminal"></i> SOC Automation Scripts
+                <!-- Recurso 3 -->
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 10px; border-left: 3px solid #00ff9d;">
+                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.4rem;">
+                        <i class="fas fa-users"></i> Comunidad
                     </h3>
                     <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Scripts Bash y Python para automatizar tareas comunes en análisis SOC N1.
+                        Únete a la comunidad de HackPrevent. Comparte experiencias, pide ayuda y colabora con otros.
                     </p>
-                    <div style="margin-bottom: 1rem;">
-                        <span style="background: rgba(255,215,0,0.2); color: #ffd700; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Bash</span>
-                        <span style="background: rgba(255,215,0,0.2); color: #ffd700; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Python</span>
-                    </div>
-                    <a href="#" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center;">
-                        <i class="fab fa-github"></i> Ver en GitHub
-                    </a>
+                    <ul style="color: #808080; padding-left: 1.5rem;">
+                        <li>Discord / Telegram (próximamente)</li>
+                        <li>Foro de discusión</li>
+                        <li>Ranking de usuarios</li>
+                        <li>Eventos y retos mensuales</li>
+                    </ul>
                 </div>
 
             </div>
         </div>
     </section>
 
-    <!-- SOBRE MÍ -->
-    <section id="sobre-mi" style="background: #0a0e27; padding: 80px 0;">
+    <!-- CÓMO FUNCIONA -->
+    <section id="como-funciona" style="background: #0f1428; padding: 80px 0;">
         <div class="container">
-            <h2 class="section-title">👨‍💻 Sobre Mí</h2>
-            
-            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-                <p style="color: #b0b0b0; font-size: 1.2rem; line-height: 1.8; margin-bottom: 2rem;">
-                    Analista SOC y pentester apasionado por la ciberseguridad ofensiva y defensiva.
-                </p>
+            <h2 class="section-title">🎮 Cómo Funciona</h2>
+            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
+                Empieza a practicar pentesting en 4 sencillos pasos
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; max-width: 1100px; margin: 0 auto;">
                 
-                <div style="text-align: left; color: #b0b0b0; margin-bottom: 2rem; line-height: 1.8;">
-                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">🎯 Especialidades</h3>
-                    <ul style="padding-left: 2rem;">
-                        <li><strong style="color: #00ff9d;">Ciberseguridad Ofensiva:</strong> Pentesting web y de redes, análisis de vulnerabilidades</li>
-                        <li><strong style="color: #00ff9d;">SOC Analyst N1:</strong> Monitorización, triage de alertas, análisis de incidentes</li>
-                        <li><strong style="color: #00ff9d;">Programación:</strong> C, Python, Bash - Automatización y herramientas personalizadas</li>
-                        <li><strong style="color: #00ff9d;">Blue Team:</strong> Hardening de sistemas, detección de amenazas, respuesta a incidentes</li>
-                    </ul>
+                <!-- Paso 1 -->
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: rgba(0,255,157,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 3px solid #00ff9d;">
+                        <span style="font-size: 2rem; color: #00ff9d; font-weight: bold;">1</span>
+                    </div>
+                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">
+                        <i class="fas fa-download"></i> Descarga
+                    </h3>
+                    <p style="color: #b0b0b0; line-height: 1.6;">
+                        Elige un laboratorio según tu nivel y descarga la máquina virtual en formato .ova o .vmdk.
+                    </p>
                 </div>
 
-                <div style="text-align: left; color: #b0b0b0; margin-bottom: 2rem; line-height: 1.8;">
-                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">🎓 Formación</h3>
-                    <ul style="padding-left: 2rem;">
-                        <li>Formación especializada en programación</li>
-                        <li>Certificaciones en Ciberseguridad</li>
-                        <li>Pentesting y hacking ético</li>
-                        <li>Práctica continua en plataformas como HackTheBox, TryHackMe</li>
-                    </ul>
+                <!-- Paso 2 -->
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: rgba(0,255,157,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 3px solid #00ff9d;">
+                        <span style="font-size: 2rem; color: #00ff9d; font-weight: bold;">2</span>
+                    </div>
+                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">
+                        <i class="fas fa-cog"></i> Configura
+                    </h3>
+                    <p style="color: #b0b0b0; line-height: 1.6;">
+                        Importa la máquina en VirtualBox o VMware. Configura la red en modo NAT o Host-Only.
+                    </p>
                 </div>
 
-                <div style="text-align: left; color: #b0b0b0; line-height: 1.8;">
-                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">💡 Motivación</h3>
-                    <p>
-                        Me apasiona entender cómo funcionan los sistemas desde dentro, encontrar sus debilidades y ayudar a protegerlos.
-                        Creo firmemente en el aprendizaje práctico y en compartir conocimiento con la comunidad.
-                        Por eso creo laboratorios, escribo guías y comparto herramientas que ayuden a otros a mejorar sus habilidades.
+                <!-- Paso 3 -->
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: rgba(0,255,157,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 3px solid #00ff9d;">
+                        <span style="font-size: 2rem; color: #00ff9d; font-weight: bold;">3</span>
+                    </div>
+                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">
+                        <i class="fas fa-crosshairs"></i> Hackea
+                    </h3>
+                    <p style="color: #b0b0b0; line-height: 1.6;">
+                        Escanea, enumera, explota vulnerabilidades y consigue acceso root. ¡Usa todas tus herramientas!
+                    </p>
+                </div>
+
+                <!-- Paso 4 -->
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: rgba(0,255,157,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 3px solid #00ff9d;">
+                        <span style="font-size: 2rem; color: #00ff9d; font-weight: bold;">4</span>
+                    </div>
+                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">
+                        <i class="fas fa-flag-checkered"></i> Aprende
+                    </h3>
+                    <p style="color: #b0b0b0; line-height: 1.6;">
+                        Consulta el writeup oficial, comparte tu solución y mejora tus técnicas de hacking.
+                    </p>
+                </div>
+
+            </div>
+
+            <div style="margin-top: 4rem; text-align: center;">
+                <div style="background: rgba(0,255,157,0.1); padding: 2rem; border-radius: 10px; border: 2px solid rgba(0,255,157,0.3); max-width: 700px; margin: 0 auto;">
+                    <h3 style="color: #00ff9d; margin-bottom: 1rem;">
+                        <i class="fas fa-shield-alt"></i> 100% Legal y Seguro
+                    </h3>
+                    <p style="color: #b0b0b0; line-height: 1.8;">
+                        Todos los laboratorios están diseñados exclusivamente para aprendizaje.<br>
+                        Practica sin riesgos en tu propia máquina virtual aislada.<br>
+                        <strong style="color: #ffffff;">No hay límites de tiempo ni restricciones.</strong>
                     </p>
                 </div>
             </div>
@@ -484,11 +463,11 @@
     </section>
 
     <!-- CONTACTO -->
-    <section id="contacto" style="background: #0f1428; padding: 80px 0;">
+    <section id="contacto" style="background: #0a0e27; padding: 80px 0;">
         <div class="container">
-            <h2 class="section-title">📬 Contacto</h2>
+            <h2 class="section-title">📬 Contacto y Soporte</h2>
             <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
-                ¿Quieres colaborar, preguntar o proponer un laboratorio? Escríbeme y te respondo lo antes posible.
+                ¿Tienes dudas, sugerencias o quieres reportar un problema? Contáctanos
             </p>
 
             <div style="max-width: 600px; margin: 0 auto;">
@@ -524,16 +503,10 @@
                 </form>
 
                 <div style="margin-top: 3rem; text-align: center;">
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">También puedes encontrarme en:</p>
-                    <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
-                        <a href="mailto:contacto@hackprevent.es" style="color: #00ff9d; text-decoration: none; font-size: 1.1rem;">
-                            <i class="fas fa-envelope"></i> contacto@hackprevent.es
-                        </a>
-                        <a href="#" target="_blank" style="color: #00ff9d; text-decoration: none; font-size: 1.1rem;">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
-                        <a href="#" target="_blank" style="color: #00ff9d; text-decoration: none; font-size: 1.1rem;">
-                            <i class="fab fa-linkedin"></i> LinkedIn
+                    <p style="color: #b0b0b0; margin-bottom: 1rem;">O envía un email directo:</p>
+                    <div style="text-align: center;">
+                        <a href="mailto:soporte@hackprevent.es" style="color: #00ff9d; text-decoration: none; font-size: 1.2rem; font-weight: 600;">
+                            <i class="fas fa-envelope"></i> soporte@hackprevent.es
                         </a>
                     </div>
                 </div>
