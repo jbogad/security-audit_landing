@@ -131,18 +131,32 @@ CREATE POLICY "Anyone can read non-expired tokens" ON password_reset_tokens
     FOR SELECT USING (expires_at > NOW() AND NOT used);
 
 -- ============================================
--- FUNCIÓN PARA CREAR PERFIL AUTOMÁTICO
+-- FUNCIÓN PARA CREAR USUARIO Y PERFIL AUTOMÁTICO
 -- ============================================
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
+    -- Insertar en tabla users
+    INSERT INTO public.users (id, username, email, email_verified)
+    VALUES (
+        NEW.id,
+        COALESCE(NEW.raw_user_meta_data->>'username', split_part(NEW.email, '@', 1)),
+        NEW.email,
+        NEW.email_confirmed_at IS NOT NULL
+    );
+    
+    -- Insertar perfil vacío
     INSERT INTO public.profiles (id, full_name)
-    VALUES (NEW.id, NEW.raw_user_meta_data->>'full_name');
+    VALUES (
+        NEW.id,
+        COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'username', '')
+    );
+    
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger que crea perfil cuando se registra un usuario
+-- Trigger que crea usuario y perfil cuando se registra en auth
 CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
