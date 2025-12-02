@@ -9,24 +9,89 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 // ============================================
+// VALIDACIÓN DE CONTRASEÑAS SEGURAS
+// ============================================
+function validatePassword(password) {
+    const errors = [];
+    
+    // Mínimo 8 caracteres
+    if (password.length < 8) {
+        errors.push('Mínimo 8 caracteres');
+    }
+    
+    // Al menos una mayúscula
+    if (!/[A-Z]/.test(password)) {
+        errors.push('Al menos una mayúscula');
+    }
+    
+    // Al menos una minúscula
+    if (!/[a-z]/.test(password)) {
+        errors.push('Al menos una minúscula');
+    }
+    
+    // Al menos un número
+    if (!/[0-9]/.test(password)) {
+        errors.push('Al menos un número');
+    }
+    
+    // Al menos un carácter especial
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+        errors.push('Al menos un carácter especial (!@#$%...)');
+    }
+    
+    return {
+        isValid: errors.length === 0,
+        errors: errors
+    };
+}
+
+// ============================================
+// CALCULAR FORTALEZA DE CONTRASEÑA
+// ============================================
+function getPasswordStrength(password) {
+    let strength = 0;
+    
+    if (password.length >= 8) strength++;
+    if (password.length >= 12) strength++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) strength++;
+    
+    if (strength <= 2) return { level: 'weak', text: 'Débil', color: '#ff4757' };
+    if (strength <= 3) return { level: 'medium', text: 'Media', color: '#ffa502' };
+    if (strength <= 4) return { level: 'good', text: 'Buena', color: '#1e90ff' };
+    return { level: 'strong', text: 'Fuerte', color: '#00ff9d' };
+}
+
+// ============================================
 // REGISTRO DE USUARIO
 // ============================================
 async function registerUser(username, email, password) {
     try {
-        // Crear usuario en Supabase Auth primero
+        // Validar contraseña segura
+        const validation = validatePassword(password);
+        if (!validation.isValid) {
+            return { 
+                success: false, 
+                message: 'Contraseña no cumple requisitos:\n• ' + validation.errors.join('\n• ')
+            };
+        }
+        
+        // Crear usuario en Supabase Auth
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
             password: password,
             options: {
                 data: {
                     username: username
-                }
+                },
+                emailRedirectTo: 'https://hackprevent.es'
             }
         })
 
         if (authError) throw authError
 
-        // Si se creó correctamente, esperar un momento para que el trigger se ejecute
+        // Si se creó correctamente
         if (authData.user) {
             console.log('Usuario creado en auth:', authData.user.id)
         }
@@ -34,7 +99,7 @@ async function registerUser(username, email, password) {
         return { 
             success: true, 
             user: authData.user,
-            message: '¡Cuenta creada! Ya puedes iniciar sesión.' 
+            message: '¡Cuenta creada! Revisa tu email para confirmarla.' 
         }
 
     } catch (error) {
@@ -48,10 +113,16 @@ async function registerUser(username, email, password) {
             return { success: false, message: 'Este nombre de usuario ya existe' }
         }
         if (error.message.includes('Password')) {
-            return { success: false, message: 'La contraseña debe tener al menos 6 caracteres' }
+            return { success: false, message: 'La contraseña no cumple los requisitos de seguridad' }
         }
         if (error.message.includes('Database error')) {
             return { success: false, message: 'El nombre de usuario ya existe' }
+        }
+        if (error.message.includes('rate limit')) {
+            return { 
+                success: false, 
+                message: 'Demasiados intentos. Espera unos minutos.' 
+            }
         }
         
         return { 
@@ -354,5 +425,7 @@ window.supabaseAuth = {
     getUserLabProgress,
     updateLabProgress,
     getUserRanking,
-    onAuthStateChange
+    onAuthStateChange,
+    validatePassword,
+    getPasswordStrength
 }

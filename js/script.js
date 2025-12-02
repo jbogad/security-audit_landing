@@ -121,10 +121,15 @@ async function handleLogout() {
 // CHECK AUTH STATUS ON LOAD
 // ============================================
 window.addEventListener('DOMContentLoaded', async () => {
-    const { user } = await window.supabaseAuth.getCurrentUser();
-    
-    if (user) {
-        updateUIForLoggedInUser(user);
+    try {
+        const { user } = await window.supabaseAuth.getCurrentUser();
+        
+        if (user) {
+            updateUIForLoggedInUser(user);
+        }
+    } catch (error) {
+        // Usuario no autenticado, ignorar error
+        console.log('No hay sesión activa');
     }
 });
 
@@ -205,9 +210,10 @@ async function handleRegister(e) {
     const password = document.getElementById('register-password').value;
     const submitBtn = e.target.querySelector('button[type="submit"]');
     
-    // Validación básica
-    if (password.length < 6) {
-        showMessage('error', 'La contraseña debe tener al menos 6 caracteres');
+    // Validación de contraseña segura
+    const validation = window.supabaseAuth.validatePassword(password);
+    if (!validation.isValid) {
+        showMessage('error', 'Contraseña insegura:\n• ' + validation.errors.join('\n• '));
         return;
     }
     
@@ -239,6 +245,43 @@ async function handleRegister(e) {
         submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Crear Cuenta';
     }
 }
+
+// ============================================
+// PASSWORD STRENGTH INDICATOR
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    const passwordInput = document.getElementById('register-password');
+    
+    if (passwordInput) {
+        // Crear indicador de fortaleza
+        const strengthIndicator = document.createElement('div');
+        strengthIndicator.id = 'password-strength';
+        strengthIndicator.style.cssText = 'margin-top: 8px; font-size: 0.85rem; display: none;';
+        passwordInput.parentNode.appendChild(strengthIndicator);
+        
+        passwordInput.addEventListener('input', (e) => {
+            const password = e.target.value;
+            
+            if (password.length > 0) {
+                const strength = window.supabaseAuth.getPasswordStrength(password);
+                const validation = window.supabaseAuth.validatePassword(password);
+                
+                strengthIndicator.style.display = 'block';
+                strengthIndicator.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
+                            <div style="height: 100%; width: ${(strength.level === 'weak' ? 25 : strength.level === 'medium' ? 50 : strength.level === 'good' ? 75 : 100)}%; background: ${strength.color}; transition: all 0.3s;"></div>
+                        </div>
+                        <span style="color: ${strength.color}; font-weight: 600;">${strength.text}</span>
+                    </div>
+                    ${!validation.isValid ? `<div style="color: #ff4757; margin-top: 6px; font-size: 0.8rem;">Falta: ${validation.errors.join(', ')}</div>` : ''}
+                `;
+            } else {
+                strengthIndicator.style.display = 'none';
+            }
+        });
+    }
+});
 
 // ============================================
 // SHOW PASSWORD RESET FORM
