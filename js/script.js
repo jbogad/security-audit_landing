@@ -54,6 +54,81 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+// Mostrar mensajes de éxito/error
+function showMessage(type, message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message-toast ${type}`;
+    messageDiv.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        ${message}
+    `;
+    
+    document.body.appendChild(messageDiv);
+    
+    setTimeout(() => {
+        messageDiv.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        messageDiv.classList.remove('show');
+        setTimeout(() => messageDiv.remove(), 300);
+    }, 3000);
+}
+
+// Actualizar UI cuando el usuario está logueado
+async function updateUIForLoggedInUser(user) {
+    const btnLogin = document.querySelector('.btn-login');
+    
+    // Obtener perfil completo
+    const { profile } = await window.supabaseAuth.getUserProfile(user.id);
+    
+    if (profile && profile.users) {
+        btnLogin.innerHTML = `
+            <i class="fas fa-user-circle"></i> ${profile.users.username}
+        `;
+        btnLogin.onclick = showUserMenu;
+    }
+}
+
+// Menú de usuario (logout, perfil, etc)
+function showUserMenu() {
+    // Aquí puedes agregar un dropdown con opciones
+    const confirmLogout = confirm('¿Cerrar sesión?');
+    
+    if (confirmLogout) {
+        handleLogout();
+    }
+}
+
+// Cerrar sesión
+async function handleLogout() {
+    const result = await window.supabaseAuth.logoutUser();
+    
+    if (result.success) {
+        showMessage('success', 'Sesión cerrada correctamente');
+        
+        // Restaurar botón de login
+        const btnLogin = document.querySelector('.btn-login');
+        btnLogin.innerHTML = '<i class="fas fa-user"></i> Entrar';
+        btnLogin.onclick = openModal;
+    }
+}
+
+// ============================================
+// CHECK AUTH STATUS ON LOAD
+// ============================================
+window.addEventListener('DOMContentLoaded', async () => {
+    const { user } = await window.supabaseAuth.getCurrentUser();
+    
+    if (user) {
+        updateUIForLoggedInUser(user);
+    }
+});
+
+// ============================================
 // SWITCH BETWEEN LOGIN/REGISTER TABS
 // ============================================
 function switchTab(tab) {
@@ -85,30 +160,84 @@ function switchTab(tab) {
 // ============================================
 // HANDLE LOGIN
 // ============================================
-function handleLogin(e) {
+async function handleLogin(e) {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
     
-    // Aquí irá la lógica de autenticación real
-    console.log('Login:', email, password);
-    alert('¡Funcionalidad de login en desarrollo! \n\nEmail: ' + email);
-    closeModal();
+    // Estado de carga
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando sesión...';
+    
+    try {
+        const result = await window.supabaseAuth.loginUser(email, password);
+        
+        if (result.success) {
+            // Mensaje de éxito
+            showMessage('success', result.message);
+            
+            // Cerrar modal y actualizar UI
+            setTimeout(() => {
+                closeModal();
+                updateUIForLoggedInUser(result.user);
+            }, 1000);
+        } else {
+            showMessage('error', result.message);
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showMessage('error', 'Error al iniciar sesión. Intenta de nuevo.');
+    } finally {
+        // Restaurar botón
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+    }
 }
 
 // ============================================
 // HANDLE REGISTER
 // ============================================
-function handleRegister(e) {
+async function handleRegister(e) {
     e.preventDefault();
     const username = document.getElementById('register-username').value;
     const email = document.getElementById('register-email').value;
     const password = document.getElementById('register-password').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
     
-    // Aquí irá la lógica de registro real
-    console.log('Register:', username, email, password);
-    alert('¡Cuenta creada exitosamente! \n\nUsuario: ' + username + '\nEmail: ' + email + '\n\n(Funcionalidad en desarrollo)');
-    closeModal();
+    // Validación básica
+    if (password.length < 6) {
+        showMessage('error', 'La contraseña debe tener al menos 6 caracteres');
+        return;
+    }
+    
+    // Estado de carga
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando cuenta...';
+    
+    try {
+        const result = await window.supabaseAuth.registerUser(username, email, password);
+        
+        if (result.success) {
+            // Mensaje de éxito
+            showMessage('success', result.message);
+            
+            // Cambiar a tab de login después de 2 segundos
+            setTimeout(() => {
+                switchTab('login');
+                document.getElementById('login-email').value = email;
+            }, 2000);
+        } else {
+            showMessage('error', result.message);
+        }
+    } catch (error) {
+        console.error('Register error:', error);
+        showMessage('error', 'Error al crear cuenta. Intenta de nuevo.');
+    } finally {
+        // Restaurar botón
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Crear Cuenta';
+    }
 }
 
 // ============================================
@@ -132,7 +261,7 @@ function showPasswordReset(e) {
 }
 
 // ============================================
-// HANDLE PASSWORD RESET (EmailJS)
+// HANDLE PASSWORD RESET (Supabase)
 // ============================================
 async function handlePasswordReset(e) {
     e.preventDefault();
@@ -145,41 +274,38 @@ async function handlePasswordReset(e) {
     resetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
     
     try {
-        const resetToken = Math.random().toString(36).substring(2, 15);
-        const resetLink = `https://hackprevent.es/reset-password?token=${resetToken}`;
+        const result = await window.supabaseAuth.requestPasswordReset(email);
         
-        await emailjs.send(
-            'service_bqquujw',
-            'template_jq9mzps',
-            {
-                to_email: email,
-                user_email: email,
-                reset_link: resetLink,
-                from_name: 'HackPrevent - Soporte',
-                reply_to: 'soporte@hackprevent.es'
-            }
-        );
-        
-        // Mostrar mensaje de éxito
-        messageDiv.innerHTML = `
-            <div class="success-message">
-                <i class="fas fa-check-circle"></i>
-                <strong>¡Email enviado!</strong><br>
-                Revisa tu bandeja de entrada en <strong>${email}</strong><br>
-                <small>(También revisa spam/correo no deseado)</small>
-            </div>
-        `;
-        
-        // Limpiar formulario
-        document.getElementById('reset-email').value = '';
+        if (result.success) {
+            // Mostrar mensaje de éxito
+            messageDiv.innerHTML = `
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>¡Email enviado!</strong><br>
+                    Revisa tu bandeja de entrada en <strong>${email}</strong><br>
+                    <small>(También revisa spam/correo no deseado)</small>
+                </div>
+            `;
+            
+            // Limpiar formulario
+            document.getElementById('reset-email').value = '';
+        } else {
+            messageDiv.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <strong>Error</strong><br>
+                    ${result.message}
+                </div>
+            `;
+        }
         
     } catch (error) {
-        console.error('EmailJS Error:', error);
+        console.error('Password reset error:', error);
         messageDiv.innerHTML = `
             <div class="error-message">
                 <i class="fas fa-exclamation-circle"></i>
                 <strong>Error al enviar el email</strong><br>
-                ${error.text || error.message || 'Por favor, inténtalo de nuevo más tarde.'}
+                Por favor, inténtalo de nuevo más tarde.
             </div>
         `;
     } finally {

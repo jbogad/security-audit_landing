@@ -12,11 +12,46 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Estilos adicionales para mensajes -->
+    <style>
+        .message-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: rgba(10, 14, 39, 0.95);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            max-width: 350px;
+            border-left: 4px solid;
+        }
+        
+        .message-toast.success {
+            border-color: #00ff9d;
+            color: #00ff9d;
+        }
+        
+        .message-toast.error {
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+        
+        .message-toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .message-toast i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+    </style>
+    
     <!-- EmailJS -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>
-        (function(){ emailjs.init("qiiIudjf8qJT39MGp"); })();
-    </script>
 </head>
 <body>
     
@@ -435,7 +470,11 @@
         </div>
     </footer>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <!-- JavaScript -->
+    <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
