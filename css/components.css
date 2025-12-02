@@ -202,6 +202,36 @@
     box-shadow: 0 5px 15px rgba(0, 255, 157, 0.3);
 }
 
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-oauth {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+}
+
+.btn-oauth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-oauth i {
+    font-size: 1.2rem;
+}
+
 .btn-login {
     background: linear-gradient(135deg, #00ff9d 0%, #00cc7a 100%);
     color: #0a0e27;

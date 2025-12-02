@@ -118,6 +118,17 @@ async function handleLogout() {
 }
 
 // ============================================
+// LOGIN CON OAUTH PROVIDERS
+// ============================================
+async function loginWithGitHub() {
+    await window.supabaseAuth.loginWithProvider('github');
+}
+
+async function loginWithGoogle() {
+    await window.supabaseAuth.loginWithProvider('google');
+}
+
+// ============================================
 // CHECK AUTH STATUS ON LOAD
 // ============================================
 window.addEventListener('DOMContentLoaded', async () => {

@@ -410,6 +410,31 @@ function onAuthStateChange(callback) {
 }
 
 // ============================================
+// LOGIN CON OAUTH (GitHub, Google, etc.)
+// ============================================
+async function loginWithProvider(provider) {
+    try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: provider,
+            options: {
+                redirectTo: 'https://hackprevent.es'
+            }
+        })
+
+        if (error) throw error
+
+        return { success: true }
+
+    } catch (error) {
+        console.error(`${provider} login error:`, error)
+        return { 
+            success: false, 
+            message: `Error al iniciar sesión con ${provider}` 
+        }
+    }
+}
+
+// ============================================
 // EXPORTAR FUNCIONES GLOBALMENTE
 // ============================================
 window.supabaseAuth = {
@@ -427,5 +452,6 @@ window.supabaseAuth = {
     getUserRanking,
     onAuthStateChange,
     validatePassword,
-    getPasswordStrength
+    getPasswordStrength,
+    loginWithProvider
 }
