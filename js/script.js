@@ -118,14 +118,10 @@ async function handleLogout() {
 }
 
 // ============================================
-// LOGIN CON OAUTH PROVIDERS
+// LOGIN CON GITHUB
 // ============================================
 async function loginWithGitHub() {
     await window.supabaseAuth.loginWithProvider('github');
-}
-
-async function loginWithGoogle() {
-    await window.supabaseAuth.loginWithProvider('google');
 }
 
 // ============================================

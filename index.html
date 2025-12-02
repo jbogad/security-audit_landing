@@ -115,18 +115,14 @@
                     </button>
                 </form>
                 
-                <div style="text-align: center; margin: 1.5rem 0; color: #808080; font-size: 0.9rem;">
-                    <span style="padding: 0 10px; background: #0f1428;">O continúa con</span>
+                <div style="position: relative; text-align: center; margin: 1.5rem 0;">
+                    <div style="height: 1px; background: rgba(255,255,255,0.1);"></div>
+                    <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); padding: 0 15px; background: #0f1428; color: #808080; font-size: 0.85rem;">O continúa con</span>
                 </div>
                 
-                <div style="display: grid; gap: 0.8rem;">
-                    <button onclick="loginWithGitHub()" class="btn-oauth" style="background: #24292e; color: white;">
-                        <i class="fab fa-github"></i> Continuar con GitHub
-                    </button>
-                    <button onclick="loginWithGoogle()" class="btn-oauth" style="background: white; color: #333;">
-                        <i class="fab fa-google"></i> Continuar con Google
-                    </button>
-                </div>
+                <button onclick="loginWithGitHub()" class="btn-github">
+                    <i class="fab fa-github"></i> Continuar con GitHub
+                </button>
                 
                 <p style="text-align: center; margin-top: 1rem; color: #808080; font-size: 0.9rem;">
                     <a href="#" onclick="showPasswordReset(event)" style="color: #00ff9d;">¿Olvidaste tu contraseña?</a>
@@ -153,18 +149,14 @@
                     </button>
                 </form>
                 
-                <div style="text-align: center; margin: 1.5rem 0; color: #808080; font-size: 0.9rem;">
-                    <span style="padding: 0 10px; background: #0f1428;">O regístrate con</span>
+                <div style="position: relative; text-align: center; margin: 1.5rem 0;">
+                    <div style="height: 1px; background: rgba(255,255,255,0.1);"></div>
+                    <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); padding: 0 15px; background: #0f1428; color: #808080; font-size: 0.85rem;">O regístrate con</span>
                 </div>
                 
-                <div style="display: grid; gap: 0.8rem;">
-                    <button onclick="loginWithGitHub()" class="btn-oauth" style="background: #24292e; color: white;">
-                        <i class="fab fa-github"></i> Continuar con GitHub
-                    </button>
-                    <button onclick="loginWithGoogle()" class="btn-oauth" style="background: white; color: #333;">
-                        <i class="fab fa-google"></i> Continuar con Google
-                    </button>
-                </div>
+                <button onclick="loginWithGitHub()" class="btn-github">
+                    <i class="fab fa-github"></i> Continuar con GitHub
+                </button>
                 
                 <p style="text-align: center; margin-top: 1rem; color: #808080; font-size: 0.85rem;">
                     Al registrarte aceptas nuestros <a href="#" style="color: #00ff9d;">Términos y Condiciones</a>
