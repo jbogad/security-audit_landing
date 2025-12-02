@@ -118,10 +118,15 @@ async function handleLogout() {
 }
 
 // ============================================
-// LOGIN CON GITHUB
+// LOGIN CON GITHUB (GLOBAL)
 // ============================================
-async function loginWithGitHub() {
-    await window.supabaseAuth.loginWithProvider('github');
+window.loginWithGitHub = async function() {
+    try {
+        await window.supabaseAuth.loginWithProvider('github');
+    } catch (error) {
+        console.error('Error en GitHub login:', error);
+        showMessage('error', 'Error al conectar con GitHub');
+    }
 }
 
 // ============================================
