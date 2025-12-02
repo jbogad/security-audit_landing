@@ -89,18 +89,118 @@ async function updateUIForLoggedInUser(user) {
         btnLogin.innerHTML = `
             <i class="fas fa-user-circle"></i> ${profile.users.username}
         `;
-        btnLogin.onclick = showUserMenu;
+        btnLogin.onclick = (e) => showUserMenu(e);
     }
 }
 
 // Menú de usuario (logout, perfil, etc)
-function showUserMenu() {
-    // Aquí puedes agregar un dropdown con opciones
-    const confirmLogout = confirm('¿Cerrar sesión?');
+function showUserMenu(e) {
+    e.stopPropagation();
     
-    if (confirmLogout) {
-        handleLogout();
+    // Eliminar dropdown existente si lo hay
+    const existingDropdown = document.querySelector('.user-dropdown');
+    if (existingDropdown) {
+        existingDropdown.remove();
+        return;
     }
+    
+    // Crear dropdown
+    const dropdown = document.createElement('div');
+    dropdown.className = 'user-dropdown';
+    dropdown.innerHTML = `
+        <a href="/profile.html" class="dropdown-item">
+            <i class="fas fa-user-circle"></i> Mi Perfil
+        </a>
+        <div class="dropdown-divider"></div>
+        <button onclick="handleLogout()" class="dropdown-item logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+    `;
+    
+    // Agregar estilos
+    if (!document.getElementById('userDropdownStyles')) {
+        const styles = document.createElement('style');
+        styles.id = 'userDropdownStyles';
+        styles.textContent = `
+            .user-dropdown {
+                position: absolute;
+                top: 70px;
+                right: 20px;
+                background: rgba(10, 14, 39, 0.98);
+                border: 1px solid rgba(0, 255, 157, 0.3);
+                border-radius: 8px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                min-width: 200px;
+                z-index: 10000;
+                padding: 0.5rem 0;
+                animation: slideDown 0.2s ease;
+            }
+            
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            .dropdown-item {
+                display: flex;
+                align-items: center;
+                gap: 0.8rem;
+                padding: 0.8rem 1.2rem;
+                color: #e0e0e0;
+                text-decoration: none;
+                transition: all 0.2s;
+                cursor: pointer;
+                background: none;
+                border: none;
+                width: 100%;
+                text-align: left;
+                font-family: inherit;
+                font-size: 0.95rem;
+            }
+            
+            .dropdown-item:hover {
+                background: rgba(0, 255, 157, 0.1);
+                color: #00ff9d;
+            }
+            
+            .dropdown-item i {
+                width: 20px;
+                text-align: center;
+            }
+            
+            .dropdown-divider {
+                height: 1px;
+                background: rgba(255, 255, 255, 0.1);
+                margin: 0.5rem 0;
+            }
+            
+            .logout-btn {
+                color: #ff6b6b;
+            }
+            
+            .logout-btn:hover {
+                background: rgba(255, 107, 107, 0.1);
+                color: #ff6b6b;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    document.body.appendChild(dropdown);
+    
+    // Cerrar dropdown al hacer click fuera
+    setTimeout(() => {
+        document.addEventListener('click', function closeDropdown() {
+            dropdown.remove();
+            document.removeEventListener('click', closeDropdown);
+        });
+    }, 100);
 }
 
 // Cerrar sesión

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil | HackPrevent.es</title>
+    <meta name="description" content="Perfil de usuario - HackPrevent.es">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .profile-header {
+            background: rgba(15, 20, 40, 0.8);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        
+        .avatar-section {
+            flex-shrink: 0;
+        }
+        
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #00ff9d;
+            object-fit: cover;
+            background: #0a0e27;
+        }
+        
+        .avatar-placeholder {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #00ff9d;
+            background: linear-gradient(135deg, #00ff9d 0%, #00cc7a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #0a0e27;
+            font-weight: bold;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .username-header {
+            font-size: 2rem;
+            color: #00ff9d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            color: #00ff9d;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: #808080;
+            font-size: 0.9rem;
+        }
+        
+        .profile-sections {
+            display: grid;
+            gap: 2rem;
+        }
+        
+        .profile-section {
+            background: rgba(15, 20, 40, 0.8);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #00ff9d;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-stats {
+                justify-content: center;
+            }
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #00ff9d 0%, #00cc7a 100%);
+            color: #0a0e27;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 157, 0.3);
+        }
+        
+        .btn-cancel {
+            background: transparent;
+            color: #808080;
+            padding: 0.8rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-cancel:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #e0e0e0;
+        }
+        
+        .social-links {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .social-input {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .social-input i {
+            width: 30px;
+            text-align: center;
+            color: #00ff9d;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <a href="/" style="color: inherit; text-decoration: none;">HackPrevent.es</a>
+            </div>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="/#inicio">Inicio</a></li>
+                    <li><a href="/#laboratorios">Laboratorios</a></li>
+                    <li><a href="/#recursos">Recursos</a></li>
+                    <li><a href="/profile.html">Mi Perfil</a></li>
+                </ul>
+                <button class="btn-login" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Container -->
+    <div class="profile-container">
+        
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="avatar-section">
+                <div id="avatarDisplay" class="avatar-placeholder">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            
+            <div class="profile-info">
+                <h1 class="username-header" id="usernameDisplay">Cargando...</h1>
+                <p style="color: #b0b0b0; margin-bottom: 0.5rem;" id="emailDisplay">email@ejemplo.com</p>
+                <p style="color: #808080; font-size: 0.9rem;">
+                    <i class="fas fa-calendar"></i> Miembro desde <span id="memberSince">2025</span>
+                </p>
+                
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="labsCompleted">0</div>
+                        <div class="stat-label">Labs Completados</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="userPoints">0</div>
+                        <div class="stat-label">Puntos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="userLevel">1</div>
+                        <div class="stat-label">Nivel</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Sections -->
+        <div class="profile-sections">
+            
+            <!-- Personal Info Section -->
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="fas fa-user-circle"></i> Información Personal
+                </h2>
+                
+                <form id="personalInfoForm" class="form-grid">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName"><i class="fas fa-id-card"></i> Nombre Completo</label>
+                            <input type="text" id="fullName" placeholder="Tu nombre completo">
+                        </div>
+                        <div class="form-group">
+                            <label for="avatarUrl"><i class="fas fa-image"></i> URL del Avatar</label>
+                            <input type="url" id="avatarUrl" placeholder="https://ejemplo.com/avatar.jpg">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio"><i class="fas fa-align-left"></i> Biografía</label>
+                        <textarea id="bio" rows="4" placeholder="Cuéntanos sobre ti..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="website"><i class="fas fa-globe"></i> Sitio Web</label>
+                        <input type="url" id="website" placeholder="https://tu-sitio.com">
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn-cancel" onclick="loadUserProfile()">
+                            <i class="fas fa-undo"></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn-save">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Social Links Section -->
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="fas fa-share-alt"></i> Redes Sociales
+                </h2>
+                
+                <form id="socialLinksForm" class="form-grid">
+                    <div class="social-links">
+                        <div class="social-input">
+                            <i class="fab fa-github"></i>
+                            <input type="text" id="githubUrl" placeholder="tu-usuario" style="flex: 1;">
+                        </div>
+                        <div class="social-input">
+                            <i class="fab fa-twitter"></i>
+                            <input type="text" id="twitterUrl" placeholder="@tu-usuario" style="flex: 1;">
+                        </div>
+                        <div class="social-input">
+                            <i class="fab fa-linkedin"></i>
+                            <input type="text" id="linkedinUrl" placeholder="tu-perfil" style="flex: 1;">
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="submit" class="btn-save">
+                            <i class="fas fa-save"></i> Guardar Enlaces
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Security Section -->
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="fas fa-lock"></i> Seguridad
+                </h2>
+                
+                <form id="changePasswordForm" class="form-grid">
+                    <div class="form-group">
+                        <label for="newPassword"><i class="fas fa-key"></i> Nueva Contraseña</label>
+                        <input type="password" id="newPassword" placeholder="Mínimo 8 caracteres">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword"><i class="fas fa-key"></i> Confirmar Contraseña</label>
+                        <input type="password" id="confirmPassword" placeholder="Repite la contraseña">
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="submit" class="btn-save">
+                            <i class="fas fa-shield-alt"></i> Cambiar Contraseña
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>
