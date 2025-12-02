@@ -212,6 +212,26 @@
             box-shadow: 0 0 0 2px rgba(0,255,157,0.1);
         }
 
+        .success-message {
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid #00ff9d;
+            color: #00ff9d;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .error-message {
+            background: rgba(255, 69, 0, 0.1);
+            border: 1px solid #ff4500;
+            color: #ff6347;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
         .btn-submit {
             width: 100%;
             padding: 1rem;
@@ -431,7 +451,26 @@
                     </button>
                 </form>
                 <p style="text-align: center; margin-top: 1rem; color: #808080; font-size: 0.9rem;">
-                    <a href="#" style="color: #00ff9d;">¿Olvidaste tu contraseña?</a>
+                    <a href="#" onclick="showPasswordReset(event)" style="color: #00ff9d;">¿Olvidaste tu contraseña?</a>
+                </p>
+            </div>
+
+            <!-- PASSWORD RESET FORM -->
+            <div id="resetTab" class="tab-content">
+                <div id="resetMessage"></div>
+                <form onsubmit="handlePasswordReset(event)">
+                    <div class="form-group">
+                        <label for="reset-email">
+                            <i class="fas fa-envelope"></i> Email de tu cuenta
+                        </label>
+                        <input type="email" id="reset-email" placeholder="tu@email.com" required>
+                    </div>
+                    <button type="submit" class="btn-submit" id="resetBtn">
+                        <i class="fas fa-paper-plane"></i> Enviar Email de Recuperación
+                    </button>
+                </form>
+                <p style="text-align: center; margin-top: 1rem; color: #808080; font-size: 0.9rem;">
+                    <a href="#" onclick="switchTab('login')" style="color: #00ff9d;">← Volver al login</a>
                 </p>
             </div>
 
@@ -838,16 +877,24 @@
         function switchTab(tab) {
             const loginTab = document.getElementById('loginTab');
             const registerTab = document.getElementById('registerTab');
+            const resetTab = document.getElementById('resetTab');
             const tabs = document.querySelectorAll('.modal-tab');
+            const modalTabs = document.querySelector('.modal-tabs');
 
             tabs.forEach(t => t.classList.remove('active'));
+            loginTab.classList.remove('active');
+            registerTab.classList.remove('active');
+            resetTab.classList.remove('active');
+            
+            // Restaurar header y tabs
+            document.querySelector('.modal-header h2').textContent = 'Bienvenido a HackPrevent';
+            document.querySelector('.modal-header p').textContent = 'Accede a tu cuenta o crea una nueva';
+            modalTabs.style.display = 'flex';
 
             if (tab === 'login') {
                 loginTab.classList.add('active');
-                registerTab.classList.remove('active');
                 tabs[0].classList.add('active');
-            } else {
-                loginTab.classList.remove('active');
+            } else if (tab === 'register') {
                 registerTab.classList.add('active');
                 tabs[1].classList.add('active');
             }
@@ -876,6 +923,168 @@
             console.log('Register:', username, email, password);
             alert('¡Cuenta creada exitosamente! \n\nUsuario: ' + username + '\nEmail: ' + email + '\n\n(Funcionalidad en desarrollo)');
             closeModal();
+        }
+
+        // Show password reset form
+        function showPasswordReset(e) {
+            e.preventDefault();
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const resetTab = document.getElementById('resetTab');
+            const tabs = document.querySelectorAll('.modal-tab');
+            
+            loginTab.classList.remove('active');
+            registerTab.classList.remove('active');
+            resetTab.classList.add('active');
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            document.querySelector('.modal-header h2').textContent = 'Recuperar Contraseña';
+            document.querySelector('.modal-header p').textContent = 'Te enviaremos un enlace de recuperación';
+            document.querySelector('.modal-tabs').style.display = 'none';
+        }
+
+        // Handle password reset
+        async function handlePasswordReset(e) {
+            e.preventDefault();
+            const email = document.getElementById('reset-email').value;
+            const messageDiv = document.getElementById('resetMessage');
+            const resetBtn = document.getElementById('resetBtn');
+            
+            // Cambiar botón a estado de carga
+            resetBtn.disabled = true;
+            resetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            
+            try {
+                // Generar token de recuperación (simulado)
+                const resetToken = Math.random().toString(36).substring(2, 15);
+                const resetLink = `https://hackprevent.es/reset-password?token=${resetToken}`;
+                
+                // Preparar email HTML personalizado
+                const emailData = {
+                    to: email,
+                    subject: '🔐 Recuperación de Contraseña - HackPrevent.es',
+                    html: `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        </head>
+                        <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #0a0e27;">
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background: #0a0e27; padding: 40px 20px;">
+                                <tr>
+                                    <td align="center">
+                                        <table width="600" cellpadding="0" cellspacing="0" style="background: #0f1428; border: 1px solid rgba(0, 255, 157, 0.2); border-radius: 15px; overflow: hidden;">
+                                            
+                                            <!-- Header -->
+                                            <tr>
+                                                <td style="background: linear-gradient(135deg, #00ff9d 0%, #00cc7a 100%); padding: 30px; text-align: center;">
+                                                    <h1 style="margin: 0; color: #0a0e27; font-size: 32px; font-weight: bold;">
+                                                        🛡️ HackPrevent.es
+                                                    </h1>
+                                                    <p style="margin: 5px 0 0 0; color: #0a0e27; font-size: 14px;">
+                                                        Ethical Hacking & Cyber Defense
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            
+                                            <!-- Content -->
+                                            <tr>
+                                                <td style="padding: 40px 30px; color: #e0e0e0;">
+                                                    <h2 style="color: #00ff9d; margin-top: 0;">Recuperación de Contraseña</h2>
+                                                    
+                                                    <p style="font-size: 16px; line-height: 1.6; color: #b0b0b0;">
+                                                        Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en <strong style="color: #ffffff;">HackPrevent.es</strong>.
+                                                    </p>
+                                                    
+                                                    <p style="font-size: 16px; line-height: 1.6; color: #b0b0b0;">
+                                                        Haz click en el botón de abajo para crear una nueva contraseña:
+                                                    </p>
+                                                    
+                                                    <!-- Button -->
+                                                    <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                                                        <tr>
+                                                            <td align="center">
+                                                                <a href="${resetLink}" style="display: inline-block; background: linear-gradient(135deg, #00ff9d 0%, #00cc7a 100%); color: #0a0e27; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
+                                                                    🔓 Restablecer Contraseña
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    
+                                                    <p style="font-size: 14px; line-height: 1.6; color: #808080; margin-top: 30px;">
+                                                        O copia y pega este enlace en tu navegador:
+                                                    </p>
+                                                    <p style="font-size: 13px; color: #00ff9d; word-break: break-all; background: rgba(0,255,157,0.1); padding: 10px; border-radius: 5px;">
+                                                        ${resetLink}
+                                                    </p>
+                                                    
+                                                    <div style="margin-top: 30px; padding: 15px; background: rgba(255,69,0,0.1); border-left: 4px solid #ff4500; border-radius: 5px;">
+                                                        <p style="margin: 0; font-size: 14px; color: #ff6347;">
+                                                            <strong>⚠️ Importante:</strong> Este enlace expira en <strong>1 hora</strong>.
+                                                        </p>
+                                                    </div>
+                                                    
+                                                    <p style="font-size: 14px; line-height: 1.6; color: #808080; margin-top: 30px;">
+                                                        Si no solicitaste este cambio, puedes ignorar este email. Tu contraseña permanecerá sin cambios.
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            
+                                            <!-- Footer -->
+                                            <tr>
+                                                <td style="background: rgba(0,0,0,0.3); padding: 20px 30px; text-align: center; border-top: 1px solid rgba(0,255,157,0.2);">
+                                                    <p style="margin: 0; font-size: 13px; color: #808080;">
+                                                        © 2025 HackPrevent.es | Todos los derechos reservados
+                                                    </p>
+                                                    <p style="margin: 10px 0 0 0; font-size: 12px; color: #606060;">
+                                                        Si tienes problemas, contacta a <a href="mailto:soporte@hackprevent.es" style="color: #00ff9d; text-decoration: none;">soporte@hackprevent.es</a>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </body>
+                        </html>
+                    `
+                };
+                
+                // Enviar email usando EmailJS (necesitarás configurar tu cuenta)
+                // Por ahora simularemos el envío
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Mostrar mensaje de éxito
+                messageDiv.innerHTML = `
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <strong>¡Email enviado!</strong><br>
+                        Revisa tu bandeja de entrada en <strong>${email}</strong><br>
+                        <small>(También revisa spam/correo no deseado)</small>
+                    </div>
+                `;
+                
+                // Limpiar formulario
+                document.getElementById('reset-email').value = '';
+                
+                // Log para desarrollo
+                console.log('Email de recuperación:', emailData);
+                
+            } catch (error) {
+                messageDiv.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <strong>Error al enviar el email</strong><br>
+                        Por favor, inténtalo de nuevo más tarde.
+                    </div>
+                `;
+            } finally {
+                // Restaurar botón
+                resetBtn.disabled = false;
+                resetBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Email de Recuperación';
+            }
         }
     </script>
 </body>
