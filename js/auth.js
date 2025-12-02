@@ -13,35 +13,28 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 // ============================================
 async function registerUser(username, email, password) {
     try {
-        // Verificar que el username no exista antes de crear el usuario
-        const { data: existingUser } = await supabase
-            .from('users')
-            .select('username')
-            .eq('username', username)
-            .maybeSingle()
-
-        if (existingUser) {
-            return { success: false, message: 'Este nombre de usuario ya existe' }
-        }
-
-        // Crear usuario en Supabase Auth (el trigger creará automáticamente en users y profiles)
+        // Crear usuario en Supabase Auth primero
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
             password: password,
             options: {
                 data: {
                     username: username
-                },
-                emailRedirectTo: 'https://hackprevent.es'
+                }
             }
         })
 
         if (authError) throw authError
 
+        // Si se creó correctamente, esperar un momento para que el trigger se ejecute
+        if (authData.user) {
+            console.log('Usuario creado en auth:', authData.user.id)
+        }
+
         return { 
             success: true, 
             user: authData.user,
-            message: '¡Cuenta creada! Revisa tu email para verificarla.' 
+            message: '¡Cuenta creada! Ya puedes iniciar sesión.' 
         }
 
     } catch (error) {
@@ -51,11 +44,14 @@ async function registerUser(username, email, password) {
         if (error.message.includes('already registered') || error.message.includes('User already registered')) {
             return { success: false, message: 'Este email ya está registrado' }
         }
-        if (error.message.includes('duplicate key') || error.message.includes('ya existe')) {
+        if (error.message.includes('duplicate key')) {
             return { success: false, message: 'Este nombre de usuario ya existe' }
         }
         if (error.message.includes('Password')) {
             return { success: false, message: 'La contraseña debe tener al menos 6 caracteres' }
+        }
+        if (error.message.includes('Database error')) {
+            return { success: false, message: 'El nombre de usuario ya existe' }
         }
         
         return { 
