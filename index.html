@@ -63,6 +63,172 @@
         nav a:hover {
             color: #00ff9d;
         }
+
+        nav .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #00ff9d 0%, #00cc7a 100%);
+            color: #0a0e27;
+            padding: 0.6rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 157, 0.3);
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #0f1428;
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #b0b0b0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #00ff9d;
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            color: #00ff9d;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .modal-tab {
+            flex: 1;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(0,255,157,0.2);
+            color: #b0b0b0;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 5px;
+        }
+
+        .modal-tab.active {
+            background: rgba(0,255,157,0.2);
+            color: #00ff9d;
+            border-color: #00ff9d;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #e0e0e0;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(0,255,157,0.3);
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00ff9d;
+            box-shadow: 0 0 0 2px rgba(0,255,157,0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #00ff9d 0%, #00cc7a 100%);
+            color: #0a0e27;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 157, 0.3);
+        }
         
         /* HERO SECTION */
         .hero {
@@ -181,6 +347,16 @@
             nav ul { 
                 display: none; 
             }
+            nav .nav-links ul {
+                display: none;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+            .modal-tabs {
+                flex-direction: column;
+            }
             .hero h1 { 
                 font-size: 2.5rem; 
             }
@@ -199,15 +375,97 @@
     <nav>
         <div class="container">
             <div class="logo">HackPrevent.es</div>
-            <ul>
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#laboratorios">Laboratorios</a></li>
-                <li><a href="#recursos">Recursos</a></li>
-                <li><a href="#como-funciona">Cómo Funciona</a></li>
-                <li><a href="#contacto">Contacto</a></li>
-            </ul>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#laboratorios">Laboratorios</a></li>
+                    <li><a href="#recursos">Recursos</a></li>
+                    <li><a href="#como-funciona">Cómo Funciona</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+                <button class="btn-login" onclick="openModal()">
+                    <i class="fas fa-user"></i> Entrar
+                </button>
+            </div>
         </div>
     </nav>
+
+    <!-- MODAL LOGIN/REGISTRO -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-header">
+                <h2>Bienvenido a HackPrevent</h2>
+                <p style="color: #b0b0b0;">Accede a tu cuenta o crea una nueva</p>
+            </div>
+
+            <div class="modal-tabs">
+                <button class="modal-tab active" onclick="switchTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+                <button class="modal-tab" onclick="switchTab('register')">
+                    <i class="fas fa-user-plus"></i> Registrarse
+                </button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div id="loginTab" class="tab-content active">
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" id="login-email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">
+                            <i class="fas fa-lock"></i> Contraseña
+                        </label>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                </form>
+                <p style="text-align: center; margin-top: 1rem; color: #808080; font-size: 0.9rem;">
+                    <a href="#" style="color: #00ff9d;">¿Olvidaste tu contraseña?</a>
+                </p>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div id="registerTab" class="tab-content">
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="register-username">
+                            <i class="fas fa-user"></i> Nombre de usuario
+                        </label>
+                        <input type="text" id="register-username" placeholder="usuario123" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" id="register-email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">
+                            <i class="fas fa-lock"></i> Contraseña
+                        </label>
+                        <input type="password" id="register-password" placeholder="••••••••" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-user-plus"></i> Crear Cuenta
+                    </button>
+                </form>
+                <p style="text-align: center; margin-top: 1rem; color: #808080; font-size: 0.85rem;">
+                    Al registrarte aceptas nuestros <a href="#" style="color: #00ff9d;">Términos y Condiciones</a>
+                </p>
+            </div>
+        </div>
+    </div>
 
     <!-- HERO SECTION -->
     <section id="inicio" class="hero">
@@ -550,6 +808,75 @@
                 nav.style.background = 'rgba(10, 14, 39, 0.95)';
             }
         });
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('authModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('authModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on outside click
+        document.getElementById('authModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Switch between login/register tabs
+        function switchTab(tab) {
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const tabs = document.querySelectorAll('.modal-tab');
+
+            tabs.forEach(t => t.classList.remove('active'));
+
+            if (tab === 'login') {
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+                tabs[0].classList.add('active');
+            } else {
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+                tabs[1].classList.add('active');
+            }
+        }
+
+        // Handle login (por ahora solo muestra alerta)
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Aquí irá la lógica de autenticación real
+            console.log('Login:', email, password);
+            alert('¡Funcionalidad de login en desarrollo! \n\nEmail: ' + email);
+            closeModal();
+        }
+
+        // Handle register (por ahora solo muestra alerta)
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            // Aquí irá la lógica de registro real
+            console.log('Register:', username, email, password);
+            alert('¡Cuenta creada exitosamente! \n\nUsuario: ' + username + '\nEmail: ' + email + '\n\n(Funcionalidad en desarrollo)');
+            closeModal();
+        }
     </script>
 </body>
 </html>
