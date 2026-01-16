@@ -1,30 +1,21 @@
 // ============================================
-// PROFILE PAGE - USER PROFILE MANAGEMENT
+// PROFILE PAGE
 // ============================================
 
 let currentUser = null;
 let currentProfile = null;
 
-// ============================================
-// CHECK AUTH ON LOAD
-// ============================================
 window.addEventListener('DOMContentLoaded', async () => {
     await checkAuthentication();
     await loadUserProfile();
 });
 
-// ============================================
-// CHECK AUTHENTICATION
-// ============================================
 async function checkAuthentication() {
     const { user } = await window.supabaseAuth.getCurrentUser();
-    
     if (!user) {
-        // Redirect to home if not authenticated
         window.location.href = '/';
         return;
     }
-    
     currentUser = user;
 }
 
@@ -36,44 +27,37 @@ async function loadUserProfile() {
     
     try {
         // Get full profile data
+async function loadUserProfile() {
+    if (!currentUser) return;
+    
+    try {
         const { profile } = await window.supabaseAuth.getUserProfile(currentUser.id);
         
         if (profile) {
             currentProfile = profile;
             
-            // Update header info
             document.getElementById('usernameDisplay').textContent = profile.users.username;
             document.getElementById('emailDisplay').textContent = profile.users.email;
             
-            // Format member since date
             const memberDate = new Date(profile.users.created_at);
-            document.getElementById('memberSince').textContent = memberDate.toLocaleDateString('es-ES', { 
-                month: 'long', 
-                year: 'numeric' 
-            });
+            document.getElementById('memberSince').textContent = memberDate.toLocaleDateString('es-ES');
             
-            // Update stats
             document.getElementById('labsCompleted').textContent = profile.labs_completed || 0;
             document.getElementById('userPoints').textContent = profile.points || 0;
             document.getElementById('userLevel').textContent = profile.level || 1;
             
-            // Update avatar
+            const avatarDisplay = document.getElementById('avatarDisplay');
             if (profile.avatar_url) {
-                const avatarDisplay = document.getElementById('avatarDisplay');
                 avatarDisplay.innerHTML = `<img src="${profile.avatar_url}" alt="Avatar" class="avatar">`;
             } else {
-                // Show first letter of username
                 const firstLetter = profile.users.username.charAt(0).toUpperCase();
-                document.getElementById('avatarDisplay').innerHTML = firstLetter;
+                avatarDisplay.innerHTML = firstLetter;
             }
             
-            // Fill form fields
             document.getElementById('fullName').value = profile.full_name || '';
             document.getElementById('avatarUrl').value = profile.avatar_url || '';
             document.getElementById('bio').value = profile.bio || '';
             document.getElementById('website').value = profile.website || '';
-            
-            // Fill social links
             document.getElementById('githubUrl').value = profile.github_url || '';
             document.getElementById('twitterUrl').value = profile.twitter_url || '';
             document.getElementById('linkedinUrl').value = profile.linkedin_url || '';
@@ -84,10 +68,7 @@ async function loadUserProfile() {
     }
 }
 
-// ============================================
-// UPDATE PERSONAL INFO
-// ============================================
-document.getElementById('personalInfoForm').addEventListener('submit', async (e) => {
+document.getElementById('personalInfoForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const fullName = document.getElementById('fullName').value;
@@ -97,7 +78,6 @@ document.getElementById('personalInfoForm').addEventListener('submit', async (e)
     
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
     
     try {
         const result = await window.supabaseAuth.updateProfile(currentUser.id, {
@@ -108,8 +88,8 @@ document.getElementById('personalInfoForm').addEventListener('submit', async (e)
         });
         
         if (result.success) {
-            showMessage('success', '✅ Perfil actualizado correctamente');
-            await loadUserProfile(); // Reload to show changes
+            showMessage('success', 'Perfil actualizado');
+            await loadUserProfile();
         } else {
             showMessage('error', result.message);
         }
@@ -118,14 +98,10 @@ document.getElementById('personalInfoForm').addEventListener('submit', async (e)
         showMessage('error', 'Error al actualizar el perfil');
     } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
     }
 });
 
-// ============================================
-// UPDATE SOCIAL LINKS
-// ============================================
-document.getElementById('socialLinksForm').addEventListener('submit', async (e) => {
+document.getElementById('socialLinksForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const githubUrl = document.getElementById('githubUrl').value;
@@ -134,7 +110,6 @@ document.getElementById('socialLinksForm').addEventListener('submit', async (e) 
     
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
     
     try {
         const result = await window.supabaseAuth.updateProfile(currentUser.id, {
@@ -144,7 +119,7 @@ document.getElementById('socialLinksForm').addEventListener('submit', async (e) 
         });
         
         if (result.success) {
-            showMessage('success', '✅ Enlaces sociales actualizados');
+            showMessage('success', 'Enlaces sociales actualizados');
             await loadUserProfile();
         } else {
             showMessage('error', result.message);
@@ -154,41 +129,34 @@ document.getElementById('socialLinksForm').addEventListener('submit', async (e) 
         showMessage('error', 'Error al actualizar enlaces');
     } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Enlaces';
     }
 });
 
-// ============================================
-// CHANGE PASSWORD
-// ============================================
-document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+document.getElementById('changePasswordForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const newPassword = document.getElementById('newPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     
-    // Validate passwords match
     if (newPassword !== confirmPassword) {
         showMessage('error', 'Las contraseñas no coinciden');
         return;
     }
     
-    // Validate password strength
     const validation = window.supabaseAuth.validatePassword(newPassword);
     if (!validation.isValid) {
-        showMessage('error', 'Contraseña insegura:\n• ' + validation.errors.join('\n• '));
+        showMessage('error', 'Contraseña muy corta');
         return;
     }
     
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cambiando...';
     
     try {
         const result = await window.supabaseAuth.updatePassword(newPassword);
         
         if (result.success) {
-            showMessage('success', '✅ Contraseña actualizada correctamente');
+            showMessage('success', 'Contraseña actualizada');
             document.getElementById('newPassword').value = '';
             document.getElementById('confirmPassword').value = '';
         } else {
@@ -196,31 +164,21 @@ document.getElementById('changePasswordForm').addEventListener('submit', async (
         }
     } catch (error) {
         console.error('Error changing password:', error);
-        showMessage('error', 'Error al cambiar la contraseña');
+        showMessage('error', 'Error al cambiar contraseña');
     } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-shield-alt"></i> Cambiar Contraseña';
     }
 });
 
-// ============================================
-// LOGOUT FUNCTION
-// ============================================
 async function handleLogout() {
-    const confirmLogout = confirm('¿Estás seguro de que quieres cerrar sesión?');
-    
-    if (confirmLogout) {
+    if (confirm('¿Cerrar sesión?')) {
         const result = await window.supabaseAuth.logoutUser();
-        
         if (result.success) {
             window.location.href = '/';
         }
     }
 }
 
-// ============================================
-// SHOW MESSAGE TOAST
-// ============================================
 function showMessage(type, message) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message-toast ${type}`;
@@ -231,12 +189,7 @@ function showMessage(type, message) {
         padding: 1rem 1.5rem;
         background: rgba(10, 14, 39, 0.95);
         border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         z-index: 10000;
-        opacity: 0;
-        transform: translateX(400px);
-        transition: all 0.3s ease;
-        max-width: 350px;
         border-left: 4px solid ${type === 'success' ? '#00ff9d' : '#ff4757'};
         color: ${type === 'success' ? '#00ff9d' : '#ff4757'};
     `;
@@ -247,15 +200,5 @@ function showMessage(type, message) {
     `;
     
     document.body.appendChild(messageDiv);
-    
-    setTimeout(() => {
-        messageDiv.style.opacity = '1';
-        messageDiv.style.transform = 'translateX(0)';
-    }, 100);
-    
-    setTimeout(() => {
-        messageDiv.style.opacity = '0';
-        messageDiv.style.transform = 'translateX(400px)';
-        setTimeout(() => messageDiv.remove(), 300);
-    }, 3000);
+    setTimeout(() => messageDiv.remove(), 3000);
 }

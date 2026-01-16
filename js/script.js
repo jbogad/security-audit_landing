@@ -1,34 +1,19 @@
 // ============================================
-// SMOOTH SCROLLING
+// FUNCIONES BÁSICAS
 // ============================================
+
+// Smooth scroll
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+            target.scrollIntoView({ behavior: 'smooth' });
         }
     });
 });
 
-// ============================================
-// NAVBAR BACKGROUND ON SCROLL
-// ============================================
-window.addEventListener('scroll', function() {
-    const nav = document.querySelector('nav');
-    if (window.scrollY > 50) {
-        nav.style.background = 'rgba(10, 14, 39, 0.98)';
-    } else {
-        nav.style.background = 'rgba(10, 14, 39, 0.95)';
-    }
-});
-
-// ============================================
-// MODAL FUNCTIONS
-// ============================================
+// Modal
 function openModal() {
     document.getElementById('authModal').classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -39,25 +24,15 @@ function closeModal() {
     document.body.style.overflow = 'auto';
 }
 
-// Close modal on outside click
-document.getElementById('authModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeModal();
-    }
+document.getElementById('authModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
 });
 
-// Close modal with ESC key
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeModal();
-    }
+    if (e.key === 'Escape') closeModal();
 });
 
-// ============================================
-// HELPER FUNCTIONS
-// ============================================
-
-// Mostrar mensajes de éxito/error
+// Mostrar mensajes
 function showMessage(type, message) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message-toast ${type}`;
@@ -65,239 +40,121 @@ function showMessage(type, message) {
         <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
         ${message}
     `;
-    
     document.body.appendChild(messageDiv);
     
-    setTimeout(() => {
-        messageDiv.classList.add('show');
-    }, 100);
-    
+    setTimeout(() => messageDiv.classList.add('show'), 100);
     setTimeout(() => {
         messageDiv.classList.remove('show');
         setTimeout(() => messageDiv.remove(), 300);
     }, 3000);
 }
 
-// Actualizar UI cuando el usuario está logueado
+// Actualizar UI cuando está logueado
 async function updateUIForLoggedInUser(user) {
     const btnLogin = document.querySelector('.btn-login');
-    
-    // Obtener perfil completo
     const { profile } = await window.supabaseAuth.getUserProfile(user.id);
     
     if (profile && profile.users) {
-        btnLogin.innerHTML = `
-            <i class="fas fa-user-circle"></i> ${profile.users.username}
-        `;
-        btnLogin.onclick = (e) => showUserMenu(e);
+        btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${profile.users.username}`;
+        btnLogin.onclick = () => window.location.href = '/profile.html';
     }
 }
 
-// Menú de usuario (logout, perfil, etc)
-function showUserMenu(e) {
-    e.stopPropagation();
-    
-    // Eliminar dropdown existente si lo hay
-    const existingDropdown = document.querySelector('.user-dropdown');
-    if (existingDropdown) {
-        existingDropdown.remove();
-        return;
-    }
-    
-    // Crear dropdown
-    const dropdown = document.createElement('div');
-    dropdown.className = 'user-dropdown';
-    dropdown.innerHTML = `
-        <a href="/profile.html" class="dropdown-item">
-            <i class="fas fa-user-circle"></i> Mi Perfil
-        </a>
-        <div class="dropdown-divider"></div>
-        <button onclick="handleLogout()" class="dropdown-item logout-btn">
-            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-        </button>
-    `;
-    
-    // Agregar estilos
-    if (!document.getElementById('userDropdownStyles')) {
-        const styles = document.createElement('style');
-        styles.id = 'userDropdownStyles';
-        styles.textContent = `
-            .user-dropdown {
-                position: absolute;
-                top: 70px;
-                right: 20px;
-                background: rgba(10, 14, 39, 0.98);
-                border: 1px solid rgba(0, 255, 157, 0.3);
-                border-radius: 8px;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-                min-width: 200px;
-                z-index: 10000;
-                padding: 0.5rem 0;
-                animation: slideDown 0.2s ease;
-            }
-            
-            @keyframes slideDown {
-                from {
-                    opacity: 0;
-                    transform: translateY(-10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-            
-            .dropdown-item {
-                display: flex;
-                align-items: center;
-                gap: 0.8rem;
-                padding: 0.8rem 1.2rem;
-                color: #e0e0e0;
-                text-decoration: none;
-                transition: all 0.2s;
-                cursor: pointer;
-                background: none;
-                border: none;
-                width: 100%;
-                text-align: left;
-                font-family: inherit;
-                font-size: 0.95rem;
-            }
-            
-            .dropdown-item:hover {
-                background: rgba(0, 255, 157, 0.1);
-                color: #00ff9d;
-            }
-            
-            .dropdown-item i {
-                width: 20px;
-                text-align: center;
-            }
-            
-            .dropdown-divider {
-                height: 1px;
-                background: rgba(255, 255, 255, 0.1);
-                margin: 0.5rem 0;
-            }
-            
-            .logout-btn {
-                color: #ff6b6b;
-            }
-            
-            .logout-btn:hover {
-                background: rgba(255, 107, 107, 0.1);
-                color: #ff6b6b;
-            }
-        `;
-        document.head.appendChild(styles);
-    }
-    
-    document.body.appendChild(dropdown);
-    
-    // Cerrar dropdown al hacer click fuera
-    setTimeout(() => {
-        document.addEventListener('click', function closeDropdown() {
-            dropdown.remove();
-            document.removeEventListener('click', closeDropdown);
-        });
-    }, 100);
-}
-
-// Cerrar sesión
+// Logout
 async function handleLogout() {
     const result = await window.supabaseAuth.logoutUser();
-    
     if (result.success) {
-        showMessage('success', 'Sesión cerrada correctamente');
-        
-        // Restaurar botón de login
+        showMessage('success', 'Sesión cerrada');
         const btnLogin = document.querySelector('.btn-login');
         btnLogin.innerHTML = '<i class="fas fa-user"></i> Entrar';
         btnLogin.onclick = openModal;
     }
 }
 
-// ============================================
-// LOGIN CON GITHUB (GLOBAL)
-// ============================================
-window.loginWithGitHub = async function() {
-    try {
-        await window.supabaseAuth.loginWithProvider('github');
-    } catch (error) {
-        console.error('Error en GitHub login:', error);
-        showMessage('error', 'Error al conectar con GitHub');
-    }
-}
-
-// ============================================
-// CHECK AUTH STATUS ON LOAD
-// ============================================
+// Check auth on load
 window.addEventListener('DOMContentLoaded', async () => {
     try {
         const { user } = await window.supabaseAuth.getCurrentUser();
-        
-        if (user) {
-            updateUIForLoggedInUser(user);
-        }
+        if (user) updateUIForLoggedInUser(user);
     } catch (error) {
-        // Usuario no autenticado, ignorar error
         console.log('No hay sesión activa');
     }
 });
 
-// ============================================
-// SWITCH BETWEEN LOGIN/REGISTER TABS
-// ============================================
+// Cambiar tabs
 function switchTab(tab) {
-    const loginTab = document.getElementById('loginTab');
-    const registerTab = document.getElementById('registerTab');
-    const resetTab = document.getElementById('resetTab');
-    const tabs = document.querySelectorAll('.modal-tab');
-    const modalTabs = document.querySelector('.modal-tabs');
-
-    tabs.forEach(t => t.classList.remove('active'));
-    loginTab.classList.remove('active');
-    registerTab.classList.remove('active');
-    resetTab.classList.remove('active');
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
     
-    // Restaurar header y tabs
-    document.querySelector('.modal-header h2').textContent = 'Bienvenido a HackPrevent';
-    document.querySelector('.modal-header p').textContent = 'Accede a tu cuenta o crea una nueva';
-    modalTabs.style.display = 'flex';
-
     if (tab === 'login') {
-        loginTab.classList.add('active');
-        tabs[0].classList.add('active');
+        document.getElementById('loginTab').classList.add('active');
+        document.querySelectorAll('.modal-tab')[0].classList.add('active');
     } else if (tab === 'register') {
-        registerTab.classList.add('active');
-        tabs[1].classList.add('active');
+        document.getElementById('registerTab').classList.add('active');
+        document.querySelectorAll('.modal-tab')[1].classList.add('active');
     }
 }
 
-// ============================================
-// HANDLE LOGIN
-// ============================================
+// Login
 async function handleLogin(e) {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const submitBtn = e.target.querySelector('button[type="submit"]');
     
-    // Estado de carga
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando sesión...';
     
     try {
         const result = await window.supabaseAuth.loginUser(email, password);
-        
         if (result.success) {
-            // Mensaje de éxito
             showMessage('success', result.message);
-            
-            // Cerrar modal y actualizar UI
             setTimeout(() => {
                 closeModal();
                 updateUIForLoggedInUser(result.user);
+                location.reload();
+            }, 1500);
+        } else {
+            showMessage('error', result.message);
+        }
+    } catch (error) {
+        showMessage('error', 'Error al iniciar sesión');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+    }
+}
+
+// Register
+async function handleRegister(e) {
+    e.preventDefault();
+    const username = document.getElementById('register-username').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando cuenta...';
+    
+    try {
+        const result = await window.supabaseAuth.registerUser(username, email, password);
+        if (result.success) {
+            showMessage('success', result.message);
+            setTimeout(() => {
+                switchTab('login');
+                document.getElementById('login-email').value = email;
+                document.getElementById('login-password').value = '';
+            }, 1500);
+        } else {
+            showMessage('error', result.message);
+        }
+    } catch (error) {
+        showMessage('error', 'Error al crear la cuenta');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Crear Cuenta';
+    }
+}
             }, 1000);
         } else {
             showMessage('error', result.message);
@@ -340,132 +197,4 @@ async function handleRegister(e) {
             // Mensaje de éxito
             showMessage('success', result.message);
             
-            // Cambiar a tab de login después de 2 segundos
-            setTimeout(() => {
-                switchTab('login');
-                document.getElementById('login-email').value = email;
-            }, 2000);
-        } else {
-            showMessage('error', result.message);
-        }
-    } catch (error) {
-        console.error('Register error:', error);
-        showMessage('error', 'Error al crear cuenta. Intenta de nuevo.');
-    } finally {
-        // Restaurar botón
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Crear Cuenta';
-    }
-}
 
-// ============================================
-// PASSWORD STRENGTH INDICATOR
-// ============================================
-document.addEventListener('DOMContentLoaded', () => {
-    const passwordInput = document.getElementById('register-password');
-    
-    if (passwordInput) {
-        // Crear indicador de fortaleza
-        const strengthIndicator = document.createElement('div');
-        strengthIndicator.id = 'password-strength';
-        strengthIndicator.style.cssText = 'margin-top: 8px; font-size: 0.85rem; display: none;';
-        passwordInput.parentNode.appendChild(strengthIndicator);
-        
-        passwordInput.addEventListener('input', (e) => {
-            const password = e.target.value;
-            
-            if (password.length > 0) {
-                const strength = window.supabaseAuth.getPasswordStrength(password);
-                const validation = window.supabaseAuth.validatePassword(password);
-                
-                strengthIndicator.style.display = 'block';
-                strengthIndicator.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <div style="flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
-                            <div style="height: 100%; width: ${(strength.level === 'weak' ? 25 : strength.level === 'medium' ? 50 : strength.level === 'good' ? 75 : 100)}%; background: ${strength.color}; transition: all 0.3s;"></div>
-                        </div>
-                        <span style="color: ${strength.color}; font-weight: 600;">${strength.text}</span>
-                    </div>
-                    ${!validation.isValid ? `<div style="color: #ff4757; margin-top: 6px; font-size: 0.8rem;">Falta: ${validation.errors.join(', ')}</div>` : ''}
-                `;
-            } else {
-                strengthIndicator.style.display = 'none';
-            }
-        });
-    }
-});
-
-// ============================================
-// SHOW PASSWORD RESET FORM
-// ============================================
-function showPasswordReset(e) {
-    e.preventDefault();
-    const loginTab = document.getElementById('loginTab');
-    const registerTab = document.getElementById('registerTab');
-    const resetTab = document.getElementById('resetTab');
-    const tabs = document.querySelectorAll('.modal-tab');
-    
-    loginTab.classList.remove('active');
-    registerTab.classList.remove('active');
-    resetTab.classList.add('active');
-    tabs.forEach(t => t.classList.remove('active'));
-    
-    document.querySelector('.modal-header h2').textContent = 'Recuperar Contraseña';
-    document.querySelector('.modal-header p').textContent = 'Te enviaremos un enlace de recuperación';
-    document.querySelector('.modal-tabs').style.display = 'none';
-}
-
-// ============================================
-// HANDLE PASSWORD RESET (Supabase)
-// ============================================
-async function handlePasswordReset(e) {
-    e.preventDefault();
-    const email = document.getElementById('reset-email').value;
-    const messageDiv = document.getElementById('resetMessage');
-    const resetBtn = document.getElementById('resetBtn');
-    
-    // Cambiar botón a estado de carga
-    resetBtn.disabled = true;
-    resetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-    
-    try {
-        const result = await window.supabaseAuth.requestPasswordReset(email);
-        
-        if (result.success) {
-            // Mostrar mensaje de éxito
-            messageDiv.innerHTML = `
-                <div class="success-message">
-                    <i class="fas fa-check-circle"></i>
-                    <strong>¡Email enviado!</strong><br>
-                    Revisa tu bandeja de entrada en <strong>${email}</strong><br>
-                    <small>(También revisa spam/correo no deseado)</small>
-                </div>
-            `;
-            
-            // Limpiar formulario
-            document.getElementById('reset-email').value = '';
-        } else {
-            messageDiv.innerHTML = `
-                <div class="error-message">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <strong>Error</strong><br>
-                    ${result.message}
-                </div>
-            `;
-        }
-        
-    } catch (error) {
-        console.error('Password reset error:', error);
-        messageDiv.innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i>
-                <strong>Error al enviar el email</strong><br>
-                Por favor, inténtalo de nuevo más tarde.
-            </div>
-        `;
-    } finally {
-        // Restaurar botón
-        resetBtn.disabled = false;
-        resetBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Email de Recuperación';
-    }
-}

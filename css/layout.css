@@ -13,7 +13,6 @@ body {
     line-height: 1.6;
     color: #e0e0e0;
     background: #0a0e27;
-    scroll-behavior: smooth;
 }
 
 .container {
@@ -22,10 +21,7 @@ body {
     padding: 0 20px;
 }
 
-/* ============================================
-   NAVIGATION
-   ============================================ */
-
+/* NAVIGATION */
 nav {
     position: fixed;
     top: 0;
@@ -58,7 +54,6 @@ nav ul {
 nav a {
     color: #e0e0e0;
     text-decoration: none;
-    transition: color 0.3s;
 }
 
 nav a:hover {
@@ -71,10 +66,7 @@ nav .nav-links {
     gap: 2rem;
 }
 
-/* ============================================
-   HERO SECTION
-   ============================================ */
-
+/* HERO SECTION */
 .hero {
     min-height: 100vh;
     display: flex;
@@ -107,7 +99,6 @@ nav .nav-links {
     font-weight: bold;
     margin-bottom: 1rem;
     color: #ffffff;
-    text-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
 }
 
 .hero .subtitle {
@@ -124,17 +115,7 @@ nav .nav-links {
     line-height: 1.8;
 }
 
-.hero-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-/* ============================================
-   SECTIONS
-   ============================================ */
-
+/* SECTIONS */
 section {
     padding: 80px 0;
 }
@@ -144,40 +125,17 @@ section {
     font-size: 2.5rem;
     margin-bottom: 3rem;
     color: #ffffff;
-    position: relative;
-    padding-bottom: 1rem;
 }
 
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, #00ff9d, transparent);
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-
+/* RESPONSIVE */
 @media (max-width: 768px) {
     nav ul { 
         display: none; 
-    }
-    nav .nav-links ul {
-        display: none;
     }
     .hero h1 { 
         font-size: 2.5rem; 
     }
     .hero .subtitle { 
         font-size: 1.2rem; 
-    }
-    .hero-buttons {
-        flex-direction: column;
-        align-items: center;
     }
 }
