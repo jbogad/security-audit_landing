@@ -13,23 +13,25 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Modal Management
-function openModal() {
-    document.getElementById('authModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
+// Dropdown Management
+function toggleAuthDropdown() {
+    const dropdown = document.getElementById('authDropdown');
+    dropdown.classList.toggle('active');
 }
 
-function closeModal() {
-    document.getElementById('authModal').classList.remove('active');
-    document.body.style.overflow = 'auto';
+function closeAuthDropdown() {
+    const dropdown = document.getElementById('authDropdown');
+    dropdown.classList.remove('active');
 }
 
-document.getElementById('authModal')?.addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-});
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeModal();
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('authDropdown');
+    const btnLogin = document.querySelector('.btn-login');
+    
+    if (!dropdown.contains(e.target) && !btnLogin.contains(e.target)) {
+        closeAuthDropdown();
+    }
 });
 
 // Mostrar mensajes
@@ -84,22 +86,22 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ============================================
-// TAB MANAGEMENT
+// TAB MANAGEMENT FOR DROPDOWN
 // ============================================
 
-function switchTab(tab) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+function switchDropdownTab(tab) {
+    document.querySelectorAll('.dropdown-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.dropdown-tab').forEach(t => t.classList.remove('active'));
     
     if (tab === 'login') {
-        document.getElementById('loginTab').classList.add('active');
-        document.querySelectorAll('.modal-tab')[0].classList.add('active');
+        document.getElementById('loginDropdownTab').classList.add('active');
+        document.querySelectorAll('.dropdown-tab')[0].classList.add('active');
     } else if (tab === 'register') {
-        document.getElementById('registerTab').classList.add('active');
-        document.querySelectorAll('.modal-tab')[1].classList.add('active');
+        document.getElementById('registerDropdownTab').classList.add('active');
+        document.querySelectorAll('.dropdown-tab')[1].classList.add('active');
     } else if (tab === 'forgot') {
-        document.getElementById('forgotTab').classList.add('active');
-        document.querySelectorAll('.modal-tab')[2].classList.add('active');
+        document.getElementById('forgotDropdownTab').classList.add('active');
+        document.querySelectorAll('.dropdown-tab')[2].classList.add('active');
     }
 }
 
@@ -114,14 +116,14 @@ async function handleLogin(e) {
     const submitBtn = e.target.querySelector('button[type="submit"]');
     
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando sesión...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando...';
     
     try {
         const result = await window.supabaseAuth.loginUser(email, password);
         if (result.success) {
             showMessage('success', result.message);
             setTimeout(() => {
-                closeModal();
+                closeAuthDropdown();
                 location.reload();
             }, 1500);
         } else {
@@ -132,7 +134,7 @@ async function handleLogin(e) {
         showMessage('error', 'Error al iniciar sesión');
     } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
     }
 }
 
@@ -149,14 +151,14 @@ async function handleRegister(e) {
     const submitBtn = e.target.querySelector('button[type="submit"]');
     
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando cuenta...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
     
     try {
         const result = await window.supabaseAuth.registerUser(username, email, password, confirmPassword);
         if (result.success) {
             showMessage('success', result.message);
             setTimeout(() => {
-                switchTab('login');
+                switchDropdownTab('login');
                 document.getElementById('login-email').value = email;
                 document.getElementById('login-password').value = '';
                 document.getElementById('registerForm').reset();
@@ -206,7 +208,7 @@ async function handleForgotPassword(e) {
         if (result.success) {
             showMessage('success', result.message);
             setTimeout(() => {
-                switchTab('login');
+                switchDropdownTab('login');
                 document.getElementById('forgotForm').reset();
             }, 2000);
         } else {
@@ -217,7 +219,7 @@ async function handleForgotPassword(e) {
         showMessage('error', 'Error al enviar email de recuperación');
     } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Email';
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar';
     }
 }
 

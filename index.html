@@ -16,103 +16,89 @@
         <div class="container">
             <div class="logo">HackPrevent.es</div>
             <div class="nav-links">
-                <button class="btn-login" onclick="openModal()">
+                <button class="btn-login" onclick="toggleAuthDropdown()">
                     <i class="fas fa-user"></i> Entrar
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- MODAL -->
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">
-                <i class="fas fa-times"></i>
+    <!-- AUTH DROPDOWN -->
+    <div id="authDropdown" class="auth-dropdown">
+        <div class="dropdown-tabs">
+            <button class="dropdown-tab active" onclick="switchDropdownTab('login')">
+                <i class="fas fa-sign-in-alt"></i> Entrar
             </button>
-            
-            <div class="modal-header">
-                <h2>Bienvenido a HackPrevent</h2>
-            </div>
+            <button class="dropdown-tab" onclick="switchDropdownTab('register')">
+                <i class="fas fa-user-plus"></i> Registro
+            </button>
+            <button class="dropdown-tab" onclick="switchDropdownTab('forgot')">
+                <i class="fas fa-key"></i> Recuperar
+            </button>
+        </div>
 
-            <div class="modal-tabs">
-                <button class="modal-tab active" onclick="switchTab('login')">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        <!-- LOGIN -->
+        <div id="loginDropdownTab" class="dropdown-content active">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="login-email" placeholder="tu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Contraseña</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
                 </button>
-                <button class="modal-tab" onclick="switchTab('register')">
-                    <i class="fas fa-user-plus"></i> Registrarse
+                <button type="button" class="link-btn" onclick="switchDropdownTab('forgot')" style="display: block; margin-top: 0.8rem;">
+                    ¿Olvidaste contraseña?
                 </button>
-                <button class="modal-tab" onclick="switchTab('forgot')">
-                    <i class="fas fa-key"></i> Recuperar
+            </form>
+        </div>
+
+        <!-- REGISTER -->
+        <div id="registerDropdownTab" class="dropdown-content">
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Usuario</label>
+                    <input type="text" id="register-username" placeholder="usuario123" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="register-email" placeholder="tu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Contraseña</label>
+                    <input type="password" id="register-password" placeholder="••••••••" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Confirmar</label>
+                    <input type="password" id="register-confirm-password" placeholder="••••••••" required minlength="6">
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-user-plus"></i> Crear Cuenta
                 </button>
-            </div>
+            </form>
+        </div>
 
-            <!-- LOGIN -->
-            <div id="loginTab" class="tab-content active">
-                <form onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="login-email" placeholder="tu@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Contraseña</label>
-                        <input type="password" id="login-password" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                    </button>
-                    <div style="text-align: center; margin-top: 1rem;">
-                        <button type="button" class="link-btn" onclick="switchTab('forgot')">
-                            ¿Olvidaste tu contraseña?
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- REGISTER -->
-            <div id="registerTab" class="tab-content">
-                <form id="registerForm" onsubmit="handleRegister(event)">
-                    <div class="form-group">
-                        <label><i class="fas fa-user"></i> Nombre de usuario</label>
-                        <input type="text" id="register-username" placeholder="usuario123" required>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="register-email" placeholder="tu@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Contraseña</label>
-                        <input type="password" id="register-password" placeholder="••••••••" required minlength="6">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Confirmar Contraseña</label>
-                        <input type="password" id="register-confirm-password" placeholder="••••••••" required minlength="6">
-                    </div>
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-user-plus"></i> Crear Cuenta
-                    </button>
-                </form>
-            </div>
-
-            <!-- FORGOT PASSWORD -->
-            <div id="forgotTab" class="tab-content">
-                <form id="forgotForm" onsubmit="handleForgotPassword(event)">
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="forgot-email" placeholder="tu@email.com" required>
-                    </div>
-                    <p style="text-align: center; color: #b0b0b0; font-size: 0.9rem; margin: 1rem 0;">
-                        Te enviaremos un email con instrucciones para recuperar tu contraseña.
-                    </p>
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-paper-plane"></i> Enviar Email
-                    </button>
-                    <div style="text-align: center; margin-top: 1rem;">
-                        <button type="button" class="link-btn" onclick="switchTab('login')">
-                            Volver al inicio de sesión
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <!-- FORGOT PASSWORD -->
+        <div id="forgotDropdownTab" class="dropdown-content">
+            <form id="forgotForm" onsubmit="handleForgotPassword(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="forgot-email" placeholder="tu@email.com" required>
+                </div>
+                <p style="text-align: center; color: #b0b0b0; font-size: 0.85rem; margin: 0.8rem 0;">
+                    Te enviaremos un email con instrucciones
+                </p>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-paper-plane"></i> Enviar
+                </button>
+                <button type="button" class="link-btn" onclick="switchDropdownTab('login')" style="display: block; margin-top: 0.8rem;">
+                    Volver al inicio de sesión
+                </button>
+            </form>
         </div>
     </div>
 
