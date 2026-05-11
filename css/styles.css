@@ -76,17 +76,17 @@
 
 .auth-dropdown {
     position: fixed;
-    top: 70px;
-    right: 20px;
-    width: 380px;
-    background: rgba(15, 20, 40, 0.98);
-    border: 1px solid rgba(0, 255, 157, 0.3);
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    top: 60px;
+    right: 15px;
+    width: 300px;
+    background: rgba(15, 20, 40, 0.95);
+    border: 1px solid rgba(0, 255, 157, 0.15);
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
     z-index: 9999;
     display: none;
-    animation: slideDown 0.3s ease;
-    backdrop-filter: blur(10px);
+    animation: slideDown 0.2s ease;
+    backdrop-filter: blur(8px);
 }
 
 .auth-dropdown.active {
@@ -96,7 +96,7 @@
 @keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-8px);
     }
     to {
         opacity: 1;
@@ -106,25 +106,24 @@
 
 .dropdown-tabs {
     display: flex;
-    border-bottom: 1px solid rgba(0, 255, 157, 0.2);
+    border-bottom: 1px solid rgba(0, 255, 157, 0.15);
     padding: 0;
 }
 
 .dropdown-tab {
     flex: 1;
-    padding: 1rem;
+    padding: 0.7rem 0.8rem;
     background: none;
     border: none;
-    color: #b0b0b0;
+    color: #888;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
     border-bottom: 2px solid transparent;
 }
 
 .dropdown-tab:hover {
     color: #00ff9d;
-    background: rgba(0, 255, 157, 0.1);
 }
 
 .dropdown-tab.active {
@@ -134,7 +133,7 @@
 
 .dropdown-content {
     display: none;
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
 .dropdown-content.active {
@@ -142,55 +141,55 @@
 }
 
 .dropdown-content .form-group {
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.9rem;
 }
 
 .dropdown-content .form-group label {
     display: block;
-    margin-bottom: 0.4rem;
-    color: #00ff9d;
-    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    color: #999;
+    font-size: 0.75rem;
     font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .dropdown-content .form-group input {
     width: 100%;
-    padding: 0.8rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(0, 255, 157, 0.2);
-    border-radius: 6px;
+    padding: 0.6rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 255, 157, 0.15);
+    border-radius: 4px;
     color: #fff;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
 }
 
 .dropdown-content .form-group input:focus {
     outline: none;
     border-color: #00ff9d;
-    background: rgba(0, 255, 157, 0.1);
-    box-shadow: 0 0 10px rgba(0, 255, 157, 0.2);
+    background: rgba(0, 255, 157, 0.08);
 }
 
 .dropdown-content .form-group input::placeholder {
-    color: #707070;
+    color: #555;
 }
 
 .dropdown-content .btn-submit {
     width: 100%;
-    padding: 0.9rem;
+    padding: 0.7rem;
     background: #00ff9d;
     color: #0a0e27;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
 }
 
 .dropdown-content .btn-submit:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
+    opacity: 0.85;
 }
 
 .dropdown-content .btn-submit:disabled {
@@ -200,8 +199,8 @@
 
 @media (max-width: 480px) {
     .auth-dropdown {
-        width: 95vw;
-        right: 2.5%;
-        top: 65px;
+        width: 90vw;
+        right: 5%;
+        top: 55px;
     }
 }

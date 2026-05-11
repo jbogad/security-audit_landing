@@ -51,8 +51,8 @@
                 <button type="submit" class="btn-submit">
                     <i class="fas fa-sign-in-alt"></i> Entrar
                 </button>
-                <button type="button" class="link-btn" onclick="switchDropdownTab('forgot')" style="display: block; margin-top: 0.8rem;">
-                    ¿Olvidaste contraseña?
+                <button type="button" class="link-btn" onclick="switchDropdownTab('forgot')" style="display: block; margin-top: 0.6rem; text-align: center;">
+                    ¿Olvidaste?
                 </button>
             </form>
         </div>
@@ -77,7 +77,7 @@
                     <input type="password" id="register-confirm-password" placeholder="••••••••" required minlength="6">
                 </div>
                 <button type="submit" class="btn-submit">
-                    <i class="fas fa-user-plus"></i> Crear Cuenta
+                    <i class="fas fa-user-plus"></i> Crear
                 </button>
             </form>
         </div>
@@ -89,14 +89,14 @@
                     <label><i class="fas fa-envelope"></i> Email</label>
                     <input type="email" id="forgot-email" placeholder="tu@email.com" required>
                 </div>
-                <p style="text-align: center; color: #b0b0b0; font-size: 0.85rem; margin: 0.8rem 0;">
-                    Te enviaremos un email con instrucciones
+                <p style="text-align: center; color: #888; font-size: 0.7rem; margin: 0.5rem 0;">
+                    Recibirás instrucciones
                 </p>
                 <button type="submit" class="btn-submit">
                     <i class="fas fa-paper-plane"></i> Enviar
                 </button>
-                <button type="button" class="link-btn" onclick="switchDropdownTab('login')" style="display: block; margin-top: 0.8rem;">
-                    Volver al inicio de sesión
+                <button type="button" class="link-btn" onclick="switchDropdownTab('login')" style="display: block; margin-top: 0.6rem; text-align: center;">
+                    ← Volver
                 </button>
             </form>
         </div>
@@ -115,402 +115,91 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/auth.js"></script>
-
-                <form onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label for="login-email"><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="login-email" placeholder="tu@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password"><i class="fas fa-lock"></i> Contraseña</label>
-                        <input type="password" id="login-password" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                    </button>
-                </form>
-                
-                <div style="position: relative; text-align: center; margin: 1.5rem 0;">
-                    <div style="height: 1px; background: rgba(255,255,255,0.1);"></div>
-                    <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); padding: 0 15px; background: #0f1428; color: #808080; font-size: 0.85rem;">O continúa con</span>
-                </div>
-                
-                <button onclick="loginWithGitHub()" class="btn-github">
-                    <i class="fab fa-github"></i> Continuar con GitHub
-                </button>
-                
-                <p style="text-align: center; margin-top: 1rem; color: #808080; font-size: 0.9rem;">
-                    <a href="#" onclick="showPasswordReset(event)" style="color: #00ff9d;">¿Olvidaste tu contraseña?</a>
-                </p>
-            </div>
-
-            <!-- REGISTER TAB -->
-            <div id="registerTab" class="tab-content">
-                <form onsubmit="handleRegister(event)">
-                    <div class="form-group">
-                        <label for="register-username"><i class="fas fa-user"></i> Nombre de usuario</label>
-                        <input type="text" id="register-username" placeholder="usuario123" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-email"><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="register-email" placeholder="tu@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password"><i class="fas fa-lock"></i> Contraseña</label>
-                        <input type="password" id="register-password" placeholder="••••••••" required minlength="6">
-                    </div>
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-user-plus"></i> Crear Cuenta
-                    </button>
-                </form>
-                
-                <div style="position: relative; text-align: center; margin: 1.5rem 0;">
-                    <div style="height: 1px; background: rgba(255,255,255,0.1);"></div>
-                    <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); padding: 0 15px; background: #0f1428; color: #808080; font-size: 0.85rem;">O regístrate con</span>
-                </div>
-                
-                <button onclick="loginWithGitHub()" class="btn-github">
-                    <i class="fab fa-github"></i> Continuar con GitHub
-                </button>
-                
-                <p style="text-align: center; margin-top: 1rem; color: #808080; font-size: 0.85rem;">
-                    Al registrarte aceptas nuestros <a href="#" style="color: #00ff9d;">Términos y Condiciones</a>
-                </p>
-            </div>
-
-            <!-- PASSWORD RESET TAB -->
-            <div id="resetTab" class="tab-content">
-                <div id="resetMessage"></div>
-                <form onsubmit="handlePasswordReset(event)">
-                    <div class="form-group">
-                        <label for="reset-email"><i class="fas fa-envelope"></i> Email de tu cuenta</label>
-                        <input type="email" id="reset-email" placeholder="tu@email.com" required>
-                    </div>
-                    <button type="submit" class="btn-submit" id="resetBtn">
-                        <i class="fas fa-paper-plane"></i> Enviar Email de Recuperación
-                    </button>
-                </form>
-                <p style="text-align: center; margin-top: 1rem; color: #808080; font-size: 0.9rem;">
-                    <a href="#" onclick="switchTab('login')" style="color: #00ff9d;">← Volver al login</a>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================
-         HERO SECTION
-         ============================================ -->
-    <section id="inicio" class="hero">
-        <div class="hero-content">
-            <h1>HackPrevent.es</h1>
-            <p class="subtitle">Practica Hacking Ético en Entornos Seguros</p>
-            <p class="description">
-                🎯 Plataforma gratuita de laboratorios de ciberseguridad<br>
-                Descarga máquinas vulnerables, practica pentesting y mejora tus habilidades<br>
-                en un entorno legal y controlado.
-            </p>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 900px; margin: 2rem auto; text-align: center;">
-                <div>
-                    <h3 style="color: #00ff9d; font-size: 2.5rem; margin-bottom: 0.5rem;">15+</h3>
-                    <p style="color: #b0b0b0;">Laboratorios</p>
-                </div>
-                <div>
-                    <h3 style="color: #00ff9d; font-size: 2.5rem; margin-bottom: 0.5rem;">100%</h3>
-                    <p style="color: #b0b0b0;">Gratuito</p>
-                </div>
-                <div>
-                    <h3 style="color: #00ff9d; font-size: 2.5rem; margin-bottom: 0.5rem;">24/7</h3>
-                    <p style="color: #b0b0b0;">Disponible</p>
-                </div>
-            </div>
-            <div class="hero-buttons">
-                <a href="#laboratorios" class="btn btn-primary"><i class="fas fa-flask"></i> Explorar Laboratorios</a>
-                <a href="#como-funciona" class="btn btn-secondary"><i class="fas fa-question-circle"></i> Cómo Funciona</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         LABORATORIOS
-         ============================================ -->
-    <section id="laboratorios" style="background: #0f1428;">
-        <div class="container">
-            <h2 class="section-title">🧪 Laboratorios Descargables</h2>
-            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
-                Máquinas virtuales preconfiguradas para practicar pentesting en entornos controlados
-            </p>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
-                
-                <!-- Lab 1 -->
-                <div class="lab-card">
-                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.5rem;">
-                        <i class="fas fa-laptop-code"></i> Kali Linux Listo para Usar
-                    </h3>
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Distribución Kali preconfigurada con herramientas esenciales, scripts personalizados y entorno optimizado.
-                    </p>
-                    <ul style="color: #808080; margin-bottom: 1.5rem; padding-left: 1.5rem;">
-                        <li>Herramientas de pentesting preinstaladas</li>
-                        <li>Scripts útiles incluidos</li>
-                        <li>Configuración lista para usar</li>
-                        <li>Guía de instalación incluida</li>
-                    </ul>
-                    <a href="#" class="btn btn-primary btn-disabled">
-                        <i class="fas fa-lock"></i> Próximamente
-                    </a>
-                </div>
-
-                <!-- Lab 2 -->
-                <div class="lab-card">
-                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.5rem;">
-                        <i class="fas fa-server"></i> HackPrevent: SQL Injection Lab
-                    </h3>
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Laboratorio enfocado en la explotación y prevención de vulnerabilidades SQLi.
-                    </p>
-                    <ul style="color: #808080; margin-bottom: 1.5rem; padding-left: 1.5rem;">
-                        <li>Dificultad: <strong style="color: #ffa500;">Intermedia</strong></li>
-                        <li>Múltiples niveles de explotación</li>
-                        <li>Incluye guía de hardening</li>
-                        <li>Compatible VMware/VirtualBox</li>
-                    </ul>
-                    <a href="#" class="btn btn-primary btn-disabled">
-                        <i class="fas fa-lock"></i> Próximamente
-                    </a>
-                </div>
-
-                <!-- Lab 3 -->
-                <div class="lab-card">
-                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.5rem;">
-                        <i class="fas fa-shield-alt"></i> Web Vulns Playground
-                    </h3>
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Entorno con las vulnerabilidades más comunes del OWASP Top 10.
-                    </p>
-                    <ul style="color: #808080; margin-bottom: 1.5rem; padding-left: 1.5rem;">
-                        <li>Dificultad: <strong style="color: #00ff00;">Principiante</strong></li>
-                        <li>XSS, CSRF, Path Traversal, etc.</li>
-                        <li>Documentación detallada</li>
-                        <li>Ideal para empezar</li>
-                    </ul>
-                    <a href="#" class="btn btn-primary btn-disabled">
-                        <i class="fas fa-lock"></i> Próximamente
-                    </a>
-                </div>
-
-            </div>
-
-            <div class="warning-box">
-                <h4 style="color: #ff4500; margin-bottom: 0.5rem;">
-                    <i class="fas fa-exclamation-triangle"></i> Aviso Legal
-                </h4>
-                <p style="color: #b0b0b0; font-size: 0.95rem;">
-                    Estos laboratorios contienen vulnerabilidades educativas. Solo deben usarse en entornos controlados para aprendizaje.
-                    El uso indebido de estas herramientas es responsabilidad exclusiva del usuario.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         RECURSOS
-         ============================================ -->
-    <section id="recursos" style="background: #0a0e27;">
-        <div class="container">
-            <h2 class="section-title">📚 Recursos y Guías</h2>
-            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
-                Documentación, writeups y guías para resolver los laboratorios
-            </p>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
-                
-                <div class="resource-card">
-                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.4rem;">
-                        <i class="fas fa-book"></i> Guías de Inicio
-                    </h3>
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Todo lo necesario para empezar: instalación de VirtualBox/VMware, configuración de red, primeros pasos en pentesting.
-                    </p>
-                    <ul style="color: #808080; padding-left: 1.5rem;">
-                        <li>Configuración de entorno virtual</li>
-                        <li>Herramientas básicas de pentesting</li>
-                        <li>Metodología de ataque</li>
-                        <li>Buenas prácticas y ética</li>
-                    </ul>
-                </div>
-
-                <div class="resource-card">
-                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.4rem;">
-                        <i class="fas fa-file-alt"></i> Writeups
-                    </h3>
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Soluciones paso a paso de cada laboratorio (disponibles después de completar cada máquina).
-                    </p>
-                    <ul style="color: #808080; padding-left: 1.5rem;">
-                        <li>Proceso completo de explotación</li>
-                        <li>Herramientas utilizadas</li>
-                        <li>Explicación de vulnerabilidades</li>
-                        <li>Tips y técnicas avanzadas</li>
-                    </ul>
-                </div>
-
-                <div class="resource-card">
-                    <h3 style="color: #00ff9d; margin-bottom: 1rem; font-size: 1.4rem;">
-                        <i class="fas fa-users"></i> Comunidad
-                    </h3>
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">
-                        Únete a la comunidad de HackPrevent. Comparte experiencias, pide ayuda y colabora con otros.
-                    </p>
-                    <ul style="color: #808080; padding-left: 1.5rem;">
-                        <li>Discord / Telegram (próximamente)</li>
-                        <li>Foro de discusión</li>
-                        <li>Ranking de usuarios</li>
-                        <li>Eventos y retos mensuales</li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         CÓMO FUNCIONA
-         ============================================ -->
-    <section id="como-funciona" style="background: #0f1428;">
-        <div class="container">
-            <h2 class="section-title">🎮 Cómo Funciona</h2>
-            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
-                Empieza a practicar pentesting en 4 sencillos pasos
-            </p>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; max-width: 1100px; margin: 0 auto;">
-                
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">
-                        <i class="fas fa-download"></i> Descarga
-                    </h3>
-                    <p style="color: #b0b0b0; line-height: 1.6;">
-                        Elige un laboratorio según tu nivel y descarga la máquina virtual en formato .ova o .vmdk.
-                    </p>
-                </div>
-
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">
-                        <i class="fas fa-cog"></i> Configura
-                    </h3>
-                    <p style="color: #b0b0b0; line-height: 1.6;">
-                        Importa la máquina en VirtualBox o VMware. Configura la red en modo NAT o Host-Only.
-                    </p>
-                </div>
-
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">
-                        <i class="fas fa-crosshairs"></i> Hackea
-                    </h3>
-                    <p style="color: #b0b0b0; line-height: 1.6;">
-                        Escanea, enumera, explota vulnerabilidades y consigue acceso root. ¡Usa todas tus herramientas!
-                    </p>
-                </div>
-
-                <div class="step-card">
-                    <div class="step-number">4</div>
-                    <h3 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">
-                        <i class="fas fa-flag-checkered"></i> Aprende
-                    </h3>
-                    <p style="color: #b0b0b0; line-height: 1.6;">
-                        Consulta el writeup oficial, comparte tu solución y mejora tus técnicas de hacking.
-                    </p>
-                </div>
-
-            </div>
-
-            <div class="info-box">
-                <h3 style="color: #00ff9d; margin-bottom: 1rem;">
-                    <i class="fas fa-shield-alt"></i> 100% Legal y Seguro
-                </h3>
-                <p style="color: #b0b0b0; line-height: 1.8;">
-                    Todos los laboratorios están diseñados exclusivamente para aprendizaje.<br>
-                    Practica sin riesgos en tu propia máquina virtual aislada.<br>
-                    <strong style="color: #ffffff;">No hay límites de tiempo ni restricciones.</strong>
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         CONTACTO
-         ============================================ -->
-    <section id="contacto" style="background: #0a0e27;">
-        <div class="container">
-            <h2 class="section-title">📬 Contacto y Soporte</h2>
-            <p style="text-align: center; color: #b0b0b0; margin-bottom: 3rem; font-size: 1.1rem;">
-                ¿Tienes dudas, sugerencias o quieres reportar un problema? Contáctanos
-            </p>
-
-            <div style="max-width: 600px; margin: 0 auto;">
-                <form action="https://formspree.io/f/meolrbgp" method="POST" class="contact-form">
-                    
-                    <div class="form-group">
-                        <label for="nombre">Nombre *</label>
-                        <input type="text" id="nombre" name="nombre" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="asunto">Asunto *</label>
-                        <input type="text" id="asunto" name="asunto" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="mensaje">Mensaje *</label>
-                        <textarea id="mensaje" name="mensaje" rows="6" required></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" style="width: 100%; text-align: center; font-size: 1.1rem;">
-                        <i class="fas fa-paper-plane"></i> Enviar Mensaje
-                    </button>
-                </form>
-
-                <div style="margin-top: 3rem; text-align: center;">
-                    <p style="color: #b0b0b0; margin-bottom: 1rem;">O envía un email directo:</p>
-                    <div style="text-align: center;">
-                        <a href="mailto:soporte@hackprevent.es" style="color: #00ff9d; text-decoration: none; font-size: 1.2rem; font-weight: 600;">
-                            <i class="fas fa-envelope"></i> soporte@hackprevent.es
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         FOOTER
-         ============================================ -->
-    <footer style="background: #0a0e27; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(0,255,157,0.2);">
-        <div class="container">
-            <p style="color: #808080; font-size: 0.9rem;">
-                © 2025 HackPrevent.es | Ethical Hacking & Cyber Defense
-            </p>
-            <p style="color: #606060; font-size: 0.85rem; margin-top: 0.5rem;">
-                Todos los laboratorios y herramientas son para uso educativo exclusivamente.
-            </p>
-        </div>
-    </footer>
-
-    <!-- Supabase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- JavaScript -->
-    <script src="js/auth.js"></script>
+    <script>
+// Inline Auth Module
+console.log('Loading auth...');
+let sb = null;
+async function getClient() {
+    if (sb) return sb;
+    for (let i = 0; i < 50; i++) {
+        if (window.supabase) {
+            sb = window.supabase.createClient(
+                'https://sdudrliwounfknjiwsgb.supabase.co',
+                'sb_publishable_QKSOaxQE05LKoSpraT4seg_aFvDBLLO'
+            );
+            console.log('✓ Auth ready');
+            return sb;
+        }
+        await new Promise(r => setTimeout(r, 100));
+    }
+}
+async function loginUser(email, password) {
+    const client = await getClient();
+    if (!client) return { success: false, message: 'Connection error' };
+    try {
+        const { data, error } = await client.auth.signInWithPassword({ email, password });
+        if (error) return { success: false, message: 'Credenciales incorrectas' };
+        localStorage.setItem('supabase_session', JSON.stringify(data.session));
+        return { success: true, message: '¡Bienvenido!' };
+    } catch (e) {
+        return { success: false, message: e.message };
+    }
+}
+async function registerUser(username, email, password, confirmPassword) {
+    if (password !== confirmPassword) return { success: false, message: 'Las contraseñas no coinciden' };
+    const client = await getClient();
+    if (!client) return { success: false, message: 'Connection error' };
+    try {
+        const { data, error } = await client.auth.signUp({
+            email, password,
+            options: { data: { username } }
+        });
+        if (error) return { success: false, message: error.message };
+        return { success: true, message: '¡Cuenta creada!' };
+    } catch (e) {
+        return { success: false, message: e.message };
+    }
+}
+async function logoutUser() {
+    const client = await getClient();
+    if (client) await client.auth.signOut();
+    localStorage.removeItem('supabase_session');
+    return { success: true };
+}
+async function requestPasswordReset(email) {
+    const client = await getClient();
+    if (!client) return { success: false, message: 'Connection error' };
+    try {
+        const { error } = await client.auth.resetPasswordForEmail(email);
+        return error ? { success: false, message: error.message } : { success: true, message: 'Email enviado' };
+    } catch (e) {
+        return { success: false, message: e.message };
+    }
+}
+async function getCurrentUser() {
+    const client = await getClient();
+    if (!client) return { success: false, user: null };
+    try {
+        const { data: { user } } = await client.auth.getUser();
+        return { success: true, user };
+    } catch (e) {
+        return { success: false, user: null };
+    }
+}
+async function getUserProfile(userId) {
+    const client = await getClient();
+    if (!client) return { success: false, profile: null };
+    try {
+        const { data } = await client.from('profiles').select('*').eq('id', userId).single();
+        return { success: true, profile: data };
+    } catch (e) {
+        return { success: false, profile: null };
+    }
+}
+window.supabaseAuth = { loginUser, registerUser, logoutUser, getCurrentUser, requestPasswordReset, getUserProfile };
+console.log('✓ Auth module ready');
+    </script>
     <script src="js/script.js"></script>
+    
 </body>
 </html>
