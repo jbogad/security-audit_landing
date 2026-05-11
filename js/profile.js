@@ -20,6 +20,14 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 async function checkAuthentication() {
     try {
+        // Esperar a que window.supabaseAuth esté disponible
+        for (let i = 0; i < 50; i++) {
+            if (window.supabaseAuth && typeof window.supabaseAuth.getCurrentUser === 'function') {
+                break;
+            }
+            await new Promise(r => setTimeout(r, 50));
+        }
+        
         const { success, user } = await window.supabaseAuth.getCurrentUser();
         
         if (!success || !user) {

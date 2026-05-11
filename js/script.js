@@ -57,17 +57,32 @@ function showMessage(type, message) {
 
 async function updateUIForLoggedInUser(user) {
     const btnLogin = document.querySelector('.btn-login');
+    const laboratoriosSection = document.getElementById('laboratorios');
+    const authDropdown = document.getElementById('authDropdown');
     
     try {
         const { success, profile } = await window.supabaseAuth.getUserProfile(user.id);
         
         if (success && profile) {
-            btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
-            btnLogin.onclick = () => window.location.href = '/profile.html';
+            btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${profile.full_name || user.email}`;
         } else {
-            btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> Mi Perfil`;
-            btnLogin.onclick = () => window.location.href = '/profile.html';
+            btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
         }
+        
+        // Hacer el botón clickeable al perfil
+        btnLogin.style.cursor = 'pointer';
+        btnLogin.onclick = (e) => {
+            e.stopPropagation();
+            window.location.href = '/profile.html';
+        };
+        
+        // Mostrar los laboratorios
+        if (laboratoriosSection) {
+            laboratoriosSection.style.display = 'block';
+        }
+        
+        // Permitir cerrar el dropdown
+        authDropdown.style.display = 'none';
     } catch (error) {
         console.log('Error updating UI:', error);
     }
