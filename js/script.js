@@ -69,10 +69,12 @@ async function updateUIForLoggedInUser(user) {
             btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
         }
         
-        // Hacer el botón clickeable al perfil
+        // Cerrar dropdown si está abierto
+        authDropdown.classList.remove('active');
+        
+        // Hacer el botón clickeable al perfil (no toggle, ir al perfil)
         btnLogin.style.cursor = 'pointer';
-        btnLogin.onclick = (e) => {
-            e.stopPropagation();
+        btnLogin.onclick = () => {
             window.location.href = '/profile.html';
         };
         
@@ -80,9 +82,6 @@ async function updateUIForLoggedInUser(user) {
         if (laboratoriosSection) {
             laboratoriosSection.style.display = 'block';
         }
-        
-        // Permitir cerrar el dropdown
-        authDropdown.style.display = 'none';
     } catch (error) {
         console.log('Error updating UI:', error);
     }
@@ -94,9 +93,13 @@ window.addEventListener('DOMContentLoaded', async () => {
         const { success, user } = await window.supabaseAuth.getCurrentUser();
         if (success && user) {
             updateUIForLoggedInUser(user);
+        } else {
+            // Si no hay usuario, el botón abre el dropdown
+            document.querySelector('.btn-login').onclick = toggleAuthDropdown;
         }
     } catch (error) {
         console.log('No active session');
+        document.querySelector('.btn-login').onclick = toggleAuthDropdown;
     }
 });
 

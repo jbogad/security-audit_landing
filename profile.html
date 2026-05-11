@@ -252,9 +252,39 @@ async function getCurrentUser() {
     const client = await getClient();
     if (!client) return { success: false, user: null };
     try {
+        // Intentar recuperar del Supabase client primero
         const { data: { user } } = await client.auth.getUser();
-        return { success: true, user };
+        if (user) {
+            return { success: true, user };
+        }
+        
+        // Si no hay usuario, intentar recuperar la sesión del localStorage
+        const sessionStr = localStorage.getItem('supabase_session');
+        if (sessionStr) {
+            try {
+                const session = JSON.parse(sessionStr);
+                if (session && session.user) {
+                    return { success: true, user: session.user };
+                }
+            } catch (e) {
+                console.log('Error parsing saved session');
+            }
+        }
+        
+        return { success: false, user: null };
     } catch (e) {
+        // Intentar recuperar del localStorage si hay error
+        const sessionStr = localStorage.getItem('supabase_session');
+        if (sessionStr) {
+            try {
+                const session = JSON.parse(sessionStr);
+                if (session && session.user) {
+                    return { success: true, user: session.user };
+                }
+            } catch (err) {
+                console.log('Error parsing saved session');
+            }
+        }
         return { success: false, user: null };
     }
 }
