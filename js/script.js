@@ -1,5 +1,5 @@
 // ============================================
-// FUNCIONES BÁSICAS
+// BASIC UI FUNCTIONS
 // ============================================
 
 // Smooth scroll
@@ -13,7 +13,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Modal
+// Modal Management
 function openModal() {
     document.getElementById('authModal').classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -49,39 +49,44 @@ function showMessage(type, message) {
     }, 3000);
 }
 
-// Actualizar UI cuando está logueado
+// ============================================
+// UI UPDATES
+// ============================================
+
 async function updateUIForLoggedInUser(user) {
     const btnLogin = document.querySelector('.btn-login');
-    const { profile } = await window.supabaseAuth.getUserProfile(user.id);
     
-    if (profile && profile.users) {
-        btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${profile.users.username}`;
-        btnLogin.onclick = () => window.location.href = '/profile.html';
+    try {
+        const { success, profile } = await window.supabaseAuth.getUserProfile(user.id);
+        
+        if (success && profile) {
+            btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
+            btnLogin.onclick = () => window.location.href = '/profile.html';
+        } else {
+            btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> Mi Perfil`;
+            btnLogin.onclick = () => window.location.href = '/profile.html';
+        }
+    } catch (error) {
+        console.log('Error updating UI:', error);
     }
 }
 
-// Logout
-async function handleLogout() {
-    const result = await window.supabaseAuth.logoutUser();
-    if (result.success) {
-        showMessage('success', 'Sesión cerrada');
-        const btnLogin = document.querySelector('.btn-login');
-        btnLogin.innerHTML = '<i class="fas fa-user"></i> Entrar';
-        btnLogin.onclick = openModal;
-    }
-}
-
-// Check auth on load
+// Check authentication on page load
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        const { user } = await window.supabaseAuth.getCurrentUser();
-        if (user) updateUIForLoggedInUser(user);
+        const { success, user } = await window.supabaseAuth.getCurrentUser();
+        if (success && user) {
+            updateUIForLoggedInUser(user);
+        }
     } catch (error) {
-        console.log('No hay sesión activa');
+        console.log('No active session');
     }
 });
 
-// Cambiar tabs
+// ============================================
+// TAB MANAGEMENT
+// ============================================
+
 function switchTab(tab) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
@@ -92,10 +97,16 @@ function switchTab(tab) {
     } else if (tab === 'register') {
         document.getElementById('registerTab').classList.add('active');
         document.querySelectorAll('.modal-tab')[1].classList.add('active');
+    } else if (tab === 'forgot') {
+        document.getElementById('forgotTab').classList.add('active');
+        document.querySelectorAll('.modal-tab')[2].classList.add('active');
     }
 }
 
-// Login
+// ============================================
+// LOGIN HANDLER
+// ============================================
+
 async function handleLogin(e) {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
@@ -111,13 +122,13 @@ async function handleLogin(e) {
             showMessage('success', result.message);
             setTimeout(() => {
                 closeModal();
-                updateUIForLoggedInUser(result.user);
                 location.reload();
             }, 1500);
         } else {
             showMessage('error', result.message);
         }
     } catch (error) {
+        console.error('Login error:', error);
         showMessage('error', 'Error al iniciar sesión');
     } finally {
         submitBtn.disabled = false;
@@ -125,76 +136,122 @@ async function handleLogin(e) {
     }
 }
 
-// Register
+// ============================================
+// REGISTER HANDLER
+// ============================================
+
 async function handleRegister(e) {
     e.preventDefault();
     const username = document.getElementById('register-username').value;
     const email = document.getElementById('register-email').value;
     const password = document.getElementById('register-password').value;
+    const confirmPassword = document.getElementById('register-confirm-password').value;
     const submitBtn = e.target.querySelector('button[type="submit"]');
     
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando cuenta...';
     
     try {
-        const result = await window.supabaseAuth.registerUser(username, email, password);
+        const result = await window.supabaseAuth.registerUser(username, email, password, confirmPassword);
         if (result.success) {
             showMessage('success', result.message);
             setTimeout(() => {
                 switchTab('login');
                 document.getElementById('login-email').value = email;
                 document.getElementById('login-password').value = '';
+                document.getElementById('registerForm').reset();
             }, 1500);
         } else {
             showMessage('error', result.message);
         }
     } catch (error) {
+        console.error('Register error:', error);
         showMessage('error', 'Error al crear la cuenta');
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Crear Cuenta';
     }
 }
-            }, 1000);
-        } else {
-            showMessage('error', result.message);
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        showMessage('error', 'Error al iniciar sesión. Intenta de nuevo.');
-    } finally {
-        // Restaurar botón
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+
+// ============================================
+// LOGOUT HANDLER
+// ============================================
+
+async function handleLogout() {
+    const result = await window.supabaseAuth.logoutUser();
+    if (result.success) {
+        showMessage('success', result.message);
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1500);
+    } else {
+        showMessage('error', result.message);
     }
 }
 
 // ============================================
-// HANDLE REGISTER
+// PASSWORD RESET HANDLER
 // ============================================
-async function handleRegister(e) {
+
+async function handleForgotPassword(e) {
     e.preventDefault();
-    const username = document.getElementById('register-username').value;
-    const email = document.getElementById('register-email').value;
-    const password = document.getElementById('register-password').value;
+    const email = document.getElementById('forgot-email').value;
     const submitBtn = e.target.querySelector('button[type="submit"]');
     
-    // Validación de contraseña segura
-    const validation = window.supabaseAuth.validatePassword(password);
-    if (!validation.isValid) {
-        showMessage('error', 'Contraseña insegura:\n• ' + validation.errors.join('\n• '));
-        return;
-    }
-    
-    // Estado de carga
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando cuenta...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
     
     try {
-        const result = await window.supabaseAuth.registerUser(username, email, password);
-        
+        const result = await window.supabaseAuth.requestPasswordReset(email);
         if (result.success) {
-            // Mensaje de éxito
             showMessage('success', result.message);
+            setTimeout(() => {
+                switchTab('login');
+                document.getElementById('forgotForm').reset();
+            }, 2000);
+        } else {
+            showMessage('error', result.message);
+        }
+    } catch (error) {
+        console.error('Password reset error:', error);
+        showMessage('error', 'Error al enviar email de recuperación');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Email';
+    }
+}
+
+// ============================================
+// CHANGE PASSWORD HANDLER (Profile page)
+// ============================================
+
+async function handleChangePassword(e) {
+    e.preventDefault();
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cambiando...';
+    
+    try {
+        const result = await window.supabaseAuth.updatePassword(newPassword, confirmPassword);
+        if (result.success) {
+            showMessage('success', result.message);
+            document.getElementById('changePasswordForm').reset();
+            setTimeout(() => {
+                window.location.href = '/profile.html';
+            }, 1500);
+        } else {
+            showMessage('error', result.message);
+        }
+    } catch (error) {
+        console.error('Change password error:', error);
+        showMessage('error', 'Error al cambiar contraseña');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-shield-alt"></i> Cambiar Contraseña';
+    }
+}
             
 

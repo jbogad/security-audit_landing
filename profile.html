@@ -168,19 +168,19 @@
                 <i class="fas fa-lock"></i> Cambiar Contraseña
             </h3>
             
-            <form id="changePasswordForm">
+            <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
                 <div class="form-group">
                     <label>Nueva Contraseña</label>
-                    <input type="password" id="newPassword" required minlength="6">
+                    <input type="password" id="newPassword" required minlength="6" placeholder="Mínimo 6 caracteres">
                 </div>
                 
                 <div class="form-group">
                     <label>Confirmar Contraseña</label>
-                    <input type="password" id="confirmPassword" required minlength="6">
+                    <input type="password" id="confirmPassword" required minlength="6" placeholder="Repite tu contraseña">
                 </div>
                 
                 <button type="submit" class="btn-save">
-                    <i class="fas fa-shield-alt"></i> Cambiar
+                    <i class="fas fa-shield-alt"></i> Cambiar Contraseña
                 </button>
             </form>
         </div>
@@ -190,101 +190,7 @@
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/auth.js"></script>
-    <script src="js/profile.js"></script>
-</body>
-</html>
-                        <div class="form-group">
-                            <label for="fullName"><i class="fas fa-id-card"></i> Nombre Completo</label>
-                            <input type="text" id="fullName" placeholder="Tu nombre completo">
-                        </div>
-                        <div class="form-group">
-                            <label for="avatarUrl"><i class="fas fa-image"></i> URL del Avatar</label>
-                            <input type="url" id="avatarUrl" placeholder="https://ejemplo.com/avatar.jpg">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="bio"><i class="fas fa-align-left"></i> Biografía</label>
-                        <textarea id="bio" rows="4" placeholder="Cuéntanos sobre ti..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="website"><i class="fas fa-globe"></i> Sitio Web</label>
-                        <input type="url" id="website" placeholder="https://tu-sitio.com">
-                    </div>
-                    
-                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                        <button type="button" class="btn-cancel" onclick="loadUserProfile()">
-                            <i class="fas fa-undo"></i> Cancelar
-                        </button>
-                        <button type="submit" class="btn-save">
-                            <i class="fas fa-save"></i> Guardar Cambios
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Social Links Section -->
-            <div class="profile-section">
-                <h2 class="section-title">
-                    <i class="fas fa-share-alt"></i> Redes Sociales
-                </h2>
-                
-                <form id="socialLinksForm" class="form-grid">
-                    <div class="social-links">
-                        <div class="social-input">
-                            <i class="fab fa-github"></i>
-                            <input type="text" id="githubUrl" placeholder="tu-usuario" style="flex: 1;">
-                        </div>
-                        <div class="social-input">
-                            <i class="fab fa-twitter"></i>
-                            <input type="text" id="twitterUrl" placeholder="@tu-usuario" style="flex: 1;">
-                        </div>
-                        <div class="social-input">
-                            <i class="fab fa-linkedin"></i>
-                            <input type="text" id="linkedinUrl" placeholder="tu-perfil" style="flex: 1;">
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                        <button type="submit" class="btn-save">
-                            <i class="fas fa-save"></i> Guardar Enlaces
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Security Section -->
-            <div class="profile-section">
-                <h2 class="section-title">
-                    <i class="fas fa-lock"></i> Seguridad
-                </h2>
-                
-                <form id="changePasswordForm" class="form-grid">
-                    <div class="form-group">
-                        <label for="newPassword"><i class="fas fa-key"></i> Nueva Contraseña</label>
-                        <input type="password" id="newPassword" placeholder="Mínimo 8 caracteres">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="confirmPassword"><i class="fas fa-key"></i> Confirmar Contraseña</label>
-                        <input type="password" id="confirmPassword" placeholder="Repite la contraseña">
-                    </div>
-                    
-                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                        <button type="submit" class="btn-save">
-                            <i class="fas fa-shield-alt"></i> Cambiar Contraseña
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
     <script src="js/profile.js"></script>
 </body>
 </html>

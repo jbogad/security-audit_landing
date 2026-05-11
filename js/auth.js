@@ -1,198 +1,368 @@
 // ============================================
-// SUPABASE AUTHENTICATION
+// SUPABASE AUTHENTICATION SYSTEM
 // ============================================
 
-const SUPABASE_URL = 'https://fkpwhjczidflwqbfxtoe.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrcHdoamN6aWRmbHdxYmZ4dG9lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NzE1ODgsImV4cCI6MjA4MDI0NzU4OH0.Mep-S0tps9Fd3Yiozv5aK_h251HKk63tsYobDr4e-pk'
+const SUPABASE_URL = 'https://sdudrliwounfknjiwsgb.supabase.co'
+const SUPABASE_ANON_KEY = 'sb_publishable_QKSOaxQE05LKoSpraT4seg_aFvDBLLO'
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-// Validación simple de contraseña
+// ============================================
+// VALIDATIONS
+// ============================================
+
 function validatePassword(password) {
+    const errors = [];
+    
     if (password.length < 6) {
-        return { isValid: false, errors: ['Mínimo 6 caracteres'] };
+        errors.push('Mínimo 6 caracteres');
     }
-    return { isValid: true, errors: [] };
+    
+    return {
+        isValid: errors.length === 0,
+        errors: errors
+    };
 }
 
-// Registro de usuario
-async function registerUser(username, email, password) {
+function validateEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
+
+function validateUsername(username) {
+    if (username.length < 3) {
+        return { isValid: false, message: 'El usuario debe tener al menos 3 caracteres' };
+    }
+    if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+        return { isValid: false, message: 'El usuario solo puede contener letras, números, _ y -' };
+    }
+    return { isValid: true, message: '' };
+}
+
+// ============================================
+// REGISTRATION
+// ============================================
+
+async function registerUser(username, email, password, confirmPassword) {
     try {
-        const validation = validatePassword(password);
-        if (!validation.isValid) {
-            return { success: false, message: 'Contraseña muy corta' };
+        // Validar email
+        if (!validateEmail(email)) {
+            return { success: false, message: 'Email inválido' };
         }
-        
-        const { data: authData, error: authError } = await supabase.auth.signUp({
+
+        // Validar usuario
+        const usernameValidation = validateUsername(username);
+        if (!usernameValidation.isValid) {
+            return { success: false, message: usernameValidation.message };
+        }
+
+        // Validar contraseña
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.isValid) {
+            return { success: false, message: 'Contraseña: ' + passwordValidation.errors.join(', ') };
+        }
+
+        // Validar confirmación de contraseña
+        if (password !== confirmPassword) {
+            return { success: false, message: 'Las contraseñas no coinciden' };
+        }
+
+        // Registrar usuario
+        const { data, error } = await supabase.auth.signUp({
             email: email,
             password: password,
             options: {
-                data: { username: username },
-                emailRedirectTo: 'https://hackprevent.es'
+                data: { 
+                    username: username,
+                    created_at: new Date().toISOString()
+                },
+                emailRedirectTo: window.location.origin
             }
-        })
+        });
 
-        if (authError) throw authError
-
-        return { 
-            success: true, 
-            user: authData.user,
-            message: '¡Cuenta creada! Revisa tu email.' 
+        if (error) {
+            console.error('Signup error:', error);
+            if (error.message.includes('already registered')) {
+                return { success: false, message: 'Este email ya está registrado' };
+            }
+            return { success: false, message: 'Error al registrar: ' + error.message };
         }
 
+        // Guardar sesión en localStorage
+        if (data.session) {
+            localStorage.setItem('supabase_session', JSON.stringify(data.session));
+        }
+
+        return {
+            success: true,
+            user: data.user,
+            message: '¡Cuenta creada exitosamente!'
+        };
+
     } catch (error) {
-        console.error('Register error:', error)
-        return { success: false, message: 'Error al crear la cuenta' }
+        console.error('Register error:', error);
+        return { success: false, message: 'Error al crear la cuenta' };
     }
 }
 
-// Login de usuario
+// ============================================
+// LOGIN
+// ============================================
+
 async function loginUser(email, password) {
     try {
+        if (!validateEmail(email)) {
+            return { success: false, message: 'Email inválido' };
+        }
+
         const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password
-        })
+        });
 
-        if (error) throw error
-
-        await supabase
-            .from('users')
-            .update({ last_login: new Date().toISOString() })
-            .eq('id', data.user.id)
-
-        return { 
-            success: true, 
-            user: data.user,
-            session: data.session,
-            message: '¡Bienvenido!' 
+        if (error) {
+            console.error('Login error:', error);
+            if (error.message.includes('Invalid login credentials')) {
+                return { success: false, message: 'Email o contraseña incorrectos' };
+            }
+            return { success: false, message: 'Error al iniciar sesión' };
         }
 
+        // Guardar sesión en localStorage
+        if (data.session) {
+            localStorage.setItem('supabase_session', JSON.stringify(data.session));
+            localStorage.setItem('user_email', email);
+        }
+
+        return {
+            success: true,
+            user: data.user,
+            session: data.session,
+            message: '¡Bienvenido!'
+        };
+
     } catch (error) {
-        console.error('Login error:', error)
-        return { success: false, message: 'Email o contraseña incorrectos' }
+        console.error('Login error:', error);
+        return { success: false, message: 'Error al iniciar sesión' };
     }
 }
 
-// Logout
+// ============================================
+// LOGOUT
+// ============================================
+
 async function logoutUser() {
     try {
-        const { error } = await supabase.auth.signOut()
-        if (error) throw error
-        return { success: true, message: 'Sesión cerrada' }
+        const { error } = await supabase.auth.signOut();
+
+        if (error) throw error;
+
+        // Limpiar localStorage
+        localStorage.removeItem('supabase_session');
+        localStorage.removeItem('user_email');
+
+        return { success: true, message: 'Sesión cerrada correctamente' };
+
     } catch (error) {
-        console.error('Logout error:', error)
-        return { success: false, message: 'Error al cerrar sesión' }
+        console.error('Logout error:', error);
+        return { success: false, message: 'Error al cerrar sesión' };
     }
 }
 
-// Usuario actual
+// ============================================
+// SESSION PERSISTENCE
+// ============================================
+
+async function restoreSession() {
+    try {
+        // Verificar si hay sesión guardada en localStorage
+        const savedSession = localStorage.getItem('supabase_session');
+        
+        if (savedSession) {
+            try {
+                const session = JSON.parse(savedSession);
+                // Verificar si la sesión es válida
+                const { data, error } = await supabase.auth.getSession();
+                
+                if (data.session) {
+                    return { success: true, session: data.session };
+                }
+            } catch (e) {
+                localStorage.removeItem('supabase_session');
+            }
+        }
+
+        return { success: false, session: null };
+
+    } catch (error) {
+        console.error('Restore session error:', error);
+        return { success: false, session: null };
+    }
+}
+
 async function getCurrentUser() {
     try {
-        const { data: { user }, error } = await supabase.auth.getUser()
-        if (error) throw error
-        if (!user) return { user: null }
+        const { data: { user }, error } = await supabase.auth.getUser();
 
-        const { data: userData, error: userError } = await supabase
-            .from('users')
-            .select('*, profiles(*)')
-            .eq('id', user.id)
-            .single()
+        if (error || !user) {
+            return { success: false, user: null };
+        }
 
-        if (userError) throw userError
-        return { user: userData }
+        return { success: true, user: user };
+
     } catch (error) {
-        console.error('Get user error:', error)
-        return { user: null }
+        console.error('Get current user error:', error);
+        return { success: false, user: null };
     }
 }
 
-// Perfil de usuario
+async function isAuthenticated() {
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        return !!session;
+    } catch (error) {
+        console.error('Auth check error:', error);
+        return false;
+    }
+}
+
+// ============================================
+// PASSWORD RESET
+// ============================================
+
+async function requestPasswordReset(email) {
+    try {
+        if (!validateEmail(email)) {
+            return { success: false, message: 'Email inválido' };
+        }
+
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/reset-password.html`
+        });
+
+        if (error) {
+            console.error('Password reset error:', error);
+            return { success: false, message: 'Error al enviar email de recuperación' };
+        }
+
+        return {
+            success: true,
+            message: 'Email de recuperación enviado. Revisa tu bandeja de entrada.'
+        };
+
+    } catch (error) {
+        console.error('Password reset error:', error);
+        return { success: false, message: 'Error al enviar email de recuperación' };
+    }
+}
+
+// ============================================
+// PASSWORD UPDATE
+// ============================================
+
+async function updatePassword(newPassword, confirmPassword) {
+    try {
+        // Validar contraseña
+        const passwordValidation = validatePassword(newPassword);
+        if (!passwordValidation.isValid) {
+            return { success: false, message: 'Contraseña: ' + passwordValidation.errors.join(', ') };
+        }
+
+        // Validar confirmación
+        if (newPassword !== confirmPassword) {
+            return { success: false, message: 'Las contraseñas no coinciden' };
+        }
+
+        const { error } = await supabase.auth.updateUser({
+            password: newPassword
+        });
+
+        if (error) {
+            console.error('Update password error:', error);
+            return { success: false, message: 'Error al cambiar contraseña' };
+        }
+
+        return { success: true, message: 'Contraseña actualizada exitosamente' };
+
+    } catch (error) {
+        console.error('Update password error:', error);
+        return { success: false, message: 'Error al cambiar contraseña' };
+    }
+}
+
+// ============================================
+// PROFILE FUNCTIONS
+// ============================================
+
 async function getUserProfile(userId) {
     try {
         const { data, error } = await supabase
             .from('profiles')
-            .select('*, users!inner(username, email, created_at)')
+            .select('*')
             .eq('id', userId)
-            .single()
+            .single();
 
-        if (error) throw error
-        return { profile: data }
+        if (error && error.code !== 'PGRST116') {
+            console.error('Get profile error:', error);
+            return { success: false, profile: null };
+        }
+
+        return { success: true, profile: data || null };
+
     } catch (error) {
-        console.error('Error al obtener perfil:', error)
-        return { profile: null }
+        console.error('Get profile error:', error);
+        return { success: false, profile: null };
     }
 }
 
-// Verificar autenticación
-async function isAuthenticated() {
-    const { data: { session } } = await supabase.auth.getSession()
-    return !!session
-}
-
-// Reset de contraseña
-async function requestPasswordReset(email) {
+async function updateProfile(userId, profileData) {
     try {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://hackprevent.es/reset-password'
-        })
-
-        if (error) throw error
-        return { success: true, message: 'Email de recuperación enviado' }
-    } catch (error) {
-        console.error('Password reset error:', error)
-        return { success: false, message: 'Error al enviar email' }
-    }
-}
-
-// Cambiar contraseña
-async function updatePassword(newPassword) {
-    try {
-        const { error } = await supabase.auth.updateUser({
-            password: newPassword
-        })
-
-        if (error) throw error
-        return { success: true, message: 'Contraseña actualizada' }
-    } catch (error) {
-        console.error('Update password error:', error)
-        return { success: false, message: 'Error al cambiar contraseña' }
-    }
-}
-
-// Actualizar perfil
-async function updateProfile(userId, data) {
-    try {
-        const { error } = await supabase
+        const { data, error } = await supabase
             .from('profiles')
-            .update(data)
-            .eq('id', userId)
+            .upsert({
+                id: userId,
+                ...profileData,
+                updated_at: new Date().toISOString()
+            });
 
-        if (error) throw error
-        return { success: true, message: 'Perfil actualizado' }
+        if (error) {
+            console.error('Update profile error:', error);
+            return { success: false, message: 'Error al actualizar perfil' };
+        }
+
+        return { success: true, message: 'Perfil actualizado exitosamente' };
+
     } catch (error) {
-        console.error('Update profile error:', error)
-        return { success: false, message: 'Error al actualizar perfil' }
+        console.error('Update profile error:', error);
+        return { success: false, message: 'Error al actualizar perfil' };
     }
 }
 
-    } catch (error) {
-    } catch (error) {
-        console.error('Update password error:', error)
-        return { success: false, message: 'Error al cambiar contraseña' }
-    }
-}
+// ============================================
+// EXPORT FUNCTIONS
+// ============================================
 
-// Exportar globalmente
 window.supabaseAuth = {
+    // Validations
+    validatePassword,
+    validateEmail,
+    validateUsername,
+
+    // Auth
     registerUser,
     loginUser,
     logoutUser,
-    requestPasswordReset,
-    updatePassword,
+
+    // Session
+    restoreSession,
     getCurrentUser,
     isAuthenticated,
-    updateProfile,
+
+    // Password
+    requestPasswordReset,
+    updatePassword,
+
+    // Profile
     getUserProfile,
-    validatePassword
-}
+    updateProfile
+};

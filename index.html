@@ -41,6 +41,9 @@
                 <button class="modal-tab" onclick="switchTab('register')">
                     <i class="fas fa-user-plus"></i> Registrarse
                 </button>
+                <button class="modal-tab" onclick="switchTab('forgot')">
+                    <i class="fas fa-key"></i> Recuperar
+                </button>
             </div>
 
             <!-- LOGIN -->
@@ -57,12 +60,17 @@
                     <button type="submit" class="btn-submit">
                         <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                     </button>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <button type="button" class="link-btn" onclick="switchTab('forgot')">
+                            ¿Olvidaste tu contraseña?
+                        </button>
+                    </div>
                 </form>
             </div>
 
             <!-- REGISTER -->
             <div id="registerTab" class="tab-content">
-                <form onsubmit="handleRegister(event)">
+                <form id="registerForm" onsubmit="handleRegister(event)">
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> Nombre de usuario</label>
                         <input type="text" id="register-username" placeholder="usuario123" required>
@@ -75,9 +83,34 @@
                         <label><i class="fas fa-lock"></i> Contraseña</label>
                         <input type="password" id="register-password" placeholder="••••••••" required minlength="6">
                     </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Confirmar Contraseña</label>
+                        <input type="password" id="register-confirm-password" placeholder="••••••••" required minlength="6">
+                    </div>
                     <button type="submit" class="btn-submit">
                         <i class="fas fa-user-plus"></i> Crear Cuenta
                     </button>
+                </form>
+            </div>
+
+            <!-- FORGOT PASSWORD -->
+            <div id="forgotTab" class="tab-content">
+                <form id="forgotForm" onsubmit="handleForgotPassword(event)">
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="forgot-email" placeholder="tu@email.com" required>
+                    </div>
+                    <p style="text-align: center; color: #b0b0b0; font-size: 0.9rem; margin: 1rem 0;">
+                        Te enviaremos un email con instrucciones para recuperar tu contraseña.
+                    </p>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Enviar Email
+                    </button>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <button type="button" class="link-btn" onclick="switchTab('login')">
+                            Volver al inicio de sesión
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
