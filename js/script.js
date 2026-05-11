@@ -29,7 +29,7 @@ document.addEventListener('click', function(e) {
     const dropdown = document.getElementById('authDropdown');
     const btnLogin = document.querySelector('.btn-login');
     
-    if (!dropdown.contains(e.target) && !btnLogin.contains(e.target)) {
+    if (dropdown && btnLogin && !dropdown.contains(e.target) && !btnLogin.contains(e.target)) {
         closeAuthDropdown();
     }
 });
