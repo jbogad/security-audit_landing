@@ -271,7 +271,32 @@ async function getUserProfile(userId) {
         return { success: false, profile: null };
     }
 }
-window.supabaseAuth = { loginUser, registerUser, logoutUser, getCurrentUser, requestPasswordReset, getUserProfile };
+async function updateProfile(userId, updates) {
+    const client = await getClient();
+    if (!client) return { success: false, message: 'Connection error' };
+    try {
+        const { data, error } = await client.from('profiles').update(updates).eq('id', userId).select().single();
+        if (error) return { success: false, message: error.message };
+        return { success: true, message: 'Perfil actualizado', profile: data };
+    } catch (e) {
+        return { success: false, message: e.message };
+    }
+}
+async function changePassword(newPassword, confirmPassword) {
+    if (newPassword !== confirmPassword) return { success: false, message: 'Las contraseñas no coinciden' };
+    if (newPassword.length < 6) return { success: false, message: 'La contraseña debe tener al menos 6 caracteres' };
+    
+    const client = await getClient();
+    if (!client) return { success: false, message: 'Connection error' };
+    try {
+        const { error } = await client.auth.updateUser({ password: newPassword });
+        if (error) return { success: false, message: error.message };
+        return { success: true, message: 'Contraseña actualizada' };
+    } catch (e) {
+        return { success: false, message: e.message };
+    }
+}
+window.supabaseAuth = { loginUser, registerUser, logoutUser, getCurrentUser, requestPasswordReset, getUserProfile, updateProfile, changePassword };
 console.log('✓ Auth module ready');
     </script>
     <script src="js/script.js"></script>

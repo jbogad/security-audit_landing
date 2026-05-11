@@ -47,13 +47,17 @@ async function checkAuthentication() {
 // ============================================
 
 async function loadUserProfile() {
-    if (!currentUser) return;
+    if (!currentUser) {
+        console.log('No current user');
+        return;
+    }
     
     try {
         const { success, profile } = await window.supabaseAuth.getUserProfile(currentUser.id);
         
         if (success && profile) {
             currentProfile = profile;
+            console.log('Profile loaded:', profile);
             
             // Update display info
             if (document.getElementById('usernameDisplay')) {
@@ -74,28 +78,45 @@ async function loadUserProfile() {
                 }
             }
             
-            // Populate form fields
-            if (document.getElementById('fullName')) {
-                document.getElementById('fullName').value = profile.full_name || '';
+            // Populate form fields - asegurarse de que existan
+            const fullNameField = document.getElementById('fullName');
+            if (fullNameField) {
+                fullNameField.value = profile.full_name || '';
+                console.log('Set fullName to:', profile.full_name);
             }
-            if (document.getElementById('avatarUrl')) {
-                document.getElementById('avatarUrl').value = profile.avatar_url || '';
+            
+            const avatarUrlField = document.getElementById('avatarUrl');
+            if (avatarUrlField) {
+                avatarUrlField.value = profile.avatar_url || '';
             }
-            if (document.getElementById('bio')) {
-                document.getElementById('bio').value = profile.bio || '';
+            
+            const bioField = document.getElementById('bio');
+            if (bioField) {
+                bioField.value = profile.bio || '';
+                console.log('Set bio to:', profile.bio);
             }
-            if (document.getElementById('website')) {
-                document.getElementById('website').value = profile.website || '';
+            
+            const websiteField = document.getElementById('website');
+            if (websiteField) {
+                websiteField.value = profile.website || '';
             }
-            if (document.getElementById('githubUrl')) {
-                document.getElementById('githubUrl').value = profile.github_url || '';
+            
+            const githubUrlField = document.getElementById('githubUrl');
+            if (githubUrlField) {
+                githubUrlField.value = profile.github_url || '';
             }
-            if (document.getElementById('twitterUrl')) {
-                document.getElementById('twitterUrl').value = profile.twitter_url || '';
+            
+            const twitterUrlField = document.getElementById('twitterUrl');
+            if (twitterUrlField) {
+                twitterUrlField.value = profile.twitter_url || '';
             }
-            if (document.getElementById('linkedinUrl')) {
-                document.getElementById('linkedinUrl').value = profile.linkedin_url || '';
+            
+            const linkedinUrlField = document.getElementById('linkedinUrl');
+            if (linkedinUrlField) {
+                linkedinUrlField.value = profile.linkedin_url || '';
             }
+        } else {
+            console.log('Failed to load profile or profile is null');
         }
     } catch (error) {
         console.error('Error loading profile:', error);
@@ -191,6 +212,48 @@ async function handleSocialLinksSubmit(e) {
         submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar';
     }
 }
+
+// ============================================
+// CHANGE PASSWORD HANDLER
+// ============================================
+
+async function handleChangePassword(e) {
+    e.preventDefault();
+    
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cambiando...';
+    
+    try {
+        const result = await window.supabaseAuth.changePassword(newPassword, confirmPassword);
+        
+        if (result.success) {
+            showMessage('success', result.message);
+            // Limpiar formulario
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        } else {
+            showMessage('error', result.message);
+        }
+    } catch (error) {
+        console.error('Error changing password:', error);
+        showMessage('error', 'Error al cambiar la contraseña');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-key"></i> Cambiar Contraseña';
+    }
+}
+
+// Agregar event listener al formulario de cambio de contraseña
+document.addEventListener('DOMContentLoaded', () => {
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', handleChangePassword);
+    }
+});
 
 // ============================================
 // MESSAGE DISPLAY
