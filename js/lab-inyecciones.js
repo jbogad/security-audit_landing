@@ -28,15 +28,15 @@ function handleSqlLogin(e) {
     const pass = document.getElementById('sqli-pass').value;
     const resultBox = document.getElementById('sqli-login-result');
 
-    // Detección muy básica de inyecciones simples tipo bypass: ' OR '1'='1, ' OR 1=1, admin' --
-    const sqliRegex = /'\s*OR\s*.*|'\s*--|"\s*OR\s*.*/i;
+    // Detección más tolerante para inyecciones
+    const sqliRegex = /'\s*OR|"\s*OR|'\s*=|"\s*=|'\s*--|"\s*--|admin'/i;
     
     if (sqliRegex.test(user) || sqliRegex.test(pass)) {
         // SQL Inyectado exitosamente!
         resultBox.innerHTML = `
             <span class="success-text"><i class="fas fa-exclamation-triangle"></i> ¡Inyección SQL Exitosa! Has superado el primer reto.</span>
             <br>
-            <button class="btn-login" style="margin-top: 15px; width: auto; padding: 0.5rem 1.5rem;" onclick="nextLevel(2)">Siguiente Nivel →</button>
+            <button type="button" class="btn-login" style="margin-top: 15px; width: auto; padding: 0.5rem 1.5rem;" onclick="nextLevel(2)">Siguiente Nivel →</button>
         `;
     } else if (user === 'admin' && pass === '1234') {
         resultBox.innerHTML = '<span class="error-text">Login correcto pero sin inyectar nada... inténtalo vulnerando el SQL.</span>';
@@ -65,7 +65,8 @@ function handleSqlSearch(e) {
         return;
     }
 
-    const orRegex = /\s*OR\s+1=1|\s*OR\s+'1'='1'/i;
+    // Detección más tolerante
+    const orRegex = /OR|1=1|'1'='1'|true/i;
     
     let results = [];
     
@@ -90,7 +91,7 @@ function handleSqlSearch(e) {
             // Conseguido
             html += `
                 <p class="success-text" style="margin-top: 10px;"><i class="fas fa-exclamation-triangle"></i> ¡Has extraído datos ocultos de la base de datos!</p>
-                <button class="btn-login" style="margin-top: 15px; width: auto; padding: 0.5rem 1.5rem;" onclick="nextLevel(3)">Siguiente Nivel →</button>
+                <button type="button" class="btn-login" style="margin-top: 15px; width: auto; padding: 0.5rem 1.5rem;" onclick="nextLevel(3)">Siguiente Nivel →</button>
             `;
         }
         
