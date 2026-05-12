@@ -1,7 +1,7 @@
 // Supabase Auth Module
 console.log('Loading auth.js');
 
-const SUPABASE_URL = 'https://sdudrliwounfknjiwsgb.supabase.com';
+const SUPABASE_URL = 'https://sdudrliwounfknjiwsgb.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_QKSOaxQE05LKoSpraT4seg_aFvDBLLO';
 let sb = null;
 
