@@ -247,6 +247,22 @@ async function handleChangePassword(e) {
     }
 }
 
+// ============================================
+// LOGOUT HANDLER
+// ============================================
+
+async function handleLogout() {
+    const result = await window.supabaseAuth.logoutUser();
+    if (result.success) {
+        showMessage('success', 'Sesión cerrada');
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1000);
+    } else {
+        showMessage('error', result.message || 'Error al cerrar sesión');
+    }
+}
+
 // Agregar event listener al formulario de cambio de contraseña
 document.addEventListener('DOMContentLoaded', () => {
     const changePasswordForm = document.getElementById('changePasswordForm');
