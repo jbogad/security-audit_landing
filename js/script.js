@@ -59,24 +59,29 @@ async function updateUIForLoggedInUser(user) {
     const btnLogin = document.querySelector('.btn-login');
     const laboratoriosSection = document.getElementById('laboratorios');
     const authDropdown = document.getElementById('authDropdown');
+    const isProfilePage = window.location.pathname.endsWith('/profile.html');
     
     try {
         const { success, profile } = await window.supabaseAuth.getUserProfile(user.id);
-        
-        if (success && profile) {
-            btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${profile.full_name || user.email}`;
-        } else {
-            btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
+
+        if (!isProfilePage && btnLogin) {
+            if (success && profile) {
+                btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${profile.full_name || user.email}`;
+            } else {
+                btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
+            }
+
+            // Cerrar dropdown si está abierto
+            if (authDropdown) {
+                authDropdown.classList.remove('active');
+            }
+
+            // Hacer el botón clickeable al perfil (no toggle, ir al perfil)
+            btnLogin.style.cursor = 'pointer';
+            btnLogin.onclick = () => {
+                window.location.href = '/profile.html';
+            };
         }
-        
-        // Cerrar dropdown si está abierto
-        authDropdown.classList.remove('active');
-        
-        // Hacer el botón clickeable al perfil (no toggle, ir al perfil)
-        btnLogin.style.cursor = 'pointer';
-        btnLogin.onclick = () => {
-            window.location.href = '/profile.html';
-        };
         
         // Mostrar los laboratorios
         if (laboratoriosSection) {
@@ -241,37 +246,4 @@ async function handleForgotPassword(e) {
     }
 }
 
-// ============================================
-// CHANGE PASSWORD HANDLER (Profile page)
-// ============================================
-
-async function handleChangePassword(e) {
-    e.preventDefault();
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cambiando...';
-    
-    try {
-        const result = await window.supabaseAuth.updatePassword(newPassword, confirmPassword);
-        if (result.success) {
-            showMessage('success', result.message);
-            document.getElementById('changePasswordForm').reset();
-            setTimeout(() => {
-                window.location.href = '/profile.html';
-            }, 1500);
-        } else {
-            showMessage('error', result.message);
-        }
-    } catch (error) {
-        console.error('Change password error:', error);
-        showMessage('error', 'Error al cambiar contraseña');
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-shield-alt"></i> Cambiar Contraseña';
-    }
-}
-            
 
