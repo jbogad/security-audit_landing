@@ -96,5 +96,5 @@ async function updateProfile(userId, updates) {
 }
 
 // Export
-window.supabaseAuth = { loginUser, registerUser, logoutUser, getCurrentUser, requestPasswordReset, getUserProfile, updateProfile };
+window.supabaseAuth = { loginUser, registerUser, logoutUser, getCurrentUser, requestPasswordReset, getUserProfile, updateProfile, getClient };
 console.log('✓ Auth module ready');

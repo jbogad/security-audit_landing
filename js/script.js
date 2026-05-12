@@ -34,7 +34,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Version cache burst for main script: v5
+// Version cache burst for main script: v8
 // Mostrar mensajes
 function showMessage(type, message) {
     const messageDiv = document.createElement('div');
@@ -155,6 +155,24 @@ async function updateUIForLoggedInUser(user) {
                 btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}${xpText}`;
             }
 
+            console.error("DEBUG - Datos de perfil: ", profile);
+            console.error("DEBUG - Role actual del usuario: ", profile?.role);
+
+            // Si es admin (o forzar admin para pruebas temporales)
+            if (success && profile && (profile.role === 'admin' || profile.role === 'ADMIN')) {
+                const navLinks = document.querySelector('.nav-links');
+                if (navLinks && !document.getElementById('admin-btn')) {
+                    const adminBtn = document.createElement('button');
+                    adminBtn.id = 'admin-btn';
+                    adminBtn.className = 'btn-login';
+                    adminBtn.style.background = '#ff3366';
+                    adminBtn.style.color = '#fff';
+                    adminBtn.innerHTML = '<i class="fas fa-shield-alt"></i> Admin';
+                    adminBtn.onclick = () => window.location.href = '/admin.html';
+                    navLinks.insertBefore(adminBtn, btnLogin);
+                }
+            }
+
             // Cerrar dropdown si está abierto
             if (authDropdown) {
                 authDropdown.classList.remove('active');
@@ -185,15 +203,19 @@ async function updateUIForLoggedInUser(user) {
 // Check authentication on page load
 window.addEventListener('DOMContentLoaded', async () => {
     try {
+        console.error("DEBUG - Comprobando autenticación on load");
         const { success, user } = await window.supabaseAuth.getCurrentUser();
+        console.error("DEBUG - getCurrentUser result:", success, user);
+        
         if (success && user) {
             updateUIForLoggedInUser(user);
         } else {
+            console.error("DEBUG - No success or no user. Setting click dropdown.");
             // Si no hay usuario, el botón abre el dropdown
             document.querySelector('.btn-login').onclick = toggleAuthDropdown;
         }
     } catch (error) {
-        console.log('No active session');
+        console.error('Error on active session check', error);
         document.querySelector('.btn-login').onclick = toggleAuthDropdown;
     }
 });
