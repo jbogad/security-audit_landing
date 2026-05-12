@@ -67,8 +67,24 @@ async function requestPasswordReset(email) {
 async function getCurrentUser() {
     try {
         const client = await getClient();
-        const { data: { user } } = await client.auth.getUser();
-        return { success: true, user };
+        const { data: { user }, error } = await client.auth.getUser();
+        if (user) {
+            return { success: true, user };
+        }
+        
+        // Recover from local storage
+        const sessionStr = localStorage.getItem('supabase_session');
+        if (sessionStr) {
+            try {
+                const session = JSON.parse(sessionStr);
+                if (session && session.user) {
+                    return { success: true, user: session.user };
+                }
+            } catch (e) {
+                console.log('Error parsing saved session');
+            }
+        }
+        return { success: false, user: null };
     } catch (e) {
         return { success: false, user: null };
     }
@@ -95,6 +111,20 @@ async function updateProfile(userId, updates) {
     }
 }
 
+async function changePassword(newPassword, confirmPassword) {
+    if (newPassword !== confirmPassword) return { success: false, message: 'Las contraseñas no coinciden' };
+    if (newPassword.length < 6) return { success: false, message: 'La contraseña debe tener al menos 6 caracteres' };
+    
+    try {
+        const client = await getClient();
+        const { error } = await client.auth.updateUser({ password: newPassword });
+        if (error) return { success: false, message: error.message };
+        return { success: true, message: 'Contraseña actualizada' };
+    } catch (e) {
+        return { success: false, message: e.message };
+    }
+}
+
 // Export
-window.supabaseAuth = { loginUser, registerUser, logoutUser, getCurrentUser, requestPasswordReset, getUserProfile, updateProfile, getClient };
+window.supabaseAuth = { loginUser, registerUser, logoutUser, getCurrentUser, requestPasswordReset, getUserProfile, updateProfile, changePassword, getClient };
 console.log('✓ Auth module ready');
