@@ -251,16 +251,25 @@ async function handleChangePassword(e) {
 // LOGOUT HANDLER
 // ============================================
 
-async function handleLogout() {
-    const result = await window.supabaseAuth.logoutUser();
-    if (result.success) {
-        showMessage('success', 'Sesión cerrada');
-        setTimeout(() => {
-            window.location.href = '/';
-        }, 1000);
-    } else {
-        showMessage('error', result.message || 'Error al cerrar sesión');
+function handleLogout() {
+    if (!window.supabaseAuth || !window.supabaseAuth.logoutUser) {
+        console.error('supabaseAuth not available');
+        return;
     }
+    
+    window.supabaseAuth.logoutUser().then(result => {
+        if (result.success) {
+            showMessage('success', 'Sesión cerrada');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+        } else {
+            showMessage('error', result.message || 'Error al cerrar sesión');
+        }
+    }).catch(error => {
+        console.error('Logout error:', error);
+        showMessage('error', 'Error al cerrar sesión');
+    });
 }
 
 // Agregar event listener al formulario de cambio de contraseña
