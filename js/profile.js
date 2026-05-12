@@ -251,7 +251,7 @@ async function handleChangePassword(e) {
 // LOGOUT HANDLER
 // ============================================
 
-function handleLogout() {
+window.handleLogout = function() {
     if (!window.supabaseAuth || !window.supabaseAuth.logoutUser) {
         console.error('supabaseAuth not available');
         return;
@@ -270,7 +270,7 @@ function handleLogout() {
         console.error('Logout error:', error);
         showMessage('error', 'Error al cerrar sesión');
     });
-}
+};
 
 // Agregar event listener al formulario de cambio de contraseña
 document.addEventListener('DOMContentLoaded', () => {
