@@ -4,6 +4,15 @@
 
 let currentLevel = 1;
 
+function generateCode() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 5; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return `HKPRV-WEB-${result}`;
+}
+
 function nextLevel(level) {
     if (level === 2) {
         document.getElementById('level1').style.display = 'none';
@@ -15,6 +24,7 @@ function nextLevel(level) {
         currentLevel = 3;
     } else if (level === 'finish') {
         document.getElementById('level3').style.display = 'none';
+        document.getElementById('final-code').textContent = generateCode();
         document.getElementById('completion-screen').style.display = 'block';
     }
 }

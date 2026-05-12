@@ -158,6 +158,21 @@
         </div>
     </section>
 
+    <!-- CANJEAR XP (Solo visible cuando logueado) -->
+    <section id="canjear-xp" class="canjear-xp" style="display: none; padding: 2rem 0; background: rgba(10, 14, 39, 0.5);">
+        <div class="container">
+            <h2 style="color: #00ff9d; margin-bottom: 1rem;"><i class="fas fa-gift"></i> Canjear Código de Recompensa</h2>
+            <p style="margin-bottom: 1.5rem;">Copia aquí el código de finalización que obtienes al terminar los laboratorios para reclamar tus puntos de experiencia.</p>
+            <div class="redeem-box" style="background: rgba(15, 20, 40, 0.8); padding: 2rem; border-radius: 15px; border: 1px solid rgba(0, 255, 157, 0.2); max-width: 600px; margin: 0 auto;">
+                <form id="redeem-form" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <input type="text" id="redeem-code" placeholder="Introduce el código completo (ej. HKPRV-WEB-...)" style="flex: 1; padding: 0.8rem; border-radius: 5px; border: 1px solid rgba(0, 255, 157, 0.3); background: #0a0e27; color: white;">
+                    <button type="submit" class="btn-login" style="padding: 0.8rem 2rem;">Canjear</button>
+                </form>
+                <div id="redeem-result" style="margin-top: 1rem; text-align: left;"></div>
+            </div>
+        </div>
+    </section>
+
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>

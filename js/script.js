@@ -52,6 +52,44 @@ function showMessage(type, message) {
 }
 
 // ============================================
+// CANJEAR CÓDIGOS XP
+// ============================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    const redeemForm = document.getElementById('redeem-form');
+    if (redeemForm) {
+        redeemForm.addEventListener('submit', handleRedeem);
+    }
+});
+
+function handleRedeem(e) {
+    e.preventDefault();
+    const code = document.getElementById('redeem-code').value.trim();
+    const resultBox = document.getElementById('redeem-result');
+    
+    // Validar formato: HKPRV-WEB-XXXXX
+    const codeRegex = /^HKPRV-WEB-[A-Z0-9]{5}$/i;
+    
+    if (codeRegex.test(code)) {
+        // En un caso real usaríamos la DB. Lo simulamos con localStorage para que no de el mismo XP 2 veces la misma persona.
+        let usedCodes = JSON.parse(localStorage.getItem('used_codes') || '[]');
+        
+        if (usedCodes.includes(code.toUpperCase())) {
+            resultBox.innerHTML = '<span class="error-text" style="color: #ff3366;"><i class="fas fa-times-circle"></i> Este código ya ha sido canjeado.</span>';
+        } else {
+            usedCodes.push(code.toUpperCase());
+            localStorage.setItem('used_codes', JSON.stringify(usedCodes));
+            
+            // TODO: Sumar 50 XP al perfil del usuario en la base de datos (Supabase) cuando esté implementado el sistema de XP
+            resultBox.innerHTML = '<span class="success-text" style="color: #00ff9d;"><i class="fas fa-check-circle"></i> ¡Código verificado! +50 XP añadidos a tu cuenta. (Simulado)</span>';
+            document.getElementById('redeem-code').value = '';
+        }
+    } else {
+        resultBox.innerHTML = '<span class="error-text" style="color: #ff3366;"><i class="fas fa-times-circle"></i> Código inválido. Formato incorrecto.</span>';
+    }
+}
+
+// ============================================
 // UI UPDATES
 // ============================================
 
@@ -86,6 +124,12 @@ async function updateUIForLoggedInUser(user) {
         // Mostrar los laboratorios
         if (laboratoriosSection) {
             laboratoriosSection.style.display = 'block';
+        }
+        
+        // Mostrar sección de canjeo de XP si existe
+        const canjearSection = document.getElementById('canjear-xp');
+        if (canjearSection) {
+            canjearSection.style.display = 'block';
         }
     } catch (error) {
         console.log('Error updating UI:', error);
