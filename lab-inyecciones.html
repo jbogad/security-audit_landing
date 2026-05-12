@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio: Inyecciones y XSS</title>
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .lab-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            margin-top: 80px;
+        }
+        
+        .lab-header {
+            background: rgba(15, 20, 40, 0.8);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .lab-header h2 {
+            color: #00ff9d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .lab-section {
+            background: rgba(15, 20, 40, 0.8);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .lab-section h3 {
+            color: #ff3366;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 51, 102, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .code-snippet {
+            background: #0a0e27;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: monospace;
+            color: #00ff9d;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .result-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            min-height: 50px;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .success-text {
+            color: #00ff9d;
+            font-weight: bold;
+        }
+
+        .error-text {
+            color: #ff3366;
+        }
+
+        table.db-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            color: #e0e0e0;
+        }
+
+        table.db-table th, table.db-table td {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px;
+            text-align: left;
+        }
+
+        table.db-table th {
+            background: rgba(0, 255, 157, 0.1);
+            color: #00ff9d;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="container">
+            <div class="logo"><a href="/" style="color: #00ff9d; text-decoration: none;">HackPrevent.es</a></div>
+            <div class="nav-links">
+                <button class="btn-login" onclick="window.location.href='/profile.html'">
+                    <i class="fas fa-user-circle"></i> Mi Perfil
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- LAB CONTENT -->
+    <div class="lab-container">
+        
+        <div class="lab-header">
+            <h2><i class="fas fa-flask"></i> Laboratorio de Inyecciones Web</h2>
+            <p>Aprende cómo funcionan los ataques de Inyección SQL (SQLi) y Cross-Site Scripting (XSS).</p>
+        </div>
+
+        <!-- PRUEBA 1: SQLi Login Bypass -->
+        <div class="lab-section">
+            <h3>1. SQLi - Bypass de Autenticación</h3>
+            <p>El código backend (simulado) de este formulario concatena la entrada directamente en la consulta:<br>
+                <span class="code-snippet">SELECT * FROM users WHERE username = '<b><span id="sqli1-user-query">INPUT</span></b>' AND password = '<b><span id="sqli1-pass-query">INPUT</span></b>'</span>
+            </p>
+            <p><strong>Objetivo:</strong> Inicia sesión como administrador sin conocer la contraseña.</p>
+            
+            <form id="sqli-login-form" onsubmit="handleSqlLogin(event)">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="sqli-user" placeholder="Escribe el nombre de usuario" onkeyup="updateQuery1()">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="text" id="sqli-pass" placeholder="Escribe la contraseña" onkeyup="updateQuery1()">
+                </div>
+                <button type="submit" class="btn-login" style="margin-top: 10px; width: auto; padding: 0.5rem 1.5rem;">Login Simulado</button>
+            </form>
+
+            <div id="sqli-login-result" class="result-box">
+                <em>Resultado de la autenticación...</em>
+            </div>
+        </div>
+
+        <!-- PRUEBA 2: SQLi Obtención de Datos -->
+        <div class="lab-section">
+            <h3>2. SQLi - Extracción de Datos</h3>
+            <p>Busca información de un producto por su ID (ej. 1, 2, 3). Intenta alterar la consulta (ej: <code>1 OR 1=1</code>) para revelar productos ocultos.<br>
+                <span class="code-snippet">SELECT name, price FROM products WHERE id = <b><span id="sqli2-query">INPUT</span></b> AND visible = 1</span>
+            </p>
+            
+            <form id="sqli-search-form" onsubmit="handleSqlSearch(event)">
+                <div class="form-group">
+                    <label>ID del Producto</label>
+                    <input type="text" id="sqli-search" placeholder="Buscar por ID..." onkeyup="updateQuery2()">
+                </div>
+                <button type="submit" class="btn-login" style="margin-top: 10px; width: auto; padding: 0.5rem 1.5rem;">Buscar</button>
+            </form>
+
+            <div id="sqli-search-result" class="result-box" style="overflow-x: auto;">
+                <em>Los productos aparecerán aquí...</em>
+            </div>
+        </div>
+
+        <!-- PRUEBA 3: XSS Reflejado -->
+        <div class="lab-section">
+            <h3>3. Stored/Reflected XSS</h3>
+            <p>Este campo saluda al usuario. Detrás de escena, inserta el texto usando <code>innerHTML</code> sin sanitizar. ¿Puedes hacer que se ejecute una alerta en JavaScript cambiando este contenido?</p>
+            
+            <form id="xss-form" onsubmit="handleXss(event)">
+                <div class="form-group">
+                    <label>Tu Nombre</label>
+                    <input type="text" id="xss-input" placeholder="Escribe tu nombre... ej: <img src=x onerror=alert(1)>">
+                </div>
+                <button type="submit" class="btn-login" style="margin-top: 10px; width: auto; padding: 0.5rem 1.5rem;">Enviar Saludo</button>
+            </form>
+
+            <div class="result-box">
+                ¡Hola, <span id="xss-result"><em>Invitado</em></span>!
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT DEL LAB -->
+    <script src="js/lab-inyecciones.js"></script>
+
+</body>
+</html>
