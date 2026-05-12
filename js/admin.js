@@ -37,8 +37,15 @@ async function loadAllUsers() {
         }
 
         profiles.forEach(p => {
-            // Suponemos que used_codes puede estar en DB o vacío. Si no está en DB, no podremos verlo a menos que lo migremos.
-            const codes = p.used_codes ? p.used_codes.join(', ') : 'Ninguno';
+            // Suponemos que used_codes puede estar en DB o vacío
+            let codes = 'Ninguno';
+            if (p.used_codes) {
+                 if (Array.isArray(p.used_codes)) {
+                     codes = p.used_codes.join(', ');
+                 } else {
+                     codes = JSON.stringify(p.used_codes);
+                 }
+            }
             const xp = p.xp || 0;
             const name = p.full_name || p.username || p.id;
 
