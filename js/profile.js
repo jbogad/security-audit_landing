@@ -77,6 +77,16 @@ async function loadUserProfile() {
                     avatarDisplay.innerHTML = firstLetter;
                 }
             }
+
+            // Update XP
+            const xpDisplay = document.getElementById('xpDisplay');
+            if (xpDisplay) {
+                // Comprobar si la DB tiene XP guardado. Si no, usamos el localStorage.
+                let xpValue = profile.xp !== undefined && profile.xp !== null 
+                    ? profile.xp 
+                    : parseInt(localStorage.getItem(`xp_${currentUser.id}`) || '0');
+                xpDisplay.textContent = `${xpValue} XP`;
+            }
             
             // Populate form fields - asegurarse de que existan
             const fullNameField = document.getElementById('fullName');

@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function handleRedeem(e) {
+async function handleRedeem(e) {
     e.preventDefault();
     const code = document.getElementById('redeem-code').value.trim();
     const resultBox = document.getElementById('redeem-result');
@@ -71,17 +71,27 @@ function handleRedeem(e) {
     const codeRegex = /^HKPRV-WEB-[A-Z0-9]{5}$/i;
     
     if (codeRegex.test(code)) {
-        // En un caso real usaríamos la DB. Lo simulamos con localStorage para que no de el mismo XP 2 veces la misma persona.
-        let usedCodes = JSON.parse(localStorage.getItem('used_codes') || '[]');
+        // En un caso real usaríamos la DB. Lo simulamos con localStorage
+        const { success, user } = await window.supabaseAuth.getCurrentUser();
+        if (!success || !user) {
+            resultBox.innerHTML = '<span class="error-text" style="color: #ff3366;">Debes iniciar sesión para canjear códigos.</span>';
+            return;
+        }
+
+        let usedCodes = JSON.parse(localStorage.getItem(`used_codes_${user.id}`) || '[]');
         
         if (usedCodes.includes(code.toUpperCase())) {
             resultBox.innerHTML = '<span class="error-text" style="color: #ff3366;"><i class="fas fa-times-circle"></i> Este código ya ha sido canjeado.</span>';
         } else {
             usedCodes.push(code.toUpperCase());
-            localStorage.setItem('used_codes', JSON.stringify(usedCodes));
+            localStorage.setItem(`used_codes_${user.id}`, JSON.stringify(usedCodes));
             
-            // TODO: Sumar 50 XP al perfil del usuario en la base de datos (Supabase) cuando esté implementado el sistema de XP
-            resultBox.innerHTML = '<span class="success-text" style="color: #00ff9d;"><i class="fas fa-check-circle"></i> ¡Código verificado! +50 XP añadidos a tu cuenta. (Simulado)</span>';
+            // Sumar 50 XP
+            let currentXp = parseInt(localStorage.getItem(`xp_${user.id}`) || '0');
+            currentXp += 50;
+            localStorage.setItem(`xp_${user.id}`, currentXp);
+
+            resultBox.innerHTML = `<span class="success-text" style="color: #00ff9d;"><i class="fas fa-check-circle"></i> ¡Código verificado! +50 XP añadidos a tu cuenta. Total: ${currentXp} XP.</span>`;
             document.getElementById('redeem-code').value = '';
         }
     } else {
