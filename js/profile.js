@@ -81,7 +81,7 @@ async function loadUserProfile() {
             // Update XP
             const xpDisplay = document.getElementById('xpDisplay');
             if (xpDisplay) {
-                // Comprobar si la DB tiene XP guardado. Si no, usamos el localStorage.
+                // Leer de Supabase
                 let xpValue = profile.xp !== undefined && profile.xp !== null 
                     ? profile.xp 
                     : parseInt(localStorage.getItem(`xp_${currentUser.id}`) || '0');

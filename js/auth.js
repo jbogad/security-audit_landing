@@ -84,6 +84,17 @@ async function getUserProfile(userId) {
     }
 }
 
+async function updateProfile(userId, updates) {
+    try {
+        const client = await getClient();
+        const { data, error } = await client.from('profiles').update(updates).eq('id', userId).select().single();
+        if (error) return { success: false, message: error.message };
+        return { success: true, message: 'Perfil actualizado', profile: data };
+    } catch (e) {
+        return { success: false, message: e.message };
+    }
+}
+
 // Export
-window.supabaseAuth = { loginUser, registerUser, logoutUser, getCurrentUser, requestPasswordReset, getUserProfile };
+window.supabaseAuth = { loginUser, registerUser, logoutUser, getCurrentUser, requestPasswordReset, getUserProfile, updateProfile };
 console.log('✓ Auth module ready');

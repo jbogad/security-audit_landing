@@ -34,6 +34,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// Version cache burst for main script: v5
 // Mostrar mensajes
 function showMessage(type, message) {
     const messageDiv = document.createElement('div');
@@ -71,14 +72,31 @@ async function handleRedeem(e) {
     const codeRegex = /^HKPRV-WEB-[A-Z0-9]{5}$/i;
     
     if (codeRegex.test(code)) {
-        // En un caso real usaríamos la DB. Lo simulamos con localStorage
         const { success, user } = await window.supabaseAuth.getCurrentUser();
         if (!success || !user) {
             resultBox.innerHTML = '<span class="error-text" style="color: #ff3366;">Debes iniciar sesión para canjear códigos.</span>';
             return;
         }
 
-        let usedCodes = JSON.parse(localStorage.getItem(`used_codes_${user.id}`) || '[]');
+        // Recuperar perfil y array de códigos desde la BB. Lo simulamos recuperando local por si falla.
+        let userProfile = null;
+        let dbCurrentXp = 0;
+        let usedCodes = [];
+
+        if (window.supabaseAuth.getUserProfile) {
+            const res = await window.supabaseAuth.getUserProfile(user.id);
+            if (res.success && res.profile) {
+                userProfile = res.profile;
+                dbCurrentXp = res.profile.xp || 0;
+                // Si tienes columna used_codes tipo array o JSONB:
+                // usedCodes = res.profile.used_codes || [];
+            }
+        }
+
+        // Respaldo / lógica temporal de array en local por si la DB aún no tiene la columna "used_codes"
+        if (usedCodes.length === 0) {
+            usedCodes = JSON.parse(localStorage.getItem(`used_codes_${user.id}`) || '[]');
+        }
         
         if (usedCodes.includes(code.toUpperCase())) {
             resultBox.innerHTML = '<span class="error-text" style="color: #ff3366;"><i class="fas fa-times-circle"></i> Este código ya ha sido canjeado.</span>';
@@ -86,12 +104,20 @@ async function handleRedeem(e) {
             usedCodes.push(code.toUpperCase());
             localStorage.setItem(`used_codes_${user.id}`, JSON.stringify(usedCodes));
             
-            // Sumar 50 XP
-            let currentXp = parseInt(localStorage.getItem(`xp_${user.id}`) || '0');
-            currentXp += 50;
-            localStorage.setItem(`xp_${user.id}`, currentXp);
+            // Sumar a la DB
+            dbCurrentXp += 50;
+            
+            if (window.supabaseAuth.updateProfile) {
+                // Actualizamos DB: puedes quitar usedCodes si no tienes la columna. Asumiré que guardamos la XP
+                await window.supabaseAuth.updateProfile(user.id, { xp: dbCurrentXp });
+            }
+            // También respaldamos en localStorage
+            localStorage.setItem(`xp_${user.id}`, dbCurrentXp);
 
-            resultBox.innerHTML = `<span class="success-text" style="color: #00ff9d;"><i class="fas fa-check-circle"></i> ¡Código verificado! +50 XP añadidos a tu cuenta. Total: ${currentXp} XP.</span>`;
+            // Actualizar visualmente la barra de navegación para que se note instantáneo
+            updateUIForLoggedInUser(user);
+
+            resultBox.innerHTML = `<span class="success-text" style="color: #00ff9d;"><i class="fas fa-check-circle"></i> ¡Código verificado! +50 XP añadidos directamente a tu cuenta. Total: ${dbCurrentXp} XP.</span>`;
             document.getElementById('redeem-code').value = '';
         }
     } else {
@@ -108,15 +134,25 @@ async function updateUIForLoggedInUser(user) {
     const laboratoriosSection = document.getElementById('laboratorios');
     const authDropdown = document.getElementById('authDropdown');
     const isProfilePage = window.location.pathname.endsWith('/profile.html');
-    
+
     try {
         const { success, profile } = await window.supabaseAuth.getUserProfile(user.id);
 
         if (!isProfilePage && btnLogin) {
-            if (success && profile) {
-                btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${profile.full_name || user.email}`;
+            let xpText = '';
+            if (success && profile && profile.xp !== undefined) {
+                xpText = ` <span style="color: #ffeb3b; margin-left: 5px;">| <i class="fas fa-star"></i> ${profile.xp} XP</span>`;
             } else {
-                btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
+                let localXp = localStorage.getItem(`xp_${user.id}`);
+                if (localXp) {
+                    xpText = ` <span style="color: #ffeb3b; margin-left: 5px;">| <i class="fas fa-star"></i> ${localXp} XP</span>`;
+                }
+            }
+
+            if (success && profile && profile.full_name) {
+                btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${profile.full_name}${xpText}`;
+            } else {
+                btnLogin.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}${xpText}`;
             }
 
             // Cerrar dropdown si está abierto
