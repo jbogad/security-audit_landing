@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio: Redes y Escaneo de Puertos</title>
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .lab-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            margin-top: 80px;
+        }
+        
+        .lab-header {
+            background: rgba(15, 20, 40, 0.8);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .lab-header h2 {
+            color: #00ff9d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .lab-section {
+            background: rgba(15, 20, 40, 0.8);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .lab-section h3 {
+            color: #4CAF50;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(76, 175, 80, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .terminal-box {
+            background: #000;
+            border: 1px solid #333;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff00;
+            margin-top: 1rem;
+            min-height: 250px;
+            max-height: 400px;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .terminal-box p {
+            margin: 0 0 5px 0;
+            line-height: 1.4;
+        }
+
+        .success-text {
+            color: #00ff9d;
+            font-weight: bold;
+        }
+
+        .error-text {
+            color: #ff3366;
+        }
+
+        .terminal-input-group {
+            display: flex;
+            align-items: center;
+            background: #111;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            margin-bottom: 10px;
+        }
+        
+        .terminal-input-group span {
+            color: #00ff00;
+            font-family: monospace;
+            margin-right: 10px;
+        }
+        
+        .terminal-input-group input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: monospace;
+            flex-grow: 1;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .lab-challenge {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px dashed rgba(255,255,255,0.2);
+        }
+
+    </style>
+</head>
+<body>
+    
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="container">
+            <div class="logo"><a href="/" style="color: #00ff9d; text-decoration: none;">HackPrevent.es</a></div>
+            <div class="nav-links">
+                <button class="btn-login" onclick="window.location.href='/profile.html'">
+                    <i class="fas fa-user-circle"></i> Mi Perfil
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- LAB CONTENT -->
+    <div class="lab-container">
+        
+        <div class="lab-header">
+            <h2><i class="fas fa-network-wired"></i> Laboratorio de Redes</h2>
+            <p>Aprende a analizar infraestructuras de red y descubrir servicios ocultos. En este laboratorio simularemos un entorno de escaneo con herramientas como Nmap.</p>
+        </div>
+
+        <!-- PRUEBA 1: Escaneo de Puertos -->
+        <div class="lab-section" id="level1">
+            <h3>Nivel 1: Descubrimiento de Puertos y Servicios (Simulador Nmap)</h3>
+            <p><strong>Objetivo:</strong> Identificar la máquina objetivo en la red local (IP: <code>192.168.1.50</code>) usando un escáner simulado de puertos. Descubre la flag (texto secreto) que se esconde en un puerto inusual.</p>
+            <p style="font-size: 0.9em; color: #aaa;">💡 Pista: Usa el comando <code>nmap 192.168.1.50</code> en el terminal simulado.</p>
+            
+            <div class="terminal-box" id="nmap-terminal" onclick="document.getElementById('cmd-input').focus()">
+                <div class="terminal-input-group">
+                    <span>user@kali:~#</span>
+                    <input type="text" id="cmd-input" placeholder="Escribe un comando aquí y pulsa ENTER..." onkeypress="handleCommand(event)" autocomplete="off">
+                </div>
+                <div id="terminal-output"></div>
+            </div>
+
+            <!-- Solución del reto -->
+            <div class="lab-challenge" id="challenge-flag" style="display: none;">
+                <h4>¡Has descubierto servicios interesantes!</h4>
+                <p>¿Cuál es la flag secreta que has encontrado en el puerto oculto?</p>
+                <div class="form-group" style="display: flex; gap: 10px; max-width: 400px;">
+                    <input type="text" id="flag-input" placeholder="FLAG{...}">
+                    <button class="btn-login" onclick="verifyFlag()" style="width: auto; padding: 0.5rem 1.5rem;">Validar</button>
+                </div>
+                <p id="flag-result" style="margin-top: 10px;"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        const terminalOutput = document.getElementById('terminal-output');
+        const cmdInput = document.getElementById('cmd-input');
+        let isScanning = false;
+
+        function printToTerminal(htmlContent) {
+            const p = document.createElement('p');
+            p.innerHTML = htmlContent;
+            terminalOutput.appendChild(p);
+            document.getElementById('nmap-terminal').scrollTop = document.getElementById('nmap-terminal').scrollHeight;
+        }
+
+        async function handleCommand(event) {
+            if (event.key === 'Enter') {
+                const cmd = cmdInput.value.trim().toLowerCase();
+                if (!cmd) return;
+                
+                printToTerminal(`<span>user@kali:~# ${cmd}</span>`);
+                cmdInput.value = '';
+                
+                if (isScanning) {
+                    printToTerminal(`<span class="error-text">Ya hay un escaneo en curso...</span>`);
+                    return;
+                }
+
+                if (cmd === 'clear' || cmd === 'cls') {
+                    terminalOutput.innerHTML = '';
+                } 
+                else if (cmd.startsWith('nmap')) {
+                    const args = cmd.split(' ').slice(1);
+                    if (args.includes('192.168.1.50')) {
+                        startSimulatedScan();
+                    } else if (args.length > 0) {
+                        printToTerminal(`Iniciando Nmap 7.93...<br>Note: Host seems down. Si está simulado, asegúrate de apuntar a la IP correcta (192.168.1.50).`);
+                    } else {
+                        printToTerminal(`Falta la IP objetivo. Ejemplo: nmap 192.168.1.50`);
+                    }
+                } 
+                else if (cmd === 'help') {
+                    printToTerminal(`Comandos disponibles:<br> - nmap [IP]<br> - clear<br> - help`);
+                }
+                else {
+                    printToTerminal(`Comando no encontrado: ${cmd}`);
+                }
+            }
+        }
+
+        async function startSimulatedScan() {
+            isScanning = true;
+            printToTerminal(`Starting Nmap 7.93 ( https://nmap.org ) at ${new Date().toISOString().split('T')[0]} 12:00 CET`);
+            
+            await new Promise(r => setTimeout(r, 1000));
+            printToTerminal(`Nmap scan report for 192.168.1.50`);
+            printToTerminal(`Host is up (0.0012s latency).`);
+            printToTerminal(`Not shown: 997 closed tcp ports (reset)`);
+            
+            await new Promise(r => setTimeout(r, 1500));
+            printToTerminal(`PORT     STATE SERVICE`);
+            printToTerminal(`<span style="color: #00ff9d;">22/tcp   open  ssh</span>`);
+            printToTerminal(`|_ssh-hostkey: 1024 d4:1...`);
+            
+            await new Promise(r => setTimeout(r, 1000));
+            printToTerminal(`<span style="color: #00ff9d;">80/tcp   open  http</span>`);
+            printToTerminal(`|_http-title: Pagina por defecto Apache`);
+            
+            await new Promise(r => setTimeout(r, 2000));
+            printToTerminal(`<span style="color: #ffcc00;">7777/tcp open  cbt</span>`);
+            printToTerminal(`| fingerprint-strings:`);
+            printToTerminal(`|   Service Info: Mensaje del administrador:`);
+            printToTerminal(`|   "Tu flag de recompensa es: <strong>FLAG{nmap_master_1337}</strong>"`);
+            
+            await new Promise(r => setTimeout(r, 1000));
+            printToTerminal(`<br>Nmap done: 1 IP address (1 host up) scanned in 4.56 seconds`);
+            isScanning = false;
+
+            // Mostrar el reto de la flag
+            document.getElementById('challenge-flag').style.display = 'block';
+        }
+
+        function verifyFlag() {
+            const input = document.getElementById('flag-input').value.trim();
+            const resultMsg = document.getElementById('flag-result');
+            
+            if (input === 'FLAG{nmap_master_1337}') {
+                resultMsg.innerHTML = '<span class="success-text"><i class="fas fa-check-circle"></i> ¡Correcto! Has encontrado el puerto oculto y superado el nivel.</span>';
+                // Aquí podrías desencadenar una llamada a Supabase para dar XP
+            } else {
+                resultMsg.innerHTML = '<span class="error-text"><i class="fas fa-times-circle"></i> Flag incorrecta, sigue buscando en el informe de Nmap.</span>';
+            }
+        }
+    </script>
+</body>
+</html>
