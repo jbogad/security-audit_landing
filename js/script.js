@@ -68,8 +68,8 @@ async function handleRedeem(e) {
     const code = document.getElementById('redeem-code').value.trim();
     const resultBox = document.getElementById('redeem-result');
     
-    // Validar formato: HKPRV-WEB-XXXXX
-    const codeRegex = /^HKPRV-WEB-[A-Z0-9]{5}$/i;
+    // Validar formato: HKPRV-XXX-AAAAA
+    const codeRegex = /^HKPRV-[A-Z]{3}-[A-Z0-9]{5}$/i;
     
     if (codeRegex.test(code)) {
         const { success, user } = await window.supabaseAuth.getCurrentUser();

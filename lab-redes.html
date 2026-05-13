@@ -243,8 +243,7 @@
             const resultMsg = document.getElementById('flag-result');
             
             if (input === 'FLAG{nmap_master_1337}') {
-                resultMsg.innerHTML = '<span class="success-text"><i class="fas fa-check-circle"></i> ¡Correcto! Has encontrado el puerto oculto y superado el nivel.</span>';
-                // Aquí podrías desencadenar una llamada a Supabase para dar XP
+                resultMsg.innerHTML = '<span class="success-text" style="display: block; margin-top: 10px;"><i class="fas fa-check-circle"></i> ¡Correcto! Has encontrado el puerto oculto.<br><br>🎁 <strong>Tu código de recompensa es: <span style="background: rgba(0,255,157,0.2); padding: 5px; border-radius: 5px; border: 1px dashed #00ff9d; user-select: all;">HKPRV-NET-NMAP1</span></strong><br>Cópialo, vete a la página principal y canjéalo en el contador inferior para conseguir +50 XP.</span>';
             } else {
                 resultMsg.innerHTML = '<span class="error-text"><i class="fas fa-times-circle"></i> Flag incorrecta, sigue buscando en el informe de Nmap.</span>';
             }
